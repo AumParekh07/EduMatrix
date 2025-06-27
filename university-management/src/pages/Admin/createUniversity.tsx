@@ -8,6 +8,9 @@ import { useState, useEffect } from "react";
 import { token } from "../../components/RoleBasedRoute";
 import type { Stream } from "./listStream";
 import type { Course } from "./listCourse";
+import Select from "react-select";
+import type { Option } from "./createCourse";
+import { customStyles } from "../../components/courseFromFields";
 
 export const CreateUniversity = () => {
 
@@ -52,6 +55,15 @@ export const CreateUniversity = () => {
 
     if (loading) return <LoadingComponent />;
     if (error) return <ErrorComponent error={error} />;
+    const streamOptions: Option[] = stream.map((stm) => ({
+        label: stm.name,
+        value: stm._id,
+    }));
+
+    const courseOptions: Option[] = course.map((cou) => ({
+        label: cou.name,
+        value: cou._id,
+    }));
 
     return (
         <div className="container-fluid pt-5 d-flex justify-content-center align-items-center ">
@@ -63,66 +75,70 @@ export const CreateUniversity = () => {
                     validationSchema={UniversitySchema}
                     onSubmit={UniversityHandleSubmit}
                 >
-                    <Form id="UniversityForm">
-                        <div className="row">
-                            <div className="col">
-                                <InputFiled1 title="Name" type="text" id="name" placeholder="Enter University Name " />
-                                <InputFiled1 title="Address" type="text" id="address.address" placeholder="Enter address" />
-                                <InputFiled1 title="City" type="text" id="address.city" placeholder="Enter city" />
-                                <InputFiled1 title="State" type="text" id="address.state" placeholder="Enter state" />
-                                <InputFiled1 title="Country" type="text" id="address.country" placeholder="Enter country" />
-                                <InputFiled1 title="Pincode" type="number" id="address.pincode" placeholder="Enter pincode" />
-                            </div>
-                            <div className="col mt-3">
-                                <Preferencefield title="Need Job Placement" id1="jyes" id2="jno" labelHtmlFor="jobPlacement" />
-                                <Preferencefield title="Need Scholarship" id1="syes" id2="sno" labelHtmlFor="scholarship" />
-                                <Preferencefield title="Need Nearby University" id1="nyes" id2="nno" labelHtmlFor="nearbyUniversity" />
-                                <Preferencefield title="Need Transportation" id1="tyes" id2="tno" labelHtmlFor="transportation" />
-                                <Preferencefield title="Need Accommodation" id1="ayes" id2="ano" labelHtmlFor="accommodation" />
-
-                                <div className="mb-3">
-                                    <label className="form-label fw-semibold">Stream</label>
-                                    <div className="d-flex flex-wrap gap-2">
-                                        {stream.map((stm) => (
-                                            <CheckboxBtn
-                                                key={stm._id}
-                                                title={stm.name}
-                                                id={stm._id}
-                                                labelHtmlFor="stream"
-                                                value={stm._id}
-                                            />
-                                        ))}
-                                    </div>
-                                    <ErrorMessage name="stream" component="div" className="error" />
+                    {({ values, setFieldValue }) => (
+                        <Form id="UniversityForm">
+                            <div className="row">
+                                <div className="col">
+                                    <InputFiled1 title="Name" type="text" id="name" placeholder="Enter University Name " />
+                                    <InputFiled1 title="Address" type="text" id="address.address" placeholder="Enter address" />
+                                    <InputFiled1 title="City" type="text" id="address.city" placeholder="Enter city" />
+                                    <InputFiled1 title="State" type="text" id="address.state" placeholder="Enter state" />
+                                    <InputFiled1 title="Country" type="text" id="address.country" placeholder="Enter country" />
+                                    <InputFiled1 title="Pincode" type="number" id="address.pincode" placeholder="Enter pincode" />
                                 </div>
+                                <div className="col mt-3">
+                                    <Preferencefield title="Need Job Placement" id1="jyes" id2="jno" labelHtmlFor="jobPlacement" />
+                                    <Preferencefield title="Need Scholarship" id1="syes" id2="sno" labelHtmlFor="scholarship" />
+                                    <Preferencefield title="Need Nearby University" id1="nyes" id2="nno" labelHtmlFor="nearbyUniversity" />
+                                    <Preferencefield title="Need Transportation" id1="tyes" id2="tno" labelHtmlFor="transportation" />
+                                    <Preferencefield title="Need Accommodation" id1="ayes" id2="ano" labelHtmlFor="accommodation" />
 
+                                    <div className="mb-3">
+                                        <label className="form-label fw-semibold">Stream</label>
 
-                                <div className="mb-3">
-                                    <label className="form-label fw-semibold">Course</label>
-                                    <div className="d-flex flex-wrap gap-2">
-                                        {course.map((cou) => (
-                                            <CheckboxBtn
-                                                key={cou._id}
-                                                title={cou.name}
-                                                id={cou._id}
-                                                labelHtmlFor="course"
-                                                value={cou._id}
-                                            />
-                                        ))}
+                                        <Select
+                                            isMulti
+                                            name="stream"
+                                            options={streamOptions}
+                                            value={streamOptions.filter((opt) => values.stream.includes(opt.value))}
+                                            onChange={(selected) => {
+                                                setFieldValue("stream", selected.map((item: Option) => item.value));
+                                            }}
+                                            styles={customStyles}
+                                            classNamePrefix="coreui"
+                                            className="shadow-sm"
+                                        />
+                                        <ErrorMessage name="stream" component="div" className="error" />
                                     </div>
-                                    <ErrorMessage name="course" component="div" className="error" />
+
+
+                                    <div className="mb-3">
+                                        <label className="form-label fw-semibold">Course</label>
+                                        <Select
+                                            isMulti
+                                            options={courseOptions}
+                                            value={courseOptions.filter((opt) => values.course.includes(opt.value))}
+                                            onChange={(selected) => {
+                                                setFieldValue("course", selected.map((item: Option) => item.value));
+                                            }}
+                                            styles={customStyles}
+                                            classNamePrefix="coreui"
+                                            className="shadow-sm"
+                                        />
+                                        <ErrorMessage name="course" component="div" className="error" />
+                                    </div>
+
+
                                 </div>
-
-
                             </div>
-                        </div>
 
-                        <SubmitButton title="Create" />
-                        {/* <button type='submit' className="btn btn-outline-primary fw-semibold shadow-sm" onSubmit={() => navigate('/admin/create-feeCapacity')}>
+                            <SubmitButton title="Create" />
+                            {/* <button type='submit' className="btn btn-outline-primary fw-semibold shadow-sm" onSubmit={() => navigate('/admin/create-feeCapacity')}>
                             Create
                         </button> */}
-                        <Link to="/admin/university" className="btn btn-outline-primary m-2 fw-semibold shadow-sm">View University</Link>
-                    </Form>
+                            <Link to="/admin/university" className="btn btn-outline-primary m-2 fw-semibold shadow-sm">View University</Link>
+                        </Form>
+                    )}
                 </Formik>
             </div>
         </div>

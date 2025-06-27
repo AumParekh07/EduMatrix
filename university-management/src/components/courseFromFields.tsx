@@ -2,6 +2,7 @@
 import { Field, ErrorMessage } from "formik";
 import Select from "react-select";
 import type { Option } from "../pages/Admin/createCourse";
+import { InputFiled1 } from "./helperComponents";
 
 type Props = {
     subjectOptions: Option[];
@@ -13,6 +14,26 @@ type Props = {
     };
     setFieldValue: (field: string, value: any) => void;
 };
+export const customStyles = {
+    multiValue: (base: any) => ({
+        ...base,
+        backgroundColor: '#73cef8c9',
+        borderRadius: '17px',
+        padding: '2px 4px'
+    }),
+    multiValueLabel: (base: any) => ({
+        ...base,
+        fontWeight: '630',
+    }),
+    multiValueRemove: (base: any) => ({
+        ...base,
+        borderRadius: '17px',
+    }),
+    option: (base: any) => ({
+        ...base,
+        fontWeight: '530',
+    }),
+};
 
 export default function CourseFormFields({ subjectOptions, values, setFieldValue }: Props) {
     const compulsorySelected = subjectOptions.filter(opt =>
@@ -22,42 +43,13 @@ export default function CourseFormFields({ subjectOptions, values, setFieldValue
         values.subjects.optional.includes(opt.value)
     );
 
-    const customStyles = {
-        multiValue: (base: any) => ({
-            ...base,
-            backgroundColor: '#73cef8c9',
-            borderRadius: '17px',
-            padding: '2px 4px'
-        }),
-        multiValueLabel: (base: any) => ({
-            ...base,
-            fontWeight: '630',
-        }),
-        multiValueRemove: (base: any) => ({
-            ...base,
-            borderRadius: '17px',
-        }),
-        option: (base: any) => ({
-            ...base,
-            fontWeight: '530',
-        }),
-    };
 
     return (
         <>
             <div className="row">
                 <div className="col">
-                    <div className="mb-3">
-                        <label htmlFor="name" className="form-label fw-semibold">Name</label>
-                        <Field type="text" id="name" name="name" className="form-control shadow-sm" placeholder="Enter Course Name" />
-                        <ErrorMessage name="name" component="div" className="error" />
-                    </div>
-
-                    <div className="mb-3">
-                        <label htmlFor="fullname" className="form-label fw-semibold">Full Name</label>
-                        <Field type="text" id="fullname" name="fullname" className="form-control shadow-sm" placeholder="Enter Course Full Name" />
-                        <ErrorMessage name="fullname" component="div" className="error" />
-                    </div>
+                    <InputFiled1 title="Name" type="text" id="name" placeholder="Enter Course Name" />
+                    <InputFiled1 title="Full Name" type="text" id="fullname" placeholder="Enter Course Full Name" />
                 </div>
 
                 <div className="col">

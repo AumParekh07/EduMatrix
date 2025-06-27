@@ -202,6 +202,22 @@ export const createUniversityService = async (
   }
 };
 
+export const deleteUniversityService = async (id: string) => {
+  try {
+    const university = await UniversityModel.findById(id);
+
+    if (!university) {
+      throw new Error("University not found");
+    }
+
+    const deleteUniversity = await UniversityModel.findByIdAndDelete(id);
+
+    return deleteUniversity
+  } catch (error) {
+    throw error
+
+  }
+}
 
 export const createFeeCapacityService = async (
   fee: number,

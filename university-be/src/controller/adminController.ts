@@ -1,21 +1,15 @@
 import { Request, Response } from "express";
 import {
-  createCourseService, createFeeCapacityService,
-  createStreamService, createSubjectService,
-  createUniversityService, createUserGroupService,
-  deleteCourseService,
-  deleteStreamService,
-  deleteSubjectService,
-  updateCourseService,
-  updateStreamService,
+  createCourseService, createFeeCapacityService, createStreamService,
+  createSubjectService, createUniversityService, createUserGroupService,
+  deleteCourseService, deleteStreamService, deleteSubjectService,
+  deleteUniversityService, updateCourseService, updateStreamService,
   updateSubjectService,
 } from "../services/admin.services";
 
 import StreamModel from "../models/stream";
 import SubjectModel from "../models/subject";
 import CourseModel from "../models/course";
-import Joi from "joi";
-import { objectId } from "../validators/commenValidator";
 
 export const createUniversity = async (req: Request, res: Response) => {
   try {
@@ -338,6 +332,28 @@ export const deleteCourse = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: "Course Deleted",
+      data: result?.name || result
+    })
+  } catch (error) {
+    console.log("error: ", error);
+
+    res.status(400).json({
+      success: false,
+      message: `${error}`,
+    });
+  }
+}
+
+export const deleteUniversity = async (req: Request, res: Response) => {
+  try {
+
+    const { id } = req.params;
+
+    const result = await deleteUniversityService(id);
+
+    res.status(200).json({
+      success: true,
+      message: "University Deleted",
       data: result?.name || result
     })
   } catch (error) {
