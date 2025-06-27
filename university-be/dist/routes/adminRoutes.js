@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const adminController_1 = require("../controller/adminController");
+const validate_1 = require("../middlerware/validate");
+const admin_validator_1 = require("../validators/admin.validator");
+const auth_1 = require("../middlerware/auth");
+const permission_1 = require("../middlerware/permission");
+const router = express_1.default.Router();
+router.post("/create-university", auth_1.authenticateJWT, (0, permission_1.permission)("university", "create"), (0, validate_1.validateBody)(admin_validator_1.createUniversitySchema), adminController_1.createUniversity);
+router.post("/create-stream", auth_1.authenticateJWT, (0, permission_1.permission)("stream", "create"), (0, validate_1.validateBody)(admin_validator_1.createStreamSchema), adminController_1.createStream);
+router.post("/create-subject", auth_1.authenticateJWT, (0, permission_1.permission)("subject", "create"), (0, validate_1.validateBody)(admin_validator_1.createSubjectSchema), adminController_1.createSubject);
+router.post("/create-course", auth_1.authenticateJWT, (0, permission_1.permission)("course", "create"), (0, validate_1.validateBody)(admin_validator_1.createCourseSchema), adminController_1.createCourse);
+router.post("/create-feecapacity", auth_1.authenticateJWT, (0, permission_1.permission)("feecapacity", "create"), (0, validate_1.validateBody)(admin_validator_1.createFeeCapacitySchema), adminController_1.createFeeCapacity);
+router.post("/create-usergroup", auth_1.authenticateJWT, (0, permission_1.permission)("usergroup", "create"), adminController_1.createUserGroup);
+router.get("/get-streams", auth_1.authenticateJWT, (0, permission_1.permission)("stream", "view"), adminController_1.getStreams);
+router.get("/get-courses", auth_1.authenticateJWT, (0, permission_1.permission)("course", "view"), adminController_1.getCourses);
+router.get("/get-subjects", auth_1.authenticateJWT, (0, permission_1.permission)("subject", "view"), adminController_1.getSubjects);
+exports.default = router;

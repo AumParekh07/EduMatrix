@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const userController_1 = require("../controller/userController");
+const validate_1 = require("../middlerware/validate");
+const user_validator_1 = require("../validators/user.validator");
+const auth_1 = require("../middlerware/auth");
+const permission_1 = require("../middlerware/permission");
+const router = express_1.default.Router();
+router.post("/register", (0, validate_1.validateBody)(user_validator_1.createUserSchema), userController_1.createUser);
+router.post("/login", (0, validate_1.validateBody)(user_validator_1.loginUserSchema), userController_1.loginUser);
+router.post("/send-otp", (0, validate_1.validateBody)(user_validator_1.sendOtpSchema), userController_1.sendOtp);
+router.post("/verify-otp", (0, validate_1.validateBody)(user_validator_1.verifyOtpSchema), userController_1.verifyOtp);
+// router.get("/get-university", authenticateJWT, permission("university", "view"), getUniversities);
+router.get("/get-university", auth_1.authenticateJWT, (0, permission_1.permission)("university", "view"), userController_1.getAllUniversities);
+router.get("/get-university/:id", auth_1.authenticateJWT, (0, permission_1.permission)("university", "view"), userController_1.getUniversityByID);
+router.post("/get-university", auth_1.authenticateJWT, (0, permission_1.permission)("university", "view"), (0, validate_1.validateBody)(user_validator_1.getUniversitySchema), userController_1.getUniversityByPayload);
+exports.default = router;

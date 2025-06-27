@@ -1,0 +1,37 @@
+import { Link } from "react-router-dom"
+import { Form, Formik } from "formik"
+
+
+import { SubmitButton, InputFiled1 } from "../../components/helperComponents"
+import { LoginInitialValues, LoginSchema } from "../../helper/FormikValidation";
+import { LoginHandleSubmit } from "../../helper/SubmitHendle";
+
+
+export function Login() {
+    return (
+        <div className="container d-flex justify-content-center align-items-center vh-100">
+            {/* style={{ height: "calc(100vh - 57.6px)" }}> */}
+            <div className="card shadow-lg p-4 w-100  rounded-4" style={{ maxWidth: "350px" }} >
+                <h2 className="text-center mb-4 fw-bold text-primary" >Login</h2>
+                <Formik
+                    initialValues={LoginInitialValues}
+                    validationSchema={LoginSchema}
+                    onSubmit={LoginHandleSubmit}
+                >
+                    <Form id="LoginForm">
+                        <InputFiled1 title="Email" type="email" id="email" placeholder="Enter Your Email" />
+                        <InputFiled1 title="Password" type="password" id="password" placeholder="Enter Password" />
+                        <SubmitButton title="Login" />
+                        <Link to="/send-otp" className="btn btn-outline-primary fw-semibold shadow-sm align-items-center  m-2">Login With Otp</Link>
+
+                    </Form>
+
+                </Formik>
+                <p className="text-center mt-3 mb-0">
+                    Don't Have An Account?{" "}
+                    <Link to="/" className="fw-semibold">Register Here</Link>
+                </p>
+            </div>
+        </div>
+    )
+}

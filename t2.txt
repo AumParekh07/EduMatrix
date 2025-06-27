@@ -1,0 +1,159 @@
+import { Pencil, Trash2 } from "lucide-react";
+import FetchCardList from "../../components/commonCard";
+import ConfirmDeleteToast from "../../components/deleteToast";
+
+export type Stream = {
+    _id: string;
+    name: string;
+};
+
+export function AdminStreams() {
+    const handleDelete = (stream: Stream, refetch: () => void) => {
+        ConfirmDeleteToast({
+            name: stream.name,
+            id: stream._id,
+            apiPath: "delete-stream",
+            toastId: 'delete stream',
+            refetch,
+        });
+    };
+    return (
+
+        <FetchCardList<Stream>
+            title="All Streams"
+            addLabel="Stream"
+            addPath="/admin/create-stream"
+            apiUrl="get-streams"
+            totalLabel="Total Stream"
+            renderItem={(stream, refetch) => (
+                <div key={stream._id} className="col-md-4 mb-3">
+                    <div className="card shadow" style={{ backgroundColor: "#e4eaf2" }}>
+                        <div className="card-body">
+                            <div className="card-title  justify-content-between d-flex" >
+                                <h5 className="mb-0">{stream.name}</h5>
+                                <div>
+                                    <Pencil className="btn p-0 me-2" />
+                                    <Trash2 className="btn p-0" onClick={() => handleDelete(stream, refetch)} />
+                                </div>
+                            </div>
+                            <p className="card-text small"><strong>ID:</strong> {stream._id}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+        />
+    );
+}
+
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
+
+import { LoadingComponent, ErrorComponent } from "./helperComponents";
+import { token } from "./RoleBasedRoute";
+
+type FetchCardListProps<T> = {
+    title: string;
+    addLabel: string;
+    addPath: string;
+    apiUrl: string;
+    renderItem: (item: T, refetch: () => void) => React.ReactNode;
+    totalLabel: string;
+};
+
+function FetchCardList<T>({
+    title,
+    addLabel,
+    addPath,
+    apiUrl,
+    renderItem,
+    totalLabel,
+}: FetchCardListProps<T>) {
+    const [items, setItems] = useState<T[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [reload, setReload] = useState(false);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`http://localhost:3000/api/v1/admin/${apiUrl}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setItems(res.data.data);
+        } catch (err: any) {
+            setError(err.response?.data?.message || err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+
+    }, [apiUrl, reload]);
+
+    if (loading) return <LoadingComponent />;
+    if (error) return <ErrorComponent error={error} />;
+
+    return (
+        <div className="container card p-4 pb-0 my-4">
+            <div className="card-header justify-content-between d-flex">
+                <h2 className="mb-0">{title}</h2>
+                <Link to={addPath} className="btn btn-outline-primary fw-semibold shadow-sm">
+                    <Plus style={{ marginTop: "-4.5px", marginLeft: "-6px" }} /> {addLabel}
+                </Link>
+            </div>
+            <div className="row card-body justify-content-center">
+                {items.map((item) => renderItem(item, () => setReload(!reload)))}
+            </div>
+            <p className="text-center card-footer">{totalLabel}: {items.length}</p>
+        </div>
+    );
+}
+
+export default FetchCardList;
+
+import { Link } from "react-router-dom";
+import { Form, Formik } from "formik";
+
+import { StreamInitialValues, streamSchema } from "../../helper/FormikValidation";
+import { InputFiled1, SubmitButton } from "../../components/helperComponents";
+import { StreamHandleSubmit } from "../../helper/SubmitHendle";
+
+export const CreateStream = () => {
+    return (
+        <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
+            {/* style={{ height: "calc(100vh - 57.6px)" }}> */}
+            <div className=" card shadow-lg p-4 w-100 rounded-4 " style={{ maxWidth: "350px" }}>
+                <h2 className="text-center mb-4 fw-bold text-primary">Create Stream</h2>
+                <Formik initialValues={StreamInitialValues}
+                    validationSchema={streamSchema}
+                    onSubmit={StreamHandleSubmit}>
+                    <Form id="StreamForm">
+                        <InputFiled1 title="Name" type="text" id="name" placeholder="Enter Stream Name" />
+                        <SubmitButton title="Create" type="submit" />
+                        <Link to="/admin/stream" className="btn btn-outline-primary m-2 fw-semibold shadow-sm">
+                            View Stream
+                        </Link>
+                    </Form>
+                </Formik>
+            </div>
+        </div>
+    );
+};
+
+
+export function InputFiled1({ title, type, id, placeholder }: { title: string; type: string; id: string; placeholder: string }) {
+    return (
+        <div className="mb-3">
+            <label htmlFor={id} className="form-label fw-semibold">
+                {title}
+            </label>
+            <Field type={type} id={id} name={id} className="form-control shadow-sm" placeholder={placeholder} />
+            <ErrorMessage name={id} component="div" className="error" />
+        </div>
+    );
+}

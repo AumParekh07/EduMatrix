@@ -1,0 +1,263 @@
+export function UniversityList() {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = searchParams.get("page") || "1";
+    const pageSize = searchParams.get("pageSize") || "2";
+
+    const [universities, setUniversities] = useState<University[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [totalData, setTotalData] = useState(0);
+    const [filters, setFilters] = useState({
+        jobPlacement: false,
+        scholarship: false,
+        nearbyUniversity: false,
+        transportation: false,
+        accommodation: false,
+    });
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2500);
+        }
+
+        // Build query string from filters
+        const query = new URLSearchParams({
+            page,
+            pageSize,
+            ...Object.fromEntries(
+                Object.entries(filters).filter(([_, v]) => v === true)
+            ),
+        }).toString();
+
+        axios
+            .get(`http://localhost:3000/api/v1/get-university?${query}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                setUniversities(response.data.data);
+                setTotalData(response.data.pagination.TotalData);
+                setSearchParams(query);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.response?.data?.message || err.message);
+                errorToast(err.response?.data?.message);
+                setLoading(false);
+            });
+    }, [page, pageSize, filters, setSearchParams]);
+
+
+    if (loading) return <LoadingComponent />;
+    if (error) return <ErrorComponent error={error} />;
+
+    const totalPages = Math.ceil(totalData / parseInt(pageSize));
+
+    return (
+        <div className="container pt-5 d-flex justify-content-center align-items-center">
+            <div className="card shadow p-4 w-100" style={{ maxWidth: "1050px" }}>
+                <h1 className="card-header fw-bold text-center">University</h1>
+
+                <div className="card-body pb-0">
+
+
+                    <div className="mb-4 d-flex flex-wrap gap-3 justify-content-center">
+                        {Object.entries(filters).map(([key, value]) => (
+                            <label key={key} className="form-check-label text-capitalize">
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input me-1"
+                                    checked={value}
+                                    onChange={() =>
+                                        setFilters((prev) => ({ ...prev, [key]: !prev[key as keyof typeof prev] }))
+                                    }
+                                />
+                                {key.replace(/([A-Z])/g, ' $1')}
+                            </label>
+                        ))}
+                    </div>
+
+
+
+                    <ul className="list-inline">
+                        <div>
+                            {universities.length === 0 && <p className="text-center text-danger">No universities match the selected filters.</p>}
+                            {universities.map((uni) => (
+                                <Link to={`/university/${uni._id}`} className="text-decoration-none text-center">
+                                    <li className="card shadow p-3 m-3" key={uni._id} style={{ backgroundColor: "#e4eaf2" }}>
+                                        <strong className="card-title">{uni.name}</strong> — {uni.address.address}, {uni.address.city}, {uni.address.state}, {uni.address.country}, {uni.address.pincode}
+                                        <div className="mt-2">
+                                            <strong>Stream:</strong>
+                                            <ul className="list-inline">
+                                                {uni.stream.map((stream) => (
+                                                    <li key={stream._id} className="list-inline-item">
+                                                        ● {stream.name}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div className="d-flex flex-wrap justify-content-center gap-2 mt-2">
+                                            <Facilities university={uni} />
+                                        </div>
+                                    </li>
+                                </Link>
+                            ))}
+                        </div>
+                    </ul>
+
+
+                </div>
+                <div className="card-footer d-flex justify-content-between">
+                    <button
+                        className="btn btn-outline-primary"
+                        onClick={() => {
+                            const newPage = parseInt(page) - 1;
+                            if (newPage > 0) {
+                                setSearchParams({
+                                    page: newPage.toString(),
+                                    pageSize,
+                                    ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v === true)),
+                                });
+                            }
+                        }}
+                        disabled={parseInt(page) <= 1}
+                    >
+                        Previous
+                    </button>
+                    <span className="align-self-center">Page {page} of {totalPages}</span>
+                    <button
+                        className="btn btn-outline-primary"
+                        onClick={() => {
+                            const newPage = parseInt(page) + 1;
+                            if (newPage <= totalPages) {
+                                setSearchParams({
+                                    page: newPage.toString(),
+                                    pageSize,
+                                    ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v === true)),
+                                });
+                            }
+                        }}
+                        disabled={parseInt(page) >= totalPages}
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+
+import React, { useState, useEffect } from 'react';
+import { Moon, Sun } from 'lucide-react';
+
+function DarkModeToggle() {
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme === 'dark' || 
+      (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  return (
+    <button
+      onClick={() => setIsDarkMode(!isDarkMode)}
+      className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 transition-colors"
+      aria-label="Toggle dark mode"
+    >
+      {isDarkMode ? (
+        <Sun className="h-5 w-5 text-yellow-500" />
+      ) : (
+        <Moon className="h-5 w-5 text-blue-500" />
+      )}
+    </button>
+  );
+}
+
+
+
+
+
+
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+
+function AdminSidebar() {
+    const [collapsed, setCollapsed] = useState(false);
+
+    const toggleSidebar = () => {
+        setCollapsed(!collapsed);
+    };
+
+    return (
+        <div className={`d-flex flex-column bg-light border-end vh-100 position-fixed ${collapsed ? 'collapsed-sidebar' : 'expanded-sidebar'}`} style={{ width: collapsed ? '60px' : '250px', transition: 'width 0.3s' }}>
+            <div className="d-flex align-items-center justify-content-between p-3 border-bottom">
+                <span className={`fs-5 fw-bold ${collapsed ? 'd-none' : ''}`}>Admin Panel</span>
+                <button className="btn btn-sm btn-outline-secondary" onClick={toggleSidebar} aria-label="Toggle sidebar">
+                    {collapsed ? '»' : '«'}
+                </button>
+            </div>
+            <nav className="flex-grow-1">
+                <ul className="nav flex-column">
+                    <li className="nav-item">
+                        <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} title="Dashboard">
+                            <i className="bi bi-speedometer2"></i>
+                            {!collapsed && <span className="ms-2">Dashboard</span>}
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/admin/university" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} title="University Management">
+                            <i className="bi bi-building"></i>
+                            {!collapsed && <span className="ms-2">University Management</span>}
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/admin/course" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} title="Course Management">
+                            <i className="bi bi-journal-bookmark"></i>
+                            {!collapsed && <span className="ms-2">Course Management</span>}
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/admin/stream" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} title="Stream Management">
+                            <i className="bi bi-kanban"></i>
+                            {!collapsed && <span className="ms-2">Stream Management</span>}
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/admin/subject" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} title="Subject Management">
+                            <i className="bi bi-book"></i>
+                            {!collapsed && <span className="ms-2">Subject Management</span>}
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/admin/create-stream" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} title="Create Stream">
+                            <i className="bi bi-plus-circle"></i>
+                            {!collapsed && <span className="ms-2">Create Stream</span>}
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/admin/create-subject" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} title="Create Subject">
+                            <i className="bi bi-plus-circle"></i>
+                            {!collapsed && <span className="ms-2">Create Subject</span>}
+                        </NavLink>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    );
+}
+
+export default AdminSidebar;

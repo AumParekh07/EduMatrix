@@ -1,0 +1,23 @@
+[
+  {
+    "role": "student",
+    "module_permission": {
+      "enroll_course": ["view", "delete"],
+      "university": ["view"],
+      "stream": ["view"],
+      "course": ["view"],
+      "subject": ["view"]
+    }
+  },
+
+  {
+    "role": "admin",
+    "module_permission": {
+      "enroll_course": ["view"],
+      "university": ["view", "create", "update", "delete"],
+      "stream": ["view", "create", "update", "delete"],
+      "course": ["view", "create", "update", "delete"],
+      "subject": ["view", "create", "update", "delete"]
+    }
+  }
+]

@@ -1,0 +1,13 @@
+university-management/node_modules
+university-management/package-lock.json
+
+university-be/.env
+university-be/node_modules
+university-be/package-lock.json
+
+
+university-be/text.txt
+
+university-management/filter.tsx
+university-management/t2.txt
+university-management/text.txt

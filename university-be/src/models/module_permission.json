@@ -1,0 +1,25 @@
+[
+  {
+    "module_name": "enrollCourse",
+    "permission": ["view", "create", "update", "delete"]
+  },
+
+  {
+    "module_name": "university",
+    "permission": ["view", "create", "update", "delete"]
+  },
+  {
+    "module_name": "subject",
+    "permission": ["view", "create", "update", "delete"]
+  },
+
+  {
+    "module_name": "stream",
+    "permission": ["view", "create", "update", "delete"]
+  },
+
+  {
+    "module_name": "course",
+    "permission": ["view", "create", "update", "delete"]
+  }
+]
