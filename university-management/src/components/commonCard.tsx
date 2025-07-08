@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 
@@ -47,13 +47,8 @@ function FetchCardList<T>({
         }
     };
 
-    const hasFetched = useRef(false);
-
     useEffect(() => {
-        if (!hasFetched.current) {
-            hasFetched.current = true;
-            fetchData();
-        }
+        fetchData();
     }, [apiEndPoint, reload]);
 
     if (loading) return <LoadingComponent />;

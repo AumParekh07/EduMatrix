@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { enrollCourseService, getstudentDetailService, studentDetailService } from "../services/student.services";
+import { enrollCourseService, getstudentDetailService, studentDetailService, updateStdDetailService } from "../services/student.services";
 // import { type AuthenticatedRequest } from "../middlerware/auth";
 
 export const studentDetail = async (req: Request, res: Response) => {
@@ -27,6 +27,7 @@ export const studentDetail = async (req: Request, res: Response) => {
         });
     }
 }
+
 export const getStudentDetail = async (req: Request, res: Response) => {
     try {
         const userId = res.locals.userId;
@@ -42,6 +43,26 @@ export const getStudentDetail = async (req: Request, res: Response) => {
     } catch (error) {
         console.log("error: ", error);
 
+        res.status(400).json({
+            success: false,
+            message: `${error}`,
+        });
+    }
+}
+
+export const updateStdDetail = async (req: Request, res: Response) => {
+    try {
+        const userId = res.locals.userId;
+        const { gender, birthDate, stream, address, preference } = req.body
+        const result = await updateStdDetailService(userId, gender, birthDate, stream, address, preference)
+
+        res.status(201).json({
+            success: true,
+            message: `Your Data Updated Successfully`,
+            Student: result
+        })
+    } catch (error) {
+        console.log("error: ", error);
         res.status(400).json({
             success: false,
             message: `${error}`,

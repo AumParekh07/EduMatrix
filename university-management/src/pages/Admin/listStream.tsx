@@ -1,13 +1,11 @@
-import { Pencil, Trash2 } from "lucide-react";
-import FetchCardList from "../../components/commonCard";
-import ConfirmDeleteToast from "../../components/deleteToast";
 import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+
+import FetchCardList from "../../components/commonCard";
 import EditModal from "../../components/editModal";
-import StreamFormFields from "../../components/streamFromFields";
+import StreamFormFields from "../../components/FormFields/streamFormFields";
 import { streamSchema } from "../../helper/FormikValidation";
-import { apiCall } from "../../api/apiCaller";
-import { errorToast, successToast } from "../../helper/helperToast";
-import type { FormikValues } from "formik";
+import DeleteModal from "../../components/deletModal";
 
 export type Stream = {
     _id: string;
@@ -16,24 +14,9 @@ export type Stream = {
 
 export function AdminStreams() {
     const [selectedStream, setSelectedStream] = useState<Stream | null>(null);
-    const [showModal, setShowModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [reload, setReload] = useState(false);
-
-    async function handleEdit(values: FormikValues) {
-        try {
-            const respons = await apiCall({
-                method: "put",
-                url: `/admin/update-stream/${selectedStream?._id}`,
-                data: values
-            })
-            successToast(respons?.message)
-        } catch (error: any) {
-            errorToast(error || "Failed to fetch data");
-        }
-        triggerRefetch();
-        setShowModal(false);
-    };
-
     const triggerRefetch = () => setReload((prev) => !prev);
 
     return (
@@ -55,15 +38,13 @@ export function AdminStreams() {
                                         <Pencil className="btn p-0 me-2"
                                             onClick={() => {
                                                 setSelectedStream(stream);
-                                                setShowModal(true)
+                                                setShowEditModal(true)
                                             }} />
                                         <Trash2 className="btn p-0"
-                                            onClick={() => ConfirmDeleteToast({
-                                                name: stream.name,
-                                                apiPath: `delete-stream/${stream._id}`,
-                                                toastId: 'delete stream',
-                                                refetch: triggerRefetch,
-                                            })} />
+                                            onClick={() => {
+                                                setSelectedStream(stream);
+                                                setShowDeleteModal(true)
+                                            }} />
                                     </div>
                                 </div>
                                 <p className="card-text small"><strong>ID:</strong> {stream._id}</p>
@@ -74,17 +55,27 @@ export function AdminStreams() {
             />
 
             {selectedStream && (
-                <EditModal
-                    title="Edit Stream"
-                    show={showModal}
-                    onHide={() => setShowModal(false)}
-                    initialValues={{ name: selectedStream.name }}
-                    validationSchema={streamSchema}
-                    onSubmit={handleEdit}
-                    size="sm"
-                >
-                    {() => <StreamFormFields />}
-                </EditModal>
+                <>
+                    <EditModal
+                        title="Edit Stream"
+                        show={showEditModal}
+                        onHide={() => setShowEditModal(false)}
+                        initialValues={{ name: selectedStream.name }}
+                        validationSchema={streamSchema}
+                        apiPath={`/admin/update-stream/${selectedStream._id}`}
+                        reload={triggerRefetch}
+                        size="sm" >
+                        {() => <StreamFormFields />}
+                    </EditModal>
+
+                    <DeleteModal
+                        title="Delete Stream"
+                        name={selectedStream.name}
+                        apiPath={`delete-stream/${selectedStream._id}`}
+                        show={showDeleteModal}
+                        onHide={() => setShowDeleteModal(false)}
+                        reload={triggerRefetch} />
+                </>
             )}
         </>
     );

@@ -2,6 +2,7 @@ import { Field, ErrorMessage } from "formik";
 import { ChevronLeft } from "lucide-react";
 
 import type { University } from "../pages/Student/UniversityList";
+import { useNavigate } from "react-router-dom";
 
 
 export function SubmitButton({ title }: { title: string }) {
@@ -12,13 +13,13 @@ export function SubmitButton({ title }: { title: string }) {
     );
 }
 
-export function InputFiled1({ title, type, id, placeholder }: { title: string; type: string; id: string; placeholder: string }) {
+export function InputFiled1({ title, type, id, placeholder, min }: { title: string; type: string; id: string; placeholder: string, min?: string }) {
     return (
         <div className="mb-3">
             <label htmlFor={id} className="form-label fw-semibold">
                 {title}
             </label>
-            <Field type={type} id={id} name={id} className="form-control shadow-sm" placeholder={placeholder} />
+            <Field type={type} id={id} name={id} min={min} className="form-control shadow-sm" placeholder={placeholder} />
             <ErrorMessage name={id} component="div" className="error" />
         </div>
     );
@@ -27,7 +28,7 @@ export function InputFiled1({ title, type, id, placeholder }: { title: string; t
 export function Preferencefield({ title, id1, id2, labelHtmlFor }: { labelHtmlFor: string, title: string, id1: string, id2: string }) {
     return (
         <div className="mb-2 ">
-            <label htmlFor={labelHtmlFor} className="form-label fw-semibold">{title}</label>
+            <span className="form-label fw-semibold">{title}</span>
             <div className="btn-group btn-group-sm form-check " role="group" aria-label="Basic radio toggle button group">
 
                 <Field type="radio" className="btn-check " name={labelHtmlFor} id={id1} value="true" />
@@ -56,24 +57,27 @@ export function CheckboxBtn({ labelHtmlFor, id, title, value, disabled = false }
 }
 
 // import {DotLottieReact} from '@lottiefiles/dotlottie-react';
-export function LoadingComponent() {
+export function LoadingComponent({ h = true }: { h?: boolean }) {
     return (
-        <div className="d-flex justify-content-center  align-items-center" style={{ height: "calc(100vh - 57.6px)" }}>
+        <div className="d-flex justify-content-center  align-items-center" style={{ height: `${h ? 'calc(100vh - 57.6px)' : ''}` }}>
             <div className="loader" id="otp-loader"></div>
         </div>
 
         // <DotLottieReact
         //     style={{ height: "calc(100vh - 57.6px)" }}
         //     src="https://lottie.host/af4641be-02b0-4c6a-a26b-ea4a2779f2ac/yM8keXXIg3.lottie"
-        //     loop
+        //     loop 
         //     autoplay
         // />
     );
 }
 
-export function ErrorComponent({ error }: { error: string }) {
+export function ErrorComponent({ error, hw = true }: { error: string, hw?: boolean }) {
     return (
-        <div className="d-flex justify-content-center align-items-center " style={{ minWidth: "800px", margin: "0 auto", height: "calc(100vh - 57.6px)" }}>
+        <div
+            className="d-flex justify-content-center align-items-center z-1"
+            style={hw ? { margin: "0 auto", height: "calc(100vh - 57.6px)" } : {}}
+        >
             <div className="border border-3 rounded-3 border-danger bg-white bg-opacity-50 p-4 text-center">
                 <h2 className="fw-bold  p-1" style={{ color: "red" }}>{error}</h2>
 
@@ -83,18 +87,15 @@ export function ErrorComponent({ error }: { error: string }) {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
 
-const redirectBack = () => {
-    window.history.back();
-}
-
 export function BackButton() {
+    const navigate = useNavigate();
     return (
-        <button onClick={redirectBack} className="btn btn-primary align-items-center m-2 fw-semibold shadow-sm">
+        <button onClick={() => navigate(-1)} className="btn btn-primary align-items-center m-2 fw-semibold shadow-sm">
             <ChevronLeft style={{ marginTop: '-3px', marginLeft: '-7px' }} />Back
         </button>
     );

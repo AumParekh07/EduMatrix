@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Form, Formik } from "formik";
 
 
@@ -7,6 +7,8 @@ import { InputFiled1, SubmitButton } from '../../components/helperComponents';
 import { RegisterHandleSubmit } from "../../helper/SubmitHendle";
 
 export function Register() {
+    const navigate = useNavigate();
+
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100 ">
             <div className="card shadow-lg p-4 w-100 rounded-4" style={{ maxWidth: "350px", }} >
@@ -14,7 +16,7 @@ export function Register() {
                 <Formik
                     initialValues={RegisterInitialValues}
                     validationSchema={RegisterSchema}
-                    onSubmit={RegisterHandleSubmit}
+                    onSubmit={(...arg) => RegisterHandleSubmit(...arg, navigate)}
                 >
                     <Form id="registerForm">
                         <InputFiled1 title="Full Name" type="text" id="name" placeholder="Enter your full name" />

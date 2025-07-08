@@ -2,8 +2,8 @@ import { Slide, toast } from "react-toastify";
 
 export const successToast = (message: string) => {
     toast.success(message || "Successful!", {
-        position: 'top-center',
-        autoClose: 2500,
+        position: 'top-right',
+        autoClose: 3500,
         hideProgressBar: true,
         closeOnClick: false,
         pauseOnHover: true,
@@ -15,7 +15,7 @@ export const successToast = (message: string) => {
 export const errorToast = (message: string, toastId?: string) => {
     toast.error(message || "Error Occurred.Please Try Again Later!", {
         position: "top-right",
-        autoClose: 2500,
+        autoClose: 3500,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,

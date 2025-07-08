@@ -4,8 +4,11 @@ import { Form, Formik } from "formik"
 import { SubmitButton, InputFiled1 } from "../../components/helperComponents"
 import { verifyOtpInitialValues, verifyOtpSchema } from "../../helper/FormikValidation";
 import { VerifyOtpHandleSubmit } from "../../helper/SubmitHendle";
+import { useNavigate } from "react-router-dom";
 
 export function VerifyOtp() {
+    const navigate = useNavigate();
+
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
             <div className=" card shadow-lg p-4 w-75 rounded-4" style={{ maxWidth: "350px" }} >
@@ -13,7 +16,7 @@ export function VerifyOtp() {
                 <Formik
                     initialValues={verifyOtpInitialValues}
                     validationSchema={verifyOtpSchema}
-                    onSubmit={VerifyOtpHandleSubmit}
+                    onSubmit={(...arg) => VerifyOtpHandleSubmit(...arg, navigate)}
                 >
                     <Form id="LoginForm">
                         {/* <InputFiled1 title="Email" type="email" id="email" placeholder="Enter Your Email" /> */}

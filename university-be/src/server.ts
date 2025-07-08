@@ -26,7 +26,7 @@ app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/student", studentRoutes)
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("SERVER  IS  Running");
+  res.send("<h2 style='color:deepskyblue'>SERVER  IS  Running </h2>");
 });
 
 connectDB();

@@ -5,16 +5,13 @@ import Joi from "joi";
 import {
   createUserService,
   getAllUniversityService,
-  // getUniversityService,
   getUniversityByIDService,
-  getUniversityByPayloadService,
   loginUserService,
   sendOtpService,
   verifyOtpService,
 } from "../services/user.services";
 
 // import { AuthenticatedRequest } from "../middlerware/auth";
-import { objectId, objectIdPattern } from "../validators/commenValidator";
 
 
 dotenv.config();
@@ -108,41 +105,6 @@ export const verifyOtp = async (req: Request, res: Response) => {
 };
 
 
-//filter by payload
-export const getUniversityByPayload = async (req: Request, res: Response) => {
-  try {
-    const { page, pageSize } = req.query;
-
-    const userId = res.locals.userId;
-
-    // const { userId } = (req as AuthenticatedRequest).user!;
-
-    const { jobPlacement, scholarship, nearbyUniversity, transportation, accommodation } = req.body
-
-
-    const pageNumber = parseInt(page as string, 10) || 1;
-    const pageLimit = parseInt(pageSize as string, 10) || 2;
-
-
-    const result = await getUniversityByPayloadService(userId, pageNumber, pageLimit, jobPlacement,
-      scholarship, nearbyUniversity, transportation, accommodation);
-
-    res.status(200).json({
-      success: true,
-      message: "Universities fetched successfully",
-      pagination: { TotalData: result.totalUniversities, PageNo: page, PageLimit: pageSize },
-      data: result.universities
-    })
-  } catch (error) {
-    console.log("error: ", error);
-    res.status(400).json({
-      success: false,
-      message: `${error}`,
-    });
-  }
-
-}
-
 export const getAllUniversities = async (req: Request, res: Response) => {
   try {
     const { page, pageSize, jobPlacement, scholarship, nearbyUniversity, transportation, accommodation } = req.query;
@@ -208,47 +170,3 @@ export const getUniversityByID = async (req: Request, res: Response) => {
 
   }
 }
-
-//University by student preference
-// export const getUniversities = async (req: Request, res: Response) => {
-//   try {
-//     const { page, pageSize } = req.query;
-//     const userId = res.locals.userId;
-
-//     // const { userId } = (req as AuthenticatedRequest).user!;
-
-//     const schema = Joi.object({
-//     page: Joi.string().pattern(/^\d$/).required(),
-//     pageSize: Joi.string().pattern(/^\d$/).required(),
-//     })
-
-//     await schema.validateAsync({ page, pageSize })
-
-//     const pageNumber = parseInt(page as string, 10) || 1;
-//     const pageLimit = parseInt(pageSize as string, 10) || 2;
-
-//     const result = await getUniversityService(pageNumber, pageLimit, userId);
-//     res.status(200).json({
-//       success: true,
-//       message: "Universities fetched successfully",
-//       pagination: { TotalData: result.totalUniversities, PageNo: page, PageLimit: pageSize },
-//       data: result.universities
-
-//       // data: {
-//       //   metadata: { totalcount: result[0].metadata[0].totalCount, pageNumber, pageLimit },
-//       //   University: result[0].data
-//       // }
-
-//     });
-//   } catch (error) {
-//     console.log("error: ", error);
-//     res.status(400).json({
-//       success: false,
-//       message: `${error}`,
-//     });
-//   }
-// };
-
-
-
-

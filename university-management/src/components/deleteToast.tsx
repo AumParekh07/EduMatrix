@@ -7,10 +7,10 @@ type ConfirmToastProps = {
     name: string;
     apiPath: string;
     toastId: string;
-    refetch: () => void;
+    reload: () => void;
 };
 
-function ConfirmDeleteToast({ name, apiPath, toastId, refetch }: ConfirmToastProps) {
+function ConfirmDeleteToast({ name, apiPath, toastId, reload }: ConfirmToastProps) {
     toast(
         ({ closeToast }) => (
             <div>
@@ -30,10 +30,10 @@ function ConfirmDeleteToast({ name, apiPath, toastId, refetch }: ConfirmToastPro
                                 })
                                 closeToast();
                                 successToast(`${name} Deleted Successfully`)
-                                refetch();
+                                reload();
                             } catch (err: any) {
-                                errorToast(err.response?.data?.message || "Delete failed");
-                                refetch();
+                                errorToast(err || "Delete failed");
+                                reload();
                             }
                         }}
                     >
@@ -49,7 +49,6 @@ function ConfirmDeleteToast({ name, apiPath, toastId, refetch }: ConfirmToastPro
             closeButton: false,
             transition: Slide,
             toastId: toastId,
-
         }
     );
 }

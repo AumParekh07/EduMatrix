@@ -5,16 +5,15 @@ import {
   getStreams, getCourses, getSubjects, createUserGroup,
   deleteStream, deleteSubject, deleteCourse,
   updateStream, updateSubject, updateCourse,
-  deleteUniversity
+  deleteUniversity,
+  updateUniversity
 } from "../controller/adminController";
 import {
   createCourseSchema, createFeeCapacitySchema,
   createStreamSchema, createSubjectSchema, createUniversitySchema,
-  deleteSchema
 } from "../validators/admin.validator";
 import { authenticateJWT } from "../middlerware/auth";
 import { permission } from "../middlerware/permission";
-// import { validateParams } from "../middlerware/validateParams";
 import { idParamSchema } from "../validators/commenValidator";
 import { validateInput } from "../middlerware/validator";
 
@@ -34,6 +33,7 @@ router.get("/get-subjects", authenticateJWT, permission("subject", "view"), getS
 router.put("/update-stream/:id", authenticateJWT, permission("stream", "update"), validateInput(idParamSchema, 'params'), validateInput(createStreamSchema, 'body'), updateStream);
 router.put("/update-subject/:id", authenticateJWT, permission("subject", "update"), validateInput(idParamSchema, 'params'), validateInput(createSubjectSchema, 'body'), updateSubject);
 router.put("/update-course/:id", authenticateJWT, permission("course", "update"), validateInput(idParamSchema, 'params'), validateInput(createCourseSchema, 'body'), updateCourse);
+router.put("/update-university/:id", authenticateJWT, permission("university", "update"), validateInput(idParamSchema, 'params'), validateInput(createUniversitySchema, 'body'), updateUniversity);
 
 
 router.delete('/delete-stream/:id', authenticateJWT, permission("stream", "delete"), validateInput(idParamSchema, 'params'), deleteStream)

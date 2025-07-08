@@ -5,6 +5,7 @@ import {
   deleteCourseService, deleteStreamService, deleteSubjectService,
   deleteUniversityService, updateCourseService, updateStreamService,
   updateSubjectService,
+  updateUniversityService,
 } from "../services/admin.services";
 
 import StreamModel from "../models/stream";
@@ -15,15 +16,31 @@ export const createUniversity = async (req: Request, res: Response) => {
   try {
     const { name, jobPlacement, scholarship,
       nearbyUniversity, transportation,
-      accommodation, address, stream, course } = req.body;
+      accommodation, address, stream, course, courseDetails } = req.body;
 
-    const result = await createUniversityService(name.trim(), jobPlacement, scholarship,
+    const university = await createUniversityService(name.trim(), jobPlacement, scholarship,
       nearbyUniversity, transportation, accommodation, address, stream, course);
+
+    // fee and capacity per course
+    const insertedFeeCaps = await Promise.all(
+      course.map(async (courseId: string) => {
+        const detail = courseDetails[courseId];//fee,capacity
+        const mongoose = require("mongoose");
+        const feecapacity = await createFeeCapacityService(
+          detail.fee,
+          detail.capacity,
+          new mongoose.Types.ObjectId(university?._id),
+          new mongoose.Types.ObjectId(courseId)
+        );
+        return feecapacity
+      })
+    );
 
     res.status(201).json({
       success: true,
       message: "University Created",
-      University: result,
+      University: university,
+      feecapacity: insertedFeeCaps
     });
 
   } catch (error) {
@@ -212,13 +229,9 @@ export const updateStream = async (req: Request, res: Response) => {
 
     const result = await updateStreamService(id, name);
 
-
-    if (!result) {
-      throw new Error("Stream not found");
-    }
     res.status(201).json({
       success: true,
-      message: `${result?.name} Updated`,
+      message: `${result?.name} Updated Successfully`,
       Stream: result?.name,
     });
   } catch (error) {
@@ -238,13 +251,10 @@ export const updateSubject = async (req: Request, res: Response) => {
 
     const result = await updateSubjectService(id, name, fullname);
 
-    if (!result) {
-      throw new Error("Subject not found");
-    }
     res.status(201).json({
       success: true,
-      message: `${result?.name} Updated`,
-      Stream: result?.name,
+      message: `${result?.name} Updated Successfully`,
+      Subject: result?.name,
     });
   } catch (error) {
     console.log("error: ", error);
@@ -264,8 +274,34 @@ export const updateCourse = async (req: Request, res: Response) => {
     const result = await updateCourseService(id, name, fullname, courseType, subjects)
     res.status(201).json({
       success: true,
-      message: `${result?.name} Updated`,
-      Stream: result?.name,
+      message: `${result?.name} Updated Successfully`,
+      Course: result?.name,
+    });
+  } catch (error) {
+    console.log("error: ", error);
+
+    res.status(400).json({
+      success: false,
+      message: `${error}`,
+    });
+  }
+}
+
+export const updateUniversity = async (req: Request, res: Response) => {
+  try {
+
+    const { id } = req.params;
+    const { name, jobPlacement, scholarship,
+      nearbyUniversity, transportation,
+      accommodation, address, stream, course } = req.body;
+
+    const result = await updateUniversityService(id, name, jobPlacement, scholarship,
+      nearbyUniversity, transportation, accommodation, address, stream, course);
+
+    res.status(201).json({
+      success: true,
+      message: `${result?.name} Updated Successfully`,
+      University: result,
     });
   } catch (error) {
     console.log("error: ", error);
@@ -287,7 +323,7 @@ export const deleteStream = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "Stream Deleted",
+      message: `${result?.name} Deleted Successfully`,
       data: result?.name || result
     })
   } catch (error) {
@@ -309,7 +345,7 @@ export const deleteSubject = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "Subject Deleted",
+      message: `${result?.name} Deleted Successfully`,
       data: result?.name || result
     })
   } catch (error) {
@@ -331,7 +367,7 @@ export const deleteCourse = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "Course Deleted",
+      message: `${result?.name} Deleted Successfully`,
       data: result?.name || result
     })
   } catch (error) {
@@ -353,7 +389,7 @@ export const deleteUniversity = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "University Deleted",
+      message: `${result?.name} Deleted Successfully`,
       data: result?.name || result
     })
   } catch (error) {

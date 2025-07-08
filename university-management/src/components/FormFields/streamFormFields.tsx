@@ -1,4 +1,4 @@
-import { InputFiled1 } from "./helperComponents";
+import { InputFiled1 } from "../helperComponents";
 
 export default function StreamFormFields() {
     return (

@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom"
 import { Form, Formik } from "formik"
 
-
 import { SubmitButton, InputFiled1 } from "../../components/helperComponents"
 import { LoginInitialValues, LoginSchema } from "../../helper/FormikValidation";
 import { LoginHandleSubmit } from "../../helper/SubmitHendle";
-
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
+    const navigate = useNavigate();
+
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
             {/* style={{ height: "calc(100vh - 57.6px)" }}> */}
@@ -16,7 +17,7 @@ export function Login() {
                 <Formik
                     initialValues={LoginInitialValues}
                     validationSchema={LoginSchema}
-                    onSubmit={LoginHandleSubmit}
+                    onSubmit={(...arg) => LoginHandleSubmit(...arg, navigate)}
                 >
                     <Form id="LoginForm">
                         <InputFiled1 title="Email" type="email" id="email" placeholder="Enter Your Email" />

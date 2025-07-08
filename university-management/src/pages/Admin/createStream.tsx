@@ -4,7 +4,7 @@ import { Form, Formik } from "formik";
 import { StreamInitialValues, streamSchema } from "../../helper/FormikValidation";
 import { SubmitButton } from "../../components/helperComponents";
 import { StreamHandleSubmit } from "../../helper/SubmitHendle";
-import StreamFormFields from "../../components/streamFromFields";
+import StreamFormFields from "../../components/FormFields/streamFormFields";
 
 export const CreateStream = () => {
     return (

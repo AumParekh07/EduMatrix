@@ -5,9 +5,15 @@ import SubjectModel from "../models/subject";
 import CourseModel, { Subject } from "../models/course";
 import FeeCapacityModel from "../models/feecapacity";
 import UserGroupModel, { permission } from "../models/user_group";
+import {
+  IsCourse, IsCourseName, IsStream, IsStreamName,
+  ISSubject, IsSubjectName, IsUniversity, IsUniversityName,
+  validateCourseSubjects, validateUniversity
+} from "../helper/adminHelper";
 
 export const createStreamService = async (name: string) => {
   try {
+    await IsStreamName(name);
 
     const newStream = new StreamModel({ name });
 
@@ -22,8 +28,10 @@ export const createStreamService = async (name: string) => {
 export const updateStreamService = async (id: string, name: string) => {
   try {
 
-    const updatedStream = StreamModel.findByIdAndUpdate(id, { name }, { new: true, runValidators: true });
+    const stream = await IsStream(id);
+    await IsStreamName(name, id);
 
+    const updatedStream = StreamModel.findByIdAndUpdate(stream._id, { name }, { new: true });
 
     return updatedStream;
   } catch (error) {
@@ -34,13 +42,8 @@ export const updateStreamService = async (id: string, name: string) => {
 
 export const deleteStreamService = async (id: string) => {
   try {
-    const stream = await StreamModel.findById(id);
-
-    if (!stream) {
-      throw new Error("Stream not found");
-
-    }
-    const deleteStream = await StreamModel.findByIdAndDelete(id);
+    const stream = await IsStream(id);
+    const deleteStream = await StreamModel.findByIdAndDelete(stream._id);
 
     return deleteStream
   } catch (error) {
@@ -51,7 +54,7 @@ export const deleteStreamService = async (id: string) => {
 
 export const createSubjectService = async (name: string, fullName: string) => {
   try {
-
+    await IsSubjectName(name);
     const newSubject = new SubjectModel({ name, fullName });
 
     await newSubject.save();
@@ -63,11 +66,11 @@ export const createSubjectService = async (name: string, fullName: string) => {
 
 export const updateSubjectService = async (id: string, name: string, fullName: string) => {
   try {
-    const updatedSubject = await SubjectModel.findByIdAndUpdate(id, { name, fullName }, { new: true });
+    const subject = await ISSubject(id);
+    await IsSubjectName(name, id);
 
-    if (!updatedSubject) {
-      throw new Error("Subject not found");
-    }
+    const updatedSubject = await SubjectModel.findByIdAndUpdate(subject._id, { name, fullName }, { new: true });
+
     return updatedSubject
   } catch (error) {
     throw error
@@ -77,13 +80,9 @@ export const updateSubjectService = async (id: string, name: string, fullName: s
 
 export const deleteSubjectService = async (id: string) => {
   try {
-    const subject = await SubjectModel.findById(id);
+    const subject = await ISSubject(id);
+    const deleteSubject = await SubjectModel.findByIdAndDelete(subject._id);
 
-    if (!subject) {
-      throw new Error("Subject not found");
-
-    }
-    const deleteSubject = await SubjectModel.findByIdAndDelete(id);
 
     return deleteSubject
   } catch (error) {
@@ -99,16 +98,8 @@ export const createCourseService = async (
   subjects: Subject
 ) => {
   try {
-
-    const compulsorySubjects = await SubjectModel.find({ _id: { $in: subjects.compulsory } });
-    if (compulsorySubjects.length !== subjects.compulsory.length) {
-      throw new Error("One or more Subjects not found");
-    }
-
-    const optionalSubjects = await SubjectModel.find({ _id: { $in: subjects.optional } });
-    if (optionalSubjects.length !== subjects.optional.length) {
-      throw new Error("One or more Subjects not found");
-    }
+    await IsCourseName(name);
+    await validateCourseSubjects(subjects);
 
     const newSubject = new CourseModel({
       name,
@@ -131,9 +122,13 @@ export const updateCourseService = async (
   courseType: string,
   subjects: Subject) => {
   try {
-    const updatedCourse = await CourseModel.findByIdAndUpdate(id, { name, fullname, courseType, subjects })
 
-    if (!updatedCourse) throw new Error("Course Not Found");
+    const course = await IsCourse(id);
+    await IsCourseName(name, id);
+    await validateCourseSubjects(subjects);
+
+    const updatedCourse = await CourseModel.findByIdAndUpdate(course._id, { name, fullname, courseType, subjects })
+
     return updatedCourse
 
   } catch (error) {
@@ -144,13 +139,9 @@ export const updateCourseService = async (
 
 export const deleteCourseService = async (id: string) => {
   try {
-    const course = await CourseModel.findById(id);
+    const course = await IsCourse(id);
 
-    if (!course) {
-      throw new Error("Course not found");
-
-    }
-    const deleteCourse = await CourseModel.findByIdAndDelete(id);
+    const deleteCourse = await CourseModel.findByIdAndDelete(course._id);
 
     return deleteCourse
   } catch (error) {
@@ -168,20 +159,14 @@ export const createUniversityService = async (
   accommodation: boolean,
   address: Address,
   stream: ObjectId[],
-  course: ObjectId[]
+  course: ObjectId[],
+
 ) => {
   try {
 
+    await IsUniversityName(name);
+    await validateUniversity(stream, course);
 
-    const streams = await StreamModel.find({ _id: { $in: stream } });
-    if (streams.length !== stream.length) {
-      throw new Error("One or more Streams not found");
-    }
-
-    const courses = await CourseModel.find({ _id: { $in: course } });
-    if (courses.length !== course.length) {
-      throw new Error("One or more Courses not found");
-    }
 
     const newUniversity = new UniversityModel({
       name,
@@ -202,15 +187,48 @@ export const createUniversityService = async (
   }
 };
 
+export const updateUniversityService = async (
+  id: string,
+  name: string,
+  jobPlacement: boolean,
+  scholarship: boolean,
+  nearbyUniversity: boolean,
+  transportation: boolean,
+  accommodation: boolean,
+  address: Address,
+  stream: ObjectId[],
+  course: ObjectId[]
+) => {
+  try {
+
+    const university = await IsUniversity(id);
+
+    await IsUniversityName(name, id);
+
+    await validateUniversity(stream, course);
+
+    const updatedUniversity = await UniversityModel.findByIdAndUpdate(university._id, {
+      name,
+      jobPlacement,
+      scholarship,
+      nearbyUniversity,
+      transportation,
+      accommodation,
+      address,
+      stream,
+      course
+    })
+
+    return updatedUniversity
+  } catch (error) {
+    throw error;
+  }
+}
+
 export const deleteUniversityService = async (id: string) => {
   try {
-    const university = await UniversityModel.findById(id);
-
-    if (!university) {
-      throw new Error("University not found");
-    }
-
-    const deleteUniversity = await UniversityModel.findByIdAndDelete(id);
+    const university = await IsUniversity(id);
+    const deleteUniversity = await UniversityModel.findByIdAndDelete(university._id);
 
     return deleteUniversity
   } catch (error) {
@@ -228,15 +246,10 @@ export const createFeeCapacityService = async (
   try {
 
 
-    const courses = await CourseModel.findById(courseId)
-    if (!courses) {
-      throw new Error("Course Not Found");
-    }
+    const courses = await IsCourse(courseId.toString());
 
-    const university = await UniversityModel.findById(universityId)
-    if (!university) {
-      throw new Error("University Not Found");
-    }
+    const university = await IsUniversity(universityId.toString());
+
     const newData = new FeeCapacityModel({
       fee,
       capacity,
@@ -255,9 +268,7 @@ export const createUserGroupService = async (role: string, module_permission: pe
   try {
     console.log("UserGroupModel import:", UserGroupModel);
 
-    const newUserGroup = new UserGroupModel({
-      role, module_permission
-    })
+    const newUserGroup = new UserGroupModel({ role, module_permission })
     await newUserGroup.save()
 
     return newUserGroup

@@ -2,13 +2,13 @@ import { useState, type JSX } from "react";
 import { Navigate } from "react-router-dom";
 import { errorToast } from "../helper/helperToast";
 import { ErrorComponent } from "./helperComponents";
-import Navbar from "./navbar";
+import StdNavbar from "./navbar";
 import AdminSidebar from "./adminSidebar";
+import GetToken from "../helper/authtoken";
 
-export const token = localStorage.getItem("token");
 const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowedRole: "admin" | "student"; }) => {
     const role = localStorage.getItem("role");
-
+    const token = GetToken()
     if (!token) {
         errorToast("You Are Not Logged In.Please Log In First", 'not-login')
 
@@ -29,9 +29,9 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
 
             <div className="d-flex">
                 <AdminSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-                <div className="px-5"
+                <div className="px-md-5"
                     style={{
-                        flex: 1, marginLeft: collapsed ? "70px" : "250px",
+                        flex: 1, marginLeft: collapsed ? "55px" : "250px",
                         transition: "margin 0.3s ease-in-out",
                     }}>
                     {children}
@@ -43,7 +43,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
     if (role === "student") {
         return (
             <>
-                <Navbar />
+                <StdNavbar />
                 {children}
             </>
         );

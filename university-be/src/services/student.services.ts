@@ -6,42 +6,29 @@ import CourseModel from "../models/course";
 import EnrollCourseModel from "../models/enrollCourse";
 import FeeCapacityModel from "../models/feecapacity";
 import StreamModel from "../models/stream";
-import { IsUser, UserProfileCompleted } from "../helper/userHelper";
+import { IsUser } from "../helper/userHelper";
+import { UserProfileCompleted } from "../helper/stdHelper";
+import { IsStream } from "../helper/adminHelper";
 
 
 export const studentDetailService = async (
-    userID: ObjectId,
+    userId: ObjectId,
     gender: string,
     birthDate: Date,
-    stream: ObjectId,
+    streamId: ObjectId,
     address: Address,
     preference: Preference
 ) => {
 
     try {
-        const User = await IsUser(userID)
-        const isuserId = User._id
-        const Stream = await StreamModel.findOne({ _id: stream })
-        if (!Stream) {
-            throw new Error("Stream Not Found");
-        }
+        const User = await IsUser(userId)
 
-        const StreamId = Stream._id
+        const Stream = await IsStream(streamId.toString())
 
-        // const newStudent = new StudentModle({ userID: isuserId, gender, birthDate, stream: StreamId, address, preference })
-        // await newStudent.save()
-        // return newStudent
+        const newStudent = new StudentModle({ userID: User._id, gender, birthDate, stream: Stream._id, address, preference })
+        await newStudent.save()
 
-        const newStudent = await StudentModle.findOneAndUpdate(
-            { userID: isuserId },
-            { gender, birthDate, stream: StreamId, address, preference, },
-            { new: true, upsert: true }
-        );
-
-        if (!newStudent) {
-            throw new Error("Failed to update student details");
-        }
-        const user = await UserProfileCompleted(userID);
+        const user = await UserProfileCompleted(userId);
 
         return { newStudent, user };
     }
@@ -49,6 +36,31 @@ export const studentDetailService = async (
         throw error
     }
 
+}
+
+export const updateStdDetailService = async (
+    userId: ObjectId,
+    gender: string,
+    birthDate: Date,
+    streamId: string,
+    address: Address,
+    preference: Preference) => {
+
+    try {
+        const User = await IsUser(userId)
+
+        const Stream = await IsStream(streamId)
+
+        const updatedStudent = await StudentModle.findOneAndUpdate({ userID: User._id },
+            { gender, birthDate, stream: Stream._id, address, preference, },
+            { new: true }
+        );
+
+        return updatedStudent;
+    }
+    catch (error) {
+        throw error
+    }
 }
 
 
@@ -121,7 +133,7 @@ export const enrollCourseService = async (userID: ObjectId, universityID: Object
 
         const enrolledStd = await EnrollCourseModel.findOne({ userID: User._id, universityID: university._id, courseID: course._id })
         if (enrolledStd) {
-            throw new Error(`${User.username} Already Enrolled for this Course`);
+            throw new Error(`${User.username} Already Enrolled For This Course`);
         }
 
         const FeeAndCapacity = await FeeCapacityModel.findOne({ universityId: university._id, courseId: course._id })

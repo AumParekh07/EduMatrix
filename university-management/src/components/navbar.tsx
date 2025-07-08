@@ -1,54 +1,51 @@
 import { UserRound, LogOut } from 'lucide-react';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { useEffect } from 'react';
-import { Tooltip } from 'bootstrap';
 import { LogoutHandle } from '../helper/SubmitHendle';
-import { Link } from 'react-router-dom';
-
-const Navbar = () => {
-    useEffect(() => {
-        const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach((el) => {
-            new Tooltip(el);
-        });
-    }, []);
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Navbar, Nav, Container, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import GetToken from '../helper/authtoken';
+const StdNavbar = () => {
+    const token = GetToken()
+    const navigate = useNavigate();
 
     return (
-        <nav className="navbar nav-underline navbar-expand-md sticky-top navbar-light bg-light bg-opacity-100   ">
-            <div className="container-fluid">
-                <a className="navbar-brand fw-semibold" href="#">University Management</a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <Link className="nav-link fw-semibold " to="/">Home</Link>
-                        </li>
 
+        <Navbar expand="md" sticky="top" bg="light" variant="light" className="bg-opacity-100" collapseOnSelect>
+            <Container fluid>
+                <Navbar.Brand href="#" className="fw-semibold">University Management</Navbar.Brand>
+                <Navbar.Toggle aria-controls="main-navbar" />
+                <Navbar.Collapse id="main-navbar" className="justify-content-end">
+                    <Nav className="nav-underline1 gap-3">
+                        <Nav.Link as={NavLink} to="/" className="fw-semibold">
+                            Home
+                        </Nav.Link>
 
-                        {(localStorage.getItem("token")) && (
-                            <>
-                                <li className="nav-item">
-                                    <Link className="nav-link fw-semibold" to="/university">University</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                                        title="<b>Profile</b>"><UserRound style={{ marginTop: '-5px' }} /> </Link>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                                        title="<b>Logout</b>"
-                                        onClick={LogoutHandle}><LogOut style={{ marginTop: '-5px' }} /> </a>
-                                </li>
-                            </>
-                        )}
-                    </ul>
-                </div>
-            </div>
-        </nav >
-    )
+                        <Nav.Link as={NavLink} to="/university" className="fw-semibold">
+                            University
+                        </Nav.Link>
 
+                        <OverlayTrigger
+                            placement="bottom"
+                            overlay={<Tooltip id="profile-tooltip"><b>Profile</b></Tooltip>}
+                        >
+                            <Nav.Link as={NavLink} to="/dashboard">
+                                <UserRound style={{ marginTop: '-5px' }} />
+                            </Nav.Link>
+                        </OverlayTrigger>
+
+                        <OverlayTrigger
+                            placement="bottom"
+                            overlay={<Tooltip id="logout-tooltip"><b>Logout</b></Tooltip>}
+                        >
+                            <Nav.Link onClick={() => LogoutHandle(navigate)}>
+                                <LogOut style={{ marginTop: '-5px' }} />
+                            </Nav.Link>
+                        </OverlayTrigger>
+
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar >
+    );
 }
 
-export default Navbar
+export default StdNavbar;

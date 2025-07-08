@@ -1,5 +1,199 @@
 import * as Yup from "yup";
 
+export interface RegisterI {
+    name: string;
+    username: string;
+    email: string;
+    password: string;
+    // confirmPassword: string;
+    userGrpId: string;
+}
+
+export interface LoginI {
+    email: string;
+    password: string;
+}
+
+export interface SendOtpI {
+    email: string;
+}
+
+export interface verifyOtpI {
+    otp: string;
+}
+
+export interface StdDetailI {
+    gender: string;
+    birthDate: string;
+    stream: string;
+    address: {
+        address: string;
+        city: string;
+        state: string;
+        country: string;
+        pincode: number;
+    }
+    preference: {
+        profession: string;
+        courseType: string;
+        jobPlacement: string;
+        scholarship: string;
+        nearbyUniversity: string;
+        transportation: string;
+        accommodation: string;
+        minFee: number;
+        maxFee: number;
+    }
+}
+
+export interface EnrollCourseI {
+    optionalSubjectID: string[]
+}
+export interface StreamI {
+    name: string
+}
+
+export interface SubjectI {
+    name: string,
+    fullname: string
+}
+
+export interface CourseI {
+    name: string,
+    fullname: string,
+    courseType: '' | "FullTime" | "PartTime" | "E Learning",
+    subjects: {
+        compulsory: string[],
+        optional: string[]
+    }
+}
+
+export interface UniversityI {
+    name: string;
+    jobPlacement: string;
+    scholarship: string;
+    nearbyUniversity: string;
+    transportation: string;
+    accommodation: string;
+    address: {
+        address: string;
+        city: string;
+        state: string;
+        country: string;
+        pincode: number;
+    };
+    stream: string[];
+    course: string[];
+    courseDetails: {
+        [courseId: string]: {
+            fee: number;
+            capacity: number;
+        };
+    };
+};
+
+export interface FeeCapI {
+    fee: number,
+    capacity: number,
+    courseId: string
+}
+
+export const RegisterInitialValues: RegisterI = {
+    name: '',
+    username: '',
+    email: '',
+    password: '',
+    // confirmPassword: '',
+    userGrpId: '682c19922bb32dfa02ed0eab',
+};
+
+
+export const LoginInitialValues: LoginI = {
+    email: '',
+    password: '',
+};
+
+export const SendOtpInitialValues: SendOtpI = {
+    email: "",
+}
+
+export const verifyOtpInitialValues: verifyOtpI = {
+    otp: ''
+}
+
+
+export const StdDetailInitialValues: StdDetailI = {
+    gender: '',
+    birthDate: '',
+    stream: '',
+    address: {
+        address: '',
+        city: '',
+        state: '',
+        country: '',
+        pincode: 0,
+    },
+    preference: {
+        profession: '',
+        courseType: '',
+        jobPlacement: '',
+        scholarship: '',
+        nearbyUniversity: '',
+        transportation: '',
+        accommodation: '',
+        minFee: 3000,
+        maxFee: 3000,
+    }
+};
+
+export const EnrollCourseinitialValues: EnrollCourseI = {
+    optionalSubjectID: [],
+};
+export const StreamInitialValues: StreamI = {
+    name: "",
+}
+
+export const SubjectInitialValues: SubjectI = {
+    name: "",
+    fullname: ""
+}
+
+export const CourseInitialValues: CourseI = {
+    name: '',
+    fullname: '',
+    courseType: '',
+    subjects: {
+        compulsory: [],
+        optional: []
+    }
+}
+
+export const UniversityInitialValues: UniversityI = {
+    name: '',
+    jobPlacement: '',
+    scholarship: '',
+    nearbyUniversity: '',
+    transportation: '',
+    accommodation: '',
+    address: {
+        address: '',
+        city: '',
+        state: '',
+        country: '',
+        pincode: 0,
+    },
+    stream: [],
+    course: [],
+    courseDetails: {}
+};
+
+export const FeeCapInitialValues: FeeCapI = {
+    fee: 3000,
+    capacity: 10,
+    courseId: ""
+
+}
+
 const email = Yup.string().email('Invalid email').required('Email is required');
 const name = Yup.string().min(2, 'Too Short!').required('Name is required');
 const fullname = Yup.string().min(4, 'Too Short!').required('Full Name is required');
@@ -116,7 +310,6 @@ export const streamSchema = Yup.object().shape({
 export const FeeCapSchema = Yup.object().shape({
     fee: Yup.number().min(3000, 'Minimum ₹3000 Fee Required ').required('Fee is Required'),
     capacity: Yup.number().min(10, 'Minimum 10 Student Capacity is Required').max(100).required('Capacity is Required'),
-    universityId: Yup.string().required('University Required'),
     courseId: Yup.string().required('Course Required')
 })
 
@@ -125,6 +318,11 @@ export const subjectSchema = Yup.object().shape({
     fullname: fullname
 })
 
+export const EnrollCourseSchema = Yup.object({
+    optionalSubjectID: Yup.array()
+        .of(Yup.string())
+        .min(1, "Please select at least one optional subject."),
+});
 
 
 export const CourseSchema = Yup.object().shape({
@@ -133,13 +331,35 @@ export const CourseSchema = Yup.object().shape({
     courseType: Yup.string().oneOf(['FullTime', 'PartTime', 'E Learning'], 'Select a valid course type').required("Course Type is required"),
     subjects: Yup.object().shape({
         compulsory: Yup.array()
-            .of(Yup.string().required("Compulsory subject is required"))
+            .of(Yup.string())
             .min(3, "At least 3 compulsory subject is required"),
         optional: Yup.array()
-            .of(Yup.string().required("Optional subject is required"))
+            .of(Yup.string())
             .min(2, "At least 2 optional subject is required")
     })
 })
+
+const generateCourseDetailsSchema = (courses: string[]) => {
+    const shape: Record<string, Yup.ObjectSchema<any>> = {};
+    if (!Array.isArray(courses)) {
+        return Yup.object(); // return empty schema if invalid input
+    }
+    for (const courseId of courses) {
+        shape[courseId] = Yup.object().shape({
+            fee: Yup.number()
+                .typeError("Fee must be a number")
+                .required("Fee is required")
+                .min(3000, "Minimum ₹3000 Fee Required"),
+            capacity: Yup.number()
+                .typeError("Capacity must be a number")
+                .required("Capacity is required")
+                .min(10, "Minimum 10 students")
+                .max(100, "Maximum 100 students"),
+        });
+    }
+
+    return Yup.object().shape(shape);
+};
 
 export const UniversitySchema = Yup.object().shape({
     name: name,
@@ -156,193 +376,13 @@ export const UniversitySchema = Yup.object().shape({
         pincode: pincode
     }).required('Address is required'),
     stream: Yup.array()
-        .of(Yup.string().required('Stream is required'))
+        .of(Yup.string())
         .min(1, 'At least One stream is required'),
     course: Yup.array()
-        .of(Yup.string().required('Course is required'))
-        .min(1, "At least One course is required")
+        .of(Yup.string())
+        .min(1, "At least One course is required"),
+    courseDetails: Yup.object().when("course", ([course]: string[], schema: any) => {
+        if (!Array.isArray(course)) return schema;
+        return generateCourseDetailsSchema(course);
+    }),
 })
-
-export interface RegisterI {
-    name: string;
-    username: string;
-    email: string;
-    password: string;
-    // confirmPassword: string;
-    userGrpId: string;
-}
-
-export interface LoginI {
-    email: string;
-    password: string;
-}
-
-export interface SendOtpI {
-    email: string;
-}
-
-export interface verifyOtpI {
-    otp: string;
-}
-
-export interface StdDetailI {
-    gender: string;
-    birthDate: string;
-    stream: string;
-    address: {
-        address: string;
-        city: string;
-        state: string;
-        country: string;
-        pincode: number;
-    }
-    preference: {
-        profession: string;
-        courseType: string;
-        jobPlacement: string;
-        scholarship: string;
-        nearbyUniversity: string;
-        transportation: string;
-        accommodation: string;
-        minFee: number;
-        maxFee: number;
-    }
-}
-
-export interface StreamI {
-    name: string
-}
-
-export interface SubjectI {
-    name: string,
-    fullname: string
-}
-
-export interface CourseI {
-    name: string,
-    fullname: string,
-    courseType: '' | "FullTime" | "PartTime" | "E Learning",
-    subjects: {
-        compulsory: string[],
-        optional: string[]
-    }
-}
-
-
-export interface UniversityI {
-    name: string;
-    jobPlacement: string;
-    scholarship: string;
-    nearbyUniversity: string;
-    transportation: string;
-    accommodation: string;
-    address: {
-        address: string;
-        city: string;
-        state: string;
-        country: string;
-        pincode: number;
-    };
-    stream: string[];
-    course: string[];
-};
-
-export interface FeeCapI {
-    fee: number,
-    capacity: number,
-    universityId: string,
-    courseId: string
-}
-
-export const RegisterInitialValues: RegisterI = {
-    name: '',
-    username: '',
-    email: '',
-    password: '',
-    // confirmPassword: '',
-    userGrpId: '682c19922bb32dfa02ed0eab',
-};
-
-
-export const LoginInitialValues: LoginI = {
-    email: '',
-    password: '',
-};
-
-export const SendOtpInitialValues: SendOtpI = {
-    email: "",
-}
-
-export const verifyOtpInitialValues: verifyOtpI = {
-    otp: ''
-}
-
-
-export const StdDetailInitialValues: StdDetailI = {
-    gender: '',
-    birthDate: '',
-    stream: '',
-    address: {
-        address: '',
-        city: '',
-        state: '',
-        country: '',
-        pincode: 0,
-    },
-    preference: {
-        profession: '',
-        courseType: '',
-        jobPlacement: '',
-        scholarship: '',
-        nearbyUniversity: '',
-        transportation: '',
-        accommodation: '',
-        minFee: 3000,
-        maxFee: 3000,
-    }
-};
-
-export const StreamInitialValues: StreamI = {
-    name: "",
-}
-
-export const SubjectInitialValues: SubjectI = {
-    name: "",
-    fullname: ""
-}
-
-export const CourseInitialValues: CourseI = {
-    name: '',
-    fullname: '',
-    courseType: '',
-    subjects: {
-        compulsory: [],
-        optional: []
-    }
-}
-
-export const UniversityInitialValues: UniversityI = {
-    name: '',
-    jobPlacement: '',
-    scholarship: '',
-    nearbyUniversity: '',
-    transportation: '',
-    accommodation: '',
-    address: {
-        address: '',
-        city: '',
-        state: '',
-        country: '',
-        pincode: 0,
-    },
-    stream: [],
-    course: []
-};
-
-export const FeeCapInitialValues: FeeCapI = {
-    fee: 0,
-    capacity: 0,
-    universityId: "",
-    courseId: ""
-
-}

@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { ErrorComponent, Facilities, LoadingComponent } from "../../components/helperComponents";
 import { errorToast } from "../../helper/helperToast";
-import { token } from "../../components/RoleBasedRoute";
+import { apiCall } from "../../api/apiCaller";
 
 export type University = {
     _id: string;
@@ -67,13 +67,15 @@ export function UniversityList() {
         }).toString();
 
         try {
-            const response = await axios.get(`http://localhost:3000/api/v1/get-university?${query}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setUniversities(response.data.data);
-            setTotalData(response.data.pagination.TotalData);
+            const response = await apiCall({
+                method: "get",
+                url: `/get-university?${query}`
+            })
+
+            setUniversities(response.data);
+            setTotalData(response.pagination.TotalData);
         } catch (err: any) {
-            const msg = err.response?.data?.message || err.message;
+            const msg = err || "Failed to fetch University"
             setError(msg);
             errorToast(msg);
         } finally {
@@ -81,12 +83,7 @@ export function UniversityList() {
         }
     };
 
-    const hasFetched = useRef(false);
-
     useEffect(() => {
-        // if (!hasFetched.current) {
-        //     hasFetched.current = true;
-        // }
         fetchData();
     }, [page, pageSize, filters]);
 
@@ -172,9 +169,9 @@ export function UniversityList() {
                     </ul>
                 </div>
 
-                <div className="card-footer d-flex justify-content-between">
+                <div className="card-footer d-flex justify-content-center gap-3">
                     <button
-                        className="btn btn-outline-primary fw-semibold shadow-sm"
+                        className="btn btn-sm p-0 btn-outline-primary fw-semibold shadow-sm"
                         onClick={() => {
                             const newPage = (parseInt(page) - 1).toString();
                             if (parseInt(newPage) > 0) {
@@ -183,13 +180,13 @@ export function UniversityList() {
                         }}
                         disabled={parseInt(page) <= 1}
                     >
-                        Previous
+                        <ChevronLeft />
                     </button>
                     <span className="align-self-center fw-semibold">
                         Page {page} of {totalPages}
                     </span>
                     <button
-                        className="btn btn-outline-primary fw-semibold shadow-sm"
+                        className="btn btn-sm p-0 btn-outline-primary fw-semibold shadow-sm"
                         onClick={() => {
                             const newPage = (parseInt(page) + 1).toString();
                             if (parseInt(newPage) <= totalPages) {
@@ -198,7 +195,7 @@ export function UniversityList() {
                         }}
                         disabled={parseInt(page) >= totalPages}
                     >
-                        Next
+                        <ChevronRight />
                     </button>
                 </div>
             </div>

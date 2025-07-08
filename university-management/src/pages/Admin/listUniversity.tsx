@@ -4,7 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 
 import { ErrorComponent, Facilities, LoadingComponent } from "../../components/helperComponents";
 import { errorToast } from "../../helper/helperToast";
-import { token } from "../../components/RoleBasedRoute";
+import GetToken from "../../helper/authtoken";
 
 export type University = {
     _id: string;
@@ -54,8 +54,9 @@ export function UniversityList1() {
         accommodation: false,
     });
 
-
     useEffect(() => {
+
+        const token = GetToken()
 
         const query = new URLSearchParams({
             page,

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { token } from "../../components/RoleBasedRoute";
+import { ErrorComponent, LoadingComponent } from "../../components/helperComponents";
+import GetToken from "../../helper/authtoken";
 
 type Subject = {
     _id: string;
@@ -39,32 +40,23 @@ type University = {
     course: Course[];
 };
 
-type ApiResponse = {
-    data: University[];
-    pagination: {
-        TotalData: number;
-        PageNo: number;
-        PageLimit: number;
-    };
-};
-
 export const AdminUniversityList = () => {
     const [universities, setUniversities] = useState<University[]>([]);
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
     const [page, setPage] = useState<number>(1);
-    const [pageLimit] = useState<number>(2); // Set your preferred limit
+    const [pageSize] = useState<number>(2);
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchUniversities = () => {
 
+        const token = GetToken()
 
         setLoading(true);
         axios
-            .get<ApiResponse>(`http://localhost:3000/api/v1/get-university?page=${page}&limit=${pageLimit}`, {
+            .get(`http://localhost:3000/api/v1/get-university?page=${page}&pageSize=${pageSize}`, {
                 headers: { Authorization: `Bearer ${token}` },
-
             }
             )
             .then((res) => {
@@ -92,10 +84,10 @@ export const AdminUniversityList = () => {
         setExpandedIds(newSet);
     };
 
-    const totalPages = Math.ceil(total / pageLimit);
+    const totalPages = Math.ceil(total / pageSize);
 
-    if (loading) return <div className="text-center">Loading...</div>;
-    if (error) return <div className="alert alert-danger">{error}</div>;
+    if (loading) return <LoadingComponent />;
+    if (error) return <ErrorComponent error={error} />;
 
     return (
         <div className="container card p-4 mt-4">
@@ -103,10 +95,10 @@ export const AdminUniversityList = () => {
 
             {universities.map((uni) => (
                 <div key={uni._id} className="card mb-4 shadow-sm">
-                    <div className="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                    <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">{uni.name}</h5>
                         <button
-                            className="btn btn-light btn-sm"
+                            className="btn btn-primary btn-sm"
                             onClick={() => toggleExpand(uni._id)}
                         >
                             {expandedIds.has(uni._id) ? "Hide Courses" : "Show Courses"}
@@ -143,33 +135,35 @@ export const AdminUniversityList = () => {
                         {expandedIds.has(uni._id) && (
                             <>
                                 <h6 className="mt-3">📘 Courses Offered</h6>
-                                {uni.course.map((course) => (
-                                    <div key={course._id} className="border rounded p-2 mb-3">
-                                        <h6 className="fw-bold">
-                                            {course.fullname} ({course.name}) - {course.courseType}
-                                        </h6>
-                                        <div>
-                                            <strong>Compulsory Subjects:</strong>
-                                            <ul className="mb-1">
-                                                {course.subjects.compulsory.map((subj) => (
-                                                    <li key={subj._id}>
-                                                        {subj.name} - {subj.fullName}
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                <div className="row justify-content-center">
+                                    {uni.course.map((course) => (
+                                        <div key={course._id} className="border col-4 rounded p-2 m-3">
+                                            <h6 className="fw-bold">
+                                                {course.fullname} ({course.name}) - {course.courseType}
+                                            </h6>
+                                            <div>
+                                                <strong>Compulsory Subjects:</strong>
+                                                <ul className="mb-1">
+                                                    {course.subjects.compulsory.map((subj) => (
+                                                        <li key={subj._id}>
+                                                            {subj.name} - {subj.fullName}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <strong>Optional Subjects:</strong>
+                                                <ul>
+                                                    {course.subjects.optional.map((subj) => (
+                                                        <li key={subj._id}>
+                                                            {subj.name} - {subj.fullName}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <strong>Optional Subjects:</strong>
-                                            <ul>
-                                                {course.subjects.optional.map((subj) => (
-                                                    <li key={subj._id}>
-                                                        {subj.name} - {subj.fullName}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </>
                         )}
                     </div>
@@ -183,7 +177,7 @@ export const AdminUniversityList = () => {
                     disabled={page === 1}
                     onClick={() => setPage((prev) => prev - 1)}
                 >
-                    ← Previous
+                    Previous
                 </button>
                 <span>
                     Page {page} of {totalPages}
@@ -193,7 +187,7 @@ export const AdminUniversityList = () => {
                     disabled={page === totalPages}
                     onClick={() => setPage((prev) => prev + 1)}
                 >
-                    Next →
+                    Next
                 </button>
             </div>
         </div>

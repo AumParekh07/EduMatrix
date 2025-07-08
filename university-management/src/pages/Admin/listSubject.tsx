@@ -1,14 +1,11 @@
-import { Pencil, Trash2 } from "lucide-react";
-import FetchCardList from "../../components/commonCard";
-import ConfirmDeleteToast from "../../components/deleteToast";
 import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+
+import FetchCardList from "../../components/commonCard";
 import EditModal from "../../components/editModal";
 import { subjectSchema } from "../../helper/FormikValidation";
-import SubjectFormFields from "../../components/subjectFromFields";
-import type { FormikValues } from "formik";
-import { apiCall } from "../../api/apiCaller";
-import { successToast, errorToast } from "../../helper/helperToast";
-
+import SubjectFormFields from "../../components/FormFields/subjectFormFields";
+import DeleteModal from "../../components/deletModal";
 
 export type Subject = {
     _id: string;
@@ -18,24 +15,11 @@ export type Subject = {
 
 export function AdminSubjects() {
     const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
-    const [showModal, setShowModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [reload, setReload] = useState(false);
 
-    const triggerRefetch = () => setReload((prev) => !prev);
-    async function handleEdit(values: FormikValues) {
-        try {
-            const respons = await apiCall({
-                method: "put",
-                url: `/admin/update-subject/${selectedSubject?._id}`,
-                data: values
-            })
-            successToast(respons?.message)
-        } catch (error: any) {
-            errorToast(error || "Failed to fetch data");
-        }
-        triggerRefetch();
-        setShowModal(false);
-    };
+    const triggerReload = () => setReload((prev) => !prev);
     return (
         <>
             <FetchCardList<Subject>
@@ -45,7 +29,7 @@ export function AdminSubjects() {
                 addPath="/admin/create-subject"
                 apiEndPoint="get-subjects"
                 totalLabel="Total Subject"
-                renderItem={(subject, refetch) => (
+                renderItem={(subject) => (
                     <div key={subject._id} className="col-md-4 mb-3">
                         <div className="card shadow h-100" style={{ backgroundColor: "#e4eaf2" }}>
                             <div className="card-body">
@@ -55,15 +39,13 @@ export function AdminSubjects() {
                                         <Pencil className="btn p-0 me-2"
                                             onClick={() => {
                                                 setSelectedSubject(subject);
-                                                setShowModal(true)
+                                                setShowEditModal(true)
                                             }} />
                                         <Trash2 className="btn p-0"
-                                            onClick={() => ConfirmDeleteToast({
-                                                name: subject.name,
-                                                apiPath: `delete-subject/${subject._id}`,
-                                                toastId: 'delete subject',
-                                                refetch,
-                                            })} />
+                                            onClick={() => {
+                                                setSelectedSubject(subject);
+                                                setShowDeleteModal(true)
+                                            }} />
 
                                     </div>
                                 </div>
@@ -77,17 +59,27 @@ export function AdminSubjects() {
 
 
             {selectedSubject && (
-                <EditModal
-                    title="Edit Subject"
-                    show={showModal}
-                    onHide={() => setShowModal(false)}
-                    initialValues={{ name: selectedSubject.name, fullname: selectedSubject.fullName }}
-                    validationSchema={subjectSchema}
-                    onSubmit={handleEdit}
+                <>
+                    <EditModal
+                        title="Edit Subject"
+                        apiPath={`/admin/update-subject/${selectedSubject._id}`}
+                        initialValues={{ name: selectedSubject.name, fullname: selectedSubject.fullName }}
+                        validationSchema={subjectSchema}
+                        show={showEditModal}
+                        onHide={() => setShowEditModal(false)}
+                        reload={triggerReload}
+                    >
+                        {() => <SubjectFormFields />}
+                    </EditModal>
 
-                >
-                    {() => <SubjectFormFields />}
-                </EditModal>
+                    <DeleteModal
+                        title="Delete Subject"
+                        name={selectedSubject.name}
+                        apiPath={`delete-subject/${selectedSubject._id}`}
+                        show={showDeleteModal}
+                        onHide={() => setShowDeleteModal(false)}
+                        reload={triggerReload} />
+                </>
             )}
         </>
     );

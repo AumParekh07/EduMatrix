@@ -1,12 +1,20 @@
-// components/CourseFormFields.tsx
-import { Field, ErrorMessage } from "formik";
+import { ErrorMessage } from "formik";
 import Select from "react-select";
-import type { Option } from "../pages/Admin/createCourse";
-import { InputFiled1 } from "./helperComponents";
+import makeAnimated from 'react-select/animated';
+import { ErrorComponent, InputFiled1, LoadingComponent } from "../helperComponents";
+import { useEffect, useState } from "react";
+import type { Subject } from "../../pages/Admin/listSubject";
+import { apiCall } from "../../api/apiCaller";
+import { errorToast } from "../../helper/helperToast";
+
+export type Option = {
+    value: string;
+    label: string;
+};
 
 type Props = {
-    subjectOptions: Option[];
     values: {
+        courseType: string;
         subjects: {
             compulsory: string[];
             optional: string[];
@@ -34,8 +42,43 @@ export const customStyles = {
         fontWeight: '530',
     }),
 };
+export const courseTypeOptions = [
+    { value: "FullTime", label: "Full-Time" },
+    { value: "PartTime", label: "Part-Time" },
+    { value: "E Learning", label: "E Learning" },
+];
+const animatedComponents = makeAnimated();
+export default function CourseFormFields({ values, setFieldValue }: Props) {
 
-export default function CourseFormFields({ subjectOptions, values, setFieldValue }: Props) {
+
+    const [subjects, setSubjects] = useState<Subject[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    async function fetchSubjects() {
+        setLoading(true);
+        try {
+            const res = await apiCall({
+                method: "get",
+                url: '/admin/get-subjects'
+            })
+            setSubjects(res.data);
+        } catch (err: any) {
+            setError(err || err.message);
+            errorToast(err || err.message)
+        }
+        setLoading(false);
+    };
+    useEffect(() => {
+        fetchSubjects();
+    }, []);
+
+
+    const subjectOptions: Option[] = subjects.map((sub) => ({
+        label: `${sub.fullName} (${sub.name})`,
+        value: sub._id,
+    }));
+
     const compulsorySelected = subjectOptions.filter(opt =>
         values.subjects.compulsory.includes(opt.value)
     );
@@ -43,36 +86,53 @@ export default function CourseFormFields({ subjectOptions, values, setFieldValue
         values.subjects.optional.includes(opt.value)
     );
 
-
+    if (loading) return <LoadingComponent h={false} />;
+    if (error) return <ErrorComponent error={error} hw={false} />;
     return (
         <>
             <div className="row">
-                <div className="col">
+                <div className="col-sm">
                     <InputFiled1 title="Name" type="text" id="name" placeholder="Enter Course Name" />
                     <InputFiled1 title="Full Name" type="text" id="fullname" placeholder="Enter Course Full Name" />
                 </div>
 
-                <div className="col">
+                <div className="col-sm">
                     <div className="mb-3">
-                        <label className="form-label fw-semibold">Course Type:</label>
-                        <Field as="select" name="courseType" className="form-select">
+                        <p className="form-label fw-semibold">Course Type:</p>
+                        <Select
+                            name="courseType"
+                            placeholder='Select Course Type'
+                            options={courseTypeOptions}
+                            value={courseTypeOptions.find(option => option.value === values.courseType)}
+                            // onChange={(selected) => setFieldValue("courseType", selected?.value)}
+                            onChange={(selected) =>
+                                setFieldValue("courseType", (selected as Option)?.value)
+                            }
+                            classNamePrefix="coreui"
+                            styles={customStyles}
+                            className="shadow-sm"
+                        />
+
+                        {/* <Field as="select" name="courseType" className="form-select">
                             <option value="" disabled hidden>---Select Course Type---</option>
                             <option value="FullTime">Full-Time</option>
                             <option value="PartTime">Part-Time</option>
                             <option value="E Learning">E Learning</option>
-                        </Field>
+                        </Field> */}
                         <ErrorMessage name="courseType" component="div" className="error" />
                     </div>
                 </div>
             </div>
 
             <div className="row">
-                <div className="col">
+                <div className="col-md">
                     <div className="mb-3">
-                        <label className="form-label fw-semibold">Compulsory Subjects:</label>
+                        <p className="form-label fw-semibold">Compulsory Subjects:</p>
                         <Select
                             isMulti
                             name="subjects.compulsory"
+                            components={animatedComponents}
+                            placeholder="Select Compulsory Subjects"
                             options={subjectOptions.map(opt => ({
                                 ...opt,
                                 isDisabled: values.subjects.optional.includes(opt.value),
@@ -91,10 +151,12 @@ export default function CourseFormFields({ subjectOptions, values, setFieldValue
 
                 <div className="col">
                     <div className="mb-3">
-                        <label className="form-label fw-semibold">Optional Subjects:</label>
+                        <p className="form-label fw-semibold">Optional Subjects:</p>
                         <Select
                             isMulti
                             name="subjects.optional"
+                            components={animatedComponents}
+                            placeholder="Select Optional Subjects"
                             options={subjectOptions.map(opt => ({
                                 ...opt,
                                 isDisabled: values.subjects.compulsory.includes(opt.value),

@@ -1,0 +1,205 @@
+import { ErrorMessage } from "formik";
+import Select from "react-select";
+import { ErrorComponent, InputFiled1, LoadingComponent, Preferencefield } from "../helperComponents";
+import { customStyles } from "./courseFormFields";
+import { useState, useEffect } from "react";
+import type { Course } from "../../pages/Admin/listCourse";
+import type { Stream } from "../../pages/Admin/listStream";
+import type { Option } from "./courseFormFields";
+import { apiCall } from "../../api/apiCaller";
+
+type Props = {
+    values: any;
+    setFieldValue: (field: string, value: any) => void;
+};
+
+const UniversityFormFields = ({ values, setFieldValue }: Props) => {
+
+    const [stream, setStream] = useState<Stream[]>([]);
+    const [course, setCourse] = useState<Course[]>([]);
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+
+    const fetchStream = async () => {
+        setLoading(true);
+        try {
+            const res = await apiCall({
+                method: "get",
+                url: "/admin/get-streams"
+            })
+            setStream(res.data);
+        } catch (err: any) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchCourse = async () => {
+        setLoading(true);
+        try {
+            const res = await apiCall({
+                method: 'get',
+                url: "/admin/get-courses"
+            })
+            setCourse(res.data);
+        } catch (err: any) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        fetchStream();
+        fetchCourse();
+    }, []);
+
+
+    const streamOptions: Option[] = stream.map((stm) => ({
+        label: stm.name,
+        value: stm._id,
+    }));
+
+    const courseOptions: Option[] = course.map((cou) => ({
+        label: cou.name,
+        value: cou._id,
+    }));
+
+    if (loading) return <LoadingComponent h={false} />;
+    if (error) return <ErrorComponent error={error} hw={false} />;
+
+    return (
+        <div className="row">
+            <div className="col">
+                <InputFiled1 title="Name" type="text" id="name" placeholder="Enter University Name " />
+                <InputFiled1 title="Address" type="text" id="address.address" placeholder="Enter address" />
+                <InputFiled1 title="City" type="text" id="address.city" placeholder="Enter city" />
+                <InputFiled1 title="State" type="text" id="address.state" placeholder="Enter state" />
+                <InputFiled1 title="Country" type="text" id="address.country" placeholder="Enter country" />
+                <InputFiled1 title="Pincode" type="number" id="address.pincode" placeholder="Enter pincode" />
+            </div>
+
+            <div className="col mt-3">
+                <Preferencefield title="Job Placement Available" id1="jyes" id2="jno" labelHtmlFor="jobPlacement" />
+                <Preferencefield title="Scholarship Available" id1="syes" id2="sno" labelHtmlFor="scholarship" />
+                <Preferencefield title="Nearby University Available" id1="nyes" id2="nno" labelHtmlFor="nearbyUniversity" />
+                <Preferencefield title="Transportation Available" id1="tyes" id2="tno" labelHtmlFor="transportation" />
+                <Preferencefield title="Accommodation Available" id1="ayes" id2="ano" labelHtmlFor="accommodation" />
+
+                <div className="mb-3">
+                    <p className="form-label fw-semibold">Stream</p>
+                    <Select
+                        id="stream"
+                        isMulti
+                        placeholder="Select Stream"
+                        name="stream"
+                        options={streamOptions}
+                        value={streamOptions.filter((opt) => values.stream.includes(opt.value))}
+                        onChange={(selected) => {
+                            setFieldValue("stream", selected.map((item: Option) => item.value));
+                        }}
+                        styles={customStyles}
+                        classNamePrefix="coreui"
+                        className="shadow-sm"
+                    />
+                    <ErrorMessage name="stream" component="div" className="error" />
+                </div>
+
+                <div className="mb-3">
+                    <p className="form-label fw-semibold">Course</p>
+                    <Select
+                        isMulti
+                        name="course"
+                        placeholder="Select Course"
+                        options={courseOptions}
+                        value={courseOptions.filter((opt) => values.course.includes(opt.value))}
+                        // onChange={(selected) => {
+                        //     setFieldValue("course", selected.map((item: Option) => item.value));
+                        // }}
+                        onChange={(selected) => {
+                            const selectedCourses = selected.map((item: Option) => item.value);
+                            setFieldValue("course", selectedCourses);
+
+                            const updatedDetails = { ...values.courseDetails };
+                            selectedCourses.forEach(courseId => {
+                                if (!updatedDetails[courseId]) {
+                                    updatedDetails[courseId] = { fee: "", capacity: "" };
+                                }
+                            });
+
+                            // Remove unselected ones
+                            Object.keys(updatedDetails).forEach(key => {
+                                if (!selectedCourses.includes(key)) {
+                                    delete updatedDetails[key];
+                                }
+                            });
+
+                            setFieldValue("courseDetails", updatedDetails);
+                        }}
+
+                        styles={customStyles}
+                        classNamePrefix="coreui"
+                        className="shadow-sm"
+                    />
+                    <ErrorMessage name="course" component="div" className="error" />
+                </div>
+
+                {values.course.length > 0 && (
+                    <div className="mb-3">
+                        <p className="form-label fw-semibold">Course Details</p>
+                        <table className="table table-bordered">
+                            <thead className="table-light">
+                                <tr>
+                                    <td className="fw-medium">Course</td>
+                                    <td className="fw-medium">Fee</td>
+                                    <td className="fw-medium">Capacity</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {values.course.map((courseId: string) => {
+                                    const courseName = courseOptions.find(c => c.value === courseId)?.label || "Unknown";
+
+                                    return (
+                                        <tr key={courseId}>
+                                            <td>{courseName}</td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    min='3000'
+                                                    className="form-control"
+                                                    value={values.courseDetails[courseId]?.fee || ""}
+                                                    onChange={(e) =>
+                                                        setFieldValue(`courseDetails.${courseId}.fee`, e.target.value)
+                                                    }
+                                                />
+                                                <ErrorMessage name={`courseDetails.${courseId}.fee`} component="div" className="error" />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    min='10'
+                                                    className="form-control"
+                                                    value={values.courseDetails[courseId]?.capacity || ""}
+                                                    onChange={(e) =>
+                                                        setFieldValue(`courseDetails.${courseId}.capacity`, e.target.value)
+                                                    }
+                                                />
+                                                <ErrorMessage name={`courseDetails.${courseId}.capacity`} component="div" className="error" />
+                                            </td>
+
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+            </div>
+        </div>
+    );
+};
+
+export default UniversityFormFields;
