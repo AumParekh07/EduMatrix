@@ -124,7 +124,7 @@ export function UniversityList1() {
                                 key={uni._id}
                                 className="text-decoration-none text-center"
                             >
-                                <li className="card shadow text-center p-3 m-3" style={{ backgroundColor: "#e4eaf2" }}>
+                                <li className="card cardbg shadow text-center p-3 m-3">
                                     <strong className="card-title">{uni.name}</strong> — {uni.address.address}, {uni.address.city}, {uni.address.state}, {uni.address.country}, {uni.address.pincode}
                                     <div className="mt-2">
                                         <strong>Stream:</strong>

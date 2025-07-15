@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 
@@ -33,6 +33,7 @@ export function StudentDashboard() {
             const msg = err || "Failed to fetch student details";
             setError(msg);
             errorToast(msg);
+            navigate('/std-detail')
             setLoading(false);
         }
     };
@@ -47,29 +48,29 @@ export function StudentDashboard() {
     if (error) return <ErrorComponent error={error} />;
 
 
-    const { studentDetail, enrollCourseDetail, emptyenrollCourseDetail } = studentData;
+    const { studentDetail, emptyProfileDetails, enrollCourseDetail, emptyenrollCourseDetail } = studentData;
 
     const initialValues = {
-        gender: studentDetail.gender,
-        birthDate: studentDetail.birthDate.split('T')[0],
-        stream: studentDetail.stream._id,
+        gender: studentDetail?.gender,
+        birthDate: studentDetail?.birthDate.split('T')[0],
+        stream: studentDetail?.stream._id,
         address: {
-            address: studentDetail.address.address,
-            city: studentDetail.address.city,
-            state: studentDetail.address.state,
-            country: studentDetail.address.country,
-            pincode: studentDetail.address.pincode,
+            address: studentDetail?.address.address,
+            city: studentDetail?.address.city,
+            state: studentDetail?.address.state,
+            country: studentDetail?.address.country,
+            pincode: studentDetail?.address.pincode,
         },
         preference: {
-            profession: studentDetail.preference.profession,
-            courseType: studentDetail.preference.courseType,
-            jobPlacement: String(studentDetail.preference.jobPlacement),
-            scholarship: String(studentDetail.preference.scholarship),
-            nearbyUniversity: String(studentDetail.preference.nearbyUniversity),
-            transportation: String(studentDetail.preference.transportation),
-            accommodation: String(studentDetail.preference.accommodation),
-            minFee: studentDetail.preference.minFee,
-            maxFee: studentDetail.preference.maxFee,
+            profession: studentDetail?.preference.profession,
+            courseType: studentDetail?.preference.courseType,
+            jobPlacement: String(studentDetail?.preference.jobPlacement),
+            scholarship: String(studentDetail?.preference.scholarship),
+            nearbyUniversity: String(studentDetail?.preference.nearbyUniversity),
+            transportation: String(studentDetail?.preference.transportation),
+            accommodation: String(studentDetail?.preference.accommodation),
+            minFee: studentDetail?.preference.minFee,
+            maxFee: studentDetail?.preference.maxFee,
         }
     };
 
@@ -77,11 +78,9 @@ export function StudentDashboard() {
 
     return (
         <>
-            <div className="container pt-5">
-                <div className="card p-4"
-                // style={{ backgroundColor: "#cde0fe" }}
-                >
-                    <h2 className="text-center card-header text-decoration-underline fw-bold">
+            <div className="container py-5 px-lg-5 p-0 ">
+                <div className="card rounded-4 p-4">
+                    <h2 className="text-center rounded-top-4 border-2 border-bottom p-2 pt-0 text-primary fw-bold">
                         Student Dashboard
                     </h2>
 
@@ -89,18 +88,19 @@ export function StudentDashboard() {
                         <div className="d-flex  justify-content-between">
                             <h4>👨‍💼 Student Information</h4>
                             <button onClick={() => setShowEditModal(true)} className="btn btn-outline-primary m-2 fw-semibold shadow-sm">Update</button>
-
                         </div>
-                        <ul className="list-group list-group-flush container"
-                        >
-                            <li className="list-group-item"><strong>Name:</strong> {studentDetail.userID.name}</li>
-                            <li className="list-group-item"><strong>Username:</strong> {studentDetail.userID.username}</li>
-                            <li className="list-group-item"><strong>Email:</strong> {studentDetail.userID.email}</li>
-                            <li className="list-group-item"><strong>Gender:</strong> {studentDetail.gender}</li>
-                            <li className="list-group-item"><strong>DOB:</strong> {new Date(studentDetail.birthDate).toLocaleDateString()}</li> {/*toDateString() */}
-                            <li className="list-group-item"><strong>Stream:</strong> {studentDetail.stream.name}</li>
-                            <li className="list-group-item"><strong>Location:</strong> {studentDetail.address.address},{studentDetail.address.city}, {studentDetail.address.state}</li>
-                        </ul>
+                        {studentDetail ? (
+                            <ul className="list-group list-group-flush container"
+                            >
+                                <li className="list-group-item"><strong>Name:</strong> {studentDetail.userID.name}</li>
+                                <li className="list-group-item"><strong>User Name:</strong> {studentDetail.userID.username}</li>
+                                <li className="list-group-item"><strong>Email:</strong> {studentDetail.userID.email}</li>
+                                <li className="list-group-item"><strong>Gender:</strong> {studentDetail.gender}</li>
+                                <li className="list-group-item"><strong>DOB:</strong> {new Date(studentDetail.birthDate).toLocaleDateString()}</li> {/*toDateString() */}
+                                <li className="list-group-item"><strong>Stream:</strong> {studentDetail.stream.name}</li>
+                                <li className="list-group-item"><strong>Location:</strong> {studentDetail.address.address},{studentDetail.address.city}, {studentDetail.address.state}</li>
+                            </ul>
+                        ) : (<p className="text-muted mx-3">{emptyProfileDetails}</p>)}
                     </div>
 
                     <div className="m-3">
@@ -113,28 +113,31 @@ export function StudentDashboard() {
                         {enrollCourseDetail ? (
                             <div className="row justify-content-center">
                                 {enrollCourseDetail.map((course: any, idx: number) => (
-                                    <div className="card shadow col-md-5 p-3 m-3 bg-opacity-50"
+                                    <div className="card cardbg rounded-5 border-2 border-primary shadow-sm shadow2 col-md-5 p-3 m-3"
                                         // style={{ backgroundColor: "#94bdfe" }}
-                                        style={{ backgroundColor: "#e4eaf2", }}
                                         key={course._id}>
-                                        <h6>👨🏻‍🏫 {idx + 1}. {course.courseID.fullname} ({course.courseID.name})</h6>
-                                        <p><strong>Type:</strong> {course.courseID.courseType}</p>
-                                        <p><strong>University:</strong> {course.universityID?.name}</p>
-                                        <p><strong>Location:</strong> {course.universityID?.address.address},{course.universityID?.address.city}, {course.universityID?.address.state}</p>
+                                        <h5 className="fw-bold text-center text-light bg-primary rounded-top-5 p-2"> {idx + 1}. {course.courseID?.fullname} ({course.courseID?.name})</h5>
+                                        <div className="ps-3">
+                                            <p><strong>Type:</strong>
+                                                <span className={`badge ${course.courseID?.courseType === "FullTime" ? "bg-primary" : course.courseID?.courseType === "PartTime" ? "bg-info" : "bg-secondary"}`}>{course.courseID?.courseType}</span>
+                                            </p>
+                                            <p><strong>University:</strong> {course.universityID?.name}</p>
+                                            <p><strong>Location:</strong> {course.universityID?.address.address},{course.universityID?.address.city}, {course.universityID?.address.state}</p>
 
-                                        <strong>Compulsory Subjects:</strong>
-                                        <ul className="mb-2">
-                                            {course.subjects.compulsory.map((sub: any) => (
-                                                <li key={sub._id}>{sub.fullName} ({sub.name})</li>
-                                            ))}
-                                        </ul>
+                                            <strong>Compulsory Subjects:</strong>
+                                            <ul className="mb-2">
+                                                {course.subjects.compulsory.map((sub: any) => (
+                                                    <li key={sub._id}>{sub.fullName} ({sub.name})</li>
+                                                ))}
+                                            </ul>
 
-                                        <strong>Optional Subjects:</strong>
-                                        <ul>
-                                            {course.subjects.optional.map((sub: any) => (
-                                                <li key={sub._id}>{sub.fullName} ({sub.name})</li>
-                                            ))}
-                                        </ul>
+                                            <strong>Optional Subjects:</strong>
+                                            <ul>
+                                                {course.subjects.optional.map((sub: any) => (
+                                                    <li key={sub._id}>{sub.fullName} ({sub.name})</li>
+                                                ))}
+                                            </ul>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -150,7 +153,7 @@ export function StudentDashboard() {
 
                     </div>
                 </div>
-            </div>
+            </div >
 
             <EditModal
                 title="Edit Subject"

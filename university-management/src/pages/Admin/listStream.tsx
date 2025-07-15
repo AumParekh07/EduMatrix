@@ -30,7 +30,7 @@ export function AdminStreams() {
                 totalLabel="Total Stream"
                 renderItem={(stream) => (
                     <div key={stream._id} className="col-md-4 mb-3">
-                        <div className="card shadow" style={{ backgroundColor: "#e4eaf2" }}>
+                        <div className="card cardbg rounded-4 shadow-sm shadow1">
                             <div className="card-body">
                                 <div className="card-title  justify-content-between d-flex" >
                                     <h5 className="mb-0">{stream.name}</h5>

@@ -1,22 +1,25 @@
-import { Menu, Layers, Book, University, PlusCircle, LogOut, BookOpen, } from "lucide-react";
+import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, Layers, Book, University, PlusCircle, LogOut, BookOpen } from "lucide-react";
 import { LogoutHandle } from "../helper/SubmitHendle";
+import { SidebartoggelContext } from "../context/context";
 import './adminSidebar.css'
+
 const menuItems = [
-    { label: "Streams", path: "/admin/stream", icon: <Layers size={20} /> },
-    { label: "Create Stream", path: "/admin/create-stream", icon: <PlusCircle size={20} /> },
-    { label: "Subjects", path: "/admin/subject", icon: <BookOpen size={20} /> },
-    { label: "Create Subject", path: "/admin/create-subject", icon: <PlusCircle size={20} /> },
-    { label: "Courses", path: "/admin/course", icon: <Book size={20} /> },
-    { label: "Create Course", path: "/admin/create-course", icon: <PlusCircle size={20} /> },
     { label: "Universities", path: "/admin/university", icon: <University size={20} /> },
     { label: "Create University", path: "/admin/create-university", icon: <PlusCircle size={20} /> },
+    { label: "Courses", path: "/admin/course", icon: <Book size={20} /> },
+    { label: "Create Course", path: "/admin/create-course", icon: <PlusCircle size={20} /> },
+    { label: "Subjects", path: "/admin/subject", icon: <BookOpen size={20} /> },
+    { label: "Create Subject", path: "/admin/create-subject", icon: <PlusCircle size={20} /> },
+    { label: "Streams", path: "/admin/stream", icon: <Layers size={20} /> },
+    { label: "Create Stream", path: "/admin/create-stream", icon: <PlusCircle size={20} /> },
 ];
 
-function AdminSidebar({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: (val: boolean) => void; }) {
+function AdminSidebar() {
     const location = useLocation();
     const navigate = useNavigate();
-
+    const { collapsed, setCollapsed } = useContext(SidebartoggelContext);
     return (
 
         <div

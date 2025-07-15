@@ -42,7 +42,7 @@ export function AdminCourses() {
                 totalLabel="Total Course"
                 renderItem={(course) => (
                     <div key={course._id} className="col-lg-5 m-3">
-                        <div className="card shadow h-100" style={{ backgroundColor: "#e4eaf2" }}>
+                        <div className="card cardbg rounded-4 shadow-sm shadow1 h-100">
                             <div className="card-body">
                                 <div className="card-title justify-content-between d-flex">
                                     <h5>{course.fullname} ({course.name})</h5>
@@ -59,7 +59,11 @@ export function AdminCourses() {
                                             }} />
                                     </div>
                                 </div>
-                                <p className="text-muted">Type: {course.courseType}</p>
+
+                                <p className="fw-medium">
+                                    🎯 Course Type: <span className={`badge ${course.courseType === "FullTime" ? "bg-primary" : course.courseType === "PartTime" ? "bg-info" : "bg-secondary"}`}>
+                                        {course.courseType}
+                                    </span></p>
 
                                 <div className="row">
                                     <div className="col">
@@ -85,48 +89,51 @@ export function AdminCourses() {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    </div >
+                )
+                }
             />
 
-            {selectedCourse && (
-                <>
-                    <EditModal
-                        title="Edit Course"
-                        apiPath={`/admin/update-course/${selectedCourse?._id}`}
-                        show={showEditModal}
-                        initialValues={{
-                            name: selectedCourse.name,
-                            fullname: selectedCourse.fullname,
-                            courseType: selectedCourse.courseType,
-                            subjects: {
-                                compulsory: selectedCourse.subjects.compulsory.map((sub) => sub._id),
-                                optional: selectedCourse.subjects.optional.map((sub) => sub._id),
-                            },
-                        }}
-                        validationSchema={CourseSchema}
-                        size="lg"
-                        onHide={() => setShowEditModal(false)}
-                        reload={() => setReload((prev) => !prev)}
-                    >
-                        {({ values, setFieldValue }) => (
-                            <CourseFormFields
-                                values={values}
-                                setFieldValue={setFieldValue} />
-                        )}
-                    </EditModal>
+            {
+                selectedCourse && (
+                    <>
+                        <EditModal
+                            title="Edit Course"
+                            apiPath={`/admin/update-course/${selectedCourse?._id}`}
+                            show={showEditModal}
+                            initialValues={{
+                                name: selectedCourse.name,
+                                fullname: selectedCourse.fullname,
+                                courseType: selectedCourse.courseType,
+                                subjects: {
+                                    compulsory: selectedCourse.subjects.compulsory.map((sub) => sub._id),
+                                    optional: selectedCourse.subjects.optional.map((sub) => sub._id),
+                                },
+                            }}
+                            validationSchema={CourseSchema}
+                            size="lg"
+                            onHide={() => setShowEditModal(false)}
+                            reload={() => setReload((prev) => !prev)}
+                        >
+                            {({ values, setFieldValue }) => (
+                                <CourseFormFields
+                                    values={values}
+                                    setFieldValue={setFieldValue} />
+                            )}
+                        </EditModal>
 
-                    <DeleteModal
-                        title="Delete Course"
-                        name={selectedCourse.name}
-                        apiPath={`delete-course/${selectedCourse._id}`}
-                        show={showDeleteModal}
-                        onHide={() => setShowDeleteModal(false)}
-                        reload={() => setReload((prev) => !prev)}
-                    />
-                </>
+                        <DeleteModal
+                            title="Delete Course"
+                            name={selectedCourse.name}
+                            apiPath={`delete-course/${selectedCourse._id}`}
+                            show={showDeleteModal}
+                            onHide={() => setShowDeleteModal(false)}
+                            reload={() => setReload((prev) => !prev)}
+                        />
+                    </>
 
-            )}
+                )
+            }
         </>
     );
 }

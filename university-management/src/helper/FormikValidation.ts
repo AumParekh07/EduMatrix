@@ -67,7 +67,11 @@ export interface CourseI {
         optional: string[]
     }
 }
-
+export interface CourseDetail {
+    courseId: string;
+    fee: number;
+    capacity: number;
+}
 export interface UniversityI {
     name: string;
     jobPlacement: string;
@@ -84,12 +88,7 @@ export interface UniversityI {
     };
     stream: string[];
     course: string[];
-    courseDetails: {
-        [courseId: string]: {
-            fee: number;
-            capacity: number;
-        };
-    };
+    courseDetails: CourseDetail[];
 };
 
 export interface FeeCapI {
@@ -184,7 +183,7 @@ export const UniversityInitialValues: UniversityI = {
     },
     stream: [],
     course: [],
-    courseDetails: {}
+    courseDetails: []
 };
 
 export const FeeCapInitialValues: FeeCapI = {
@@ -339,27 +338,6 @@ export const CourseSchema = Yup.object().shape({
     })
 })
 
-const generateCourseDetailsSchema = (courses: string[]) => {
-    const shape: Record<string, Yup.ObjectSchema<any>> = {};
-    if (!Array.isArray(courses)) {
-        return Yup.object(); // return empty schema if invalid input
-    }
-    for (const courseId of courses) {
-        shape[courseId] = Yup.object().shape({
-            fee: Yup.number()
-                .typeError("Fee must be a number")
-                .required("Fee is required")
-                .min(3000, "Minimum ₹3000 Fee Required"),
-            capacity: Yup.number()
-                .typeError("Capacity must be a number")
-                .required("Capacity is required")
-                .min(10, "Minimum 10 students")
-                .max(100, "Maximum 100 students"),
-        });
-    }
-
-    return Yup.object().shape(shape);
-};
 
 export const UniversitySchema = Yup.object().shape({
     name: name,
@@ -381,8 +359,18 @@ export const UniversitySchema = Yup.object().shape({
     course: Yup.array()
         .of(Yup.string())
         .min(1, "At least One course is required"),
-    courseDetails: Yup.object().when("course", ([course]: string[], schema: any) => {
-        if (!Array.isArray(course)) return schema;
-        return generateCourseDetailsSchema(course);
-    }),
+    courseDetails: Yup.array()
+        .of(
+            Yup.object().shape({
+                courseId: Yup.string().required("Course is required"),
+                fee: Yup.number()
+                    .required("Fee is required")
+                    .min(3000, "Minimum ₹3000 Fee Required"),
+                capacity: Yup.number()
+                    .required("Capacity is required")
+                    .min(10, "Minimum 10 students")
+                    .max(100, "Maximum 100 students"),
+            })
+        )
+        .min(1, "At least one course detail required"),
 })

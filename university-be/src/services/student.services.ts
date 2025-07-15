@@ -2,13 +2,11 @@ import { ObjectId } from "mongoose";
 
 import UniversityModel, { Address } from "../models/university";
 import StudentModle, { Preference } from "../models/student";
-import CourseModel from "../models/course";
 import EnrollCourseModel from "../models/enrollCourse";
 import FeeCapacityModel from "../models/feecapacity";
-import StreamModel from "../models/stream";
 import { IsUser } from "../helper/userHelper";
 import { UserProfileCompleted } from "../helper/stdHelper";
-import { IsStream } from "../helper/adminHelper";
+import { IsCourse, IsStream, IsUniversity } from "../helper/adminHelper";
 
 
 export const studentDetailService = async (
@@ -72,22 +70,27 @@ export const getstudentDetailService = async (userID: ObjectId) => {
             .populate('stream')
             .populate('userID', 'name username email profileCompleted')
 
-        if (!studentDetail) {
-            throw new Error(`${User.username} Detail Not Found`);
-        }
         const enrollCourseDetail = await EnrollCourseModel.find({ userID: User._id })
             .populate('subjects.compulsory')
             .populate('subjects.optional')
             .populate('universityID', 'address name')
             .populate('courseID', 'name fullname courseType')
 
-
-        if (enrollCourseDetail.length == 0) {
-            const emptyenrollCourseDetail = `${User.username} does not Enrolled in Any Course`;
-            return { studentDetail, emptyenrollCourseDetail }
+        if (!studentDetail && enrollCourseDetail.length == 0) {
+            throw new Error(`${User.username} Detail Not Found!`);
+        }
+        else if (!studentDetail && enrollCourseDetail.length > 0) {
+            const emptyProfileDetails = `${User.username} Detail Not Found! Please update Your Profile`
+            return { emptyProfileDetails, enrollCourseDetail }
         }
 
-        return { studentDetail, enrollCourseDetail };
+        else if (enrollCourseDetail.length == 0 && studentDetail) {
+            const emptyenrollCourseDetail = `${User.username} does not Enrolled in any Course`;
+            return { studentDetail, emptyenrollCourseDetail }
+        }
+        else {
+            return { studentDetail, enrollCourseDetail };
+        }
     } catch (error) {
         throw error
     }
@@ -99,15 +102,9 @@ export const enrollCourseService = async (userID: ObjectId, universityID: Object
 
         const User = await IsUser(userID)
 
-        const course = await CourseModel.findOne({ _id: courseID })
-        if (!course) {
-            throw new Error("Course Not Found");
-        }
+        const course = await IsCourse(courseID.toString())
 
-        const university = await UniversityModel.findOne({ _id: universityID })
-        if (!university) {
-            throw new Error("University Not Found");
-        }
+        const university = await IsUniversity(universityID.toString())
 
         const exsitCourseUni = await UniversityModel.findOne({ course: courseID })
         if (!exsitCourseUni) {

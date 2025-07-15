@@ -7,11 +7,13 @@ import type { Course } from "../../pages/Admin/listCourse";
 import type { Stream } from "../../pages/Admin/listStream";
 import type { Option } from "./courseFormFields";
 import { apiCall } from "../../api/apiCaller";
+import type { CourseDetail } from "../../helper/FormikValidation";
 
 type Props = {
     values: any;
     setFieldValue: (field: string, value: any) => void;
 };
+
 
 const UniversityFormFields = ({ values, setFieldValue }: Props) => {
 
@@ -108,7 +110,7 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
                 </div>
 
                 <div className="mb-3">
-                    <p className="form-label fw-semibold">Course</p>
+                    <div> <p className="form-label fw-semibold">Course</p></div>
                     <Select
                         isMulti
                         name="course"
@@ -122,21 +124,12 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
                             const selectedCourses = selected.map((item: Option) => item.value);
                             setFieldValue("course", selectedCourses);
 
-                            const updatedDetails = { ...values.courseDetails };
-                            selectedCourses.forEach(courseId => {
-                                if (!updatedDetails[courseId]) {
-                                    updatedDetails[courseId] = { fee: "", capacity: "" };
-                                }
+                            const updatedCourseDetails = selectedCourses.map((id) => {
+                                const existing = values.courseDetails.find((cDetail: CourseDetail) => cDetail.courseId === id);
+                                return existing || { courseId: id, fee: "", capacity: "" };
                             });
 
-                            // Remove unselected ones
-                            Object.keys(updatedDetails).forEach(key => {
-                                if (!selectedCourses.includes(key)) {
-                                    delete updatedDetails[key];
-                                }
-                            });
-
-                            setFieldValue("courseDetails", updatedDetails);
+                            setFieldValue("courseDetails", updatedCourseDetails);
                         }}
 
                         styles={customStyles}
@@ -145,7 +138,6 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
                     />
                     <ErrorMessage name="course" component="div" className="error" />
                 </div>
-
                 {values.course.length > 0 && (
                     <div className="mb-3">
                         <p className="form-label fw-semibold">Course Details</p>
@@ -158,48 +150,44 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {values.course.map((courseId: string) => {
-                                    const courseName = courseOptions.find(c => c.value === courseId)?.label || "Unknown";
-
+                                {values.courseDetails.map((detail: CourseDetail, idx: number) => {
+                                    const courseName = courseOptions.find(c => c.value === detail.courseId)?.label || "Unknown";
                                     return (
-                                        <tr key={courseId}>
+                                        <tr key={detail.courseId}>
                                             <td>{courseName}</td>
                                             <td>
                                                 <input
                                                     type="number"
-                                                    min='3000'
+                                                    min="3000"
                                                     className="form-control"
-                                                    value={values.courseDetails[courseId]?.fee || ""}
-                                                    onChange={(e) =>
-                                                        setFieldValue(`courseDetails.${courseId}.fee`, e.target.value)
-                                                    }
+                                                    name={`courseDetails.${idx}.fee`}
+                                                    value={detail.fee}
+                                                    onChange={(e) => setFieldValue(`courseDetails.${idx}.fee`, e.target.value)}
                                                 />
-                                                <ErrorMessage name={`courseDetails.${courseId}.fee`} component="div" className="error" />
+                                                <ErrorMessage name={`courseDetails.${idx}.fee`} component="div" className="error" />
                                             </td>
                                             <td>
                                                 <input
                                                     type="number"
-                                                    min='10'
+                                                    min="10"
                                                     className="form-control"
-                                                    value={values.courseDetails[courseId]?.capacity || ""}
-                                                    onChange={(e) =>
-                                                        setFieldValue(`courseDetails.${courseId}.capacity`, e.target.value)
-                                                    }
+                                                    name={`courseDetails.${idx}.capacity`}
+                                                    value={detail.capacity}
+                                                    onChange={(e) => setFieldValue(`courseDetails.${idx}.capacity`, e.target.value)}
                                                 />
-                                                <ErrorMessage name={`courseDetails.${courseId}.capacity`} component="div" className="error" />
+                                                <ErrorMessage name={`courseDetails.${idx}.capacity`} component="div" className="error" />
                                             </td>
-
                                         </tr>
                                     );
                                 })}
                             </tbody>
                         </table>
+
                     </div>
                 )}
-
             </div>
         </div>
-    );
-};
+    )
+}
 
 export default UniversityFormFields;

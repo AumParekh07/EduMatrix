@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import UniversityModel, { Address } from "../models/university";
 import StreamModel from "../models/stream";
 import SubjectModel from "../models/subject";
@@ -6,6 +6,10 @@ import CourseModel, { Subject } from "../models/course";
 import FeeCapacityModel from "../models/feecapacity";
 import UserGroupModel, { permission } from "../models/user_group";
 import {
+  existCourseInUni,
+  existStreamInUni,
+  existSubjectInCourse,
+  existUniversityInEnrollcourse,
   IsCourse, IsCourseName, IsStream, IsStreamName,
   ISSubject, IsSubjectName, IsUniversity, IsUniversityName,
   validateCourseSubjects, validateUniversity
@@ -43,6 +47,8 @@ export const updateStreamService = async (id: string, name: string) => {
 export const deleteStreamService = async (id: string) => {
   try {
     const stream = await IsStream(id);
+    await existStreamInUni(stream._id.toString())
+
     const deleteStream = await StreamModel.findByIdAndDelete(stream._id);
 
     return deleteStream
@@ -81,6 +87,8 @@ export const updateSubjectService = async (id: string, name: string, fullName: s
 export const deleteSubjectService = async (id: string) => {
   try {
     const subject = await ISSubject(id);
+    await existSubjectInCourse(subject._id.toString())
+
     const deleteSubject = await SubjectModel.findByIdAndDelete(subject._id);
 
 
@@ -139,7 +147,9 @@ export const updateCourseService = async (
 
 export const deleteCourseService = async (id: string) => {
   try {
+
     const course = await IsCourse(id);
+    await existCourseInUni(course._id.toString())
 
     const deleteCourse = await CourseModel.findByIdAndDelete(course._id);
 
@@ -228,6 +238,8 @@ export const updateUniversityService = async (
 export const deleteUniversityService = async (id: string) => {
   try {
     const university = await IsUniversity(id);
+    await existUniversityInEnrollcourse(university._id.toString())
+
     const deleteUniversity = await UniversityModel.findByIdAndDelete(university._id);
 
     return deleteUniversity
@@ -236,6 +248,47 @@ export const deleteUniversityService = async (id: string) => {
 
   }
 }
+
+type FeeCapPayload = {
+  courseId: string;
+  fee: number;
+  capacity: number;
+}
+
+export const upsertFeeCapacitiesService = async (
+  universityId: string,
+  courseDetails: FeeCapPayload[]
+) => {
+  const updatedOrCreated = await Promise.all(
+    courseDetails.map(async (detail) => {
+      const existing = await FeeCapacityModel.findOne({
+        universityId,
+        courseId: detail.courseId,
+      });
+
+      if (existing) {
+        existing.fee = detail.fee;
+        existing.capacity = detail.capacity;
+        return await existing.save();
+      }
+
+      const newEntry = new FeeCapacityModel({
+        fee: detail.fee,
+        capacity: detail.capacity,
+        universityId: new mongoose.Types.ObjectId(universityId),
+        courseId: new mongoose.Types.ObjectId(detail.courseId),
+      });
+
+      return await newEntry.save();
+    })
+  );
+  await FeeCapacityModel.deleteMany({
+    universityId,
+    courseId: { $nin: courseDetails.map(d => d.courseId) },
+  });
+
+  return updatedOrCreated;
+};
 
 export const createFeeCapacityService = async (
   fee: number,
@@ -266,7 +319,6 @@ export const createFeeCapacityService = async (
 
 export const createUserGroupService = async (role: string, module_permission: permission) => {
   try {
-    console.log("UserGroupModel import:", UserGroupModel);
 
     const newUserGroup = new UserGroupModel({ role, module_permission })
     await newUserGroup.save()

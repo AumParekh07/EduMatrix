@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export function SubmitButton({ title }: { title: string }) {
     return (
-        <button type="submit" className="btn btn-outline-primary fw-semibold shadow-sm" >
+        <button type="submit" className="btn btn-outline-primary fw-semibold shadow-sm rounded4" >
             {title}
         </button>
     );
@@ -40,19 +40,6 @@ export function Preferencefield({ title, id1, id2, labelHtmlFor }: { labelHtmlFo
             </div>
             <ErrorMessage name={labelHtmlFor} component="div" className="error" />
         </div>
-    )
-}
-
-export function CheckboxBtn({ labelHtmlFor, id, title, value, disabled = false }: {
-    title: string, id: string, labelHtmlFor: string, value: string, disabled?: boolean;
-}) {
-    return (
-        <>
-            <Field type="checkbox" className="btn-check" value={value} name={labelHtmlFor} id={id} autoComplete="off" disabled={disabled} />
-            <label className={`btn btn-outline-primary ${disabled ? 'disabled' : ''}`} htmlFor={id}>
-                {title}
-            </label>
-        </>
     )
 }
 
@@ -95,7 +82,7 @@ export function ErrorComponent({ error, hw = true }: { error: string, hw?: boole
 export function BackButton() {
     const navigate = useNavigate();
     return (
-        <button onClick={() => navigate(-1)} className="btn btn-primary align-items-center m-2 fw-semibold shadow-sm">
+        <button onClick={() => navigate(-1)} type="button" className="btn btn-primary align-items-center m-2 rounded4 fw-semibold shadow-sm">
             <ChevronLeft style={{ marginTop: '-3px', marginLeft: '-7px' }} />Back
         </button>
     );

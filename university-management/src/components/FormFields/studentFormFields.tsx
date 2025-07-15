@@ -7,25 +7,27 @@ export default function StudentFormFields() {
             <div className="col-md-6">
 
                 <div className="mb-3">
-                    <label className="form-label fw-semibold">  Gender:</label><br />
-                    <div className="form-check form-check-inline">
-                        <Field type="radio" name="gender" value="Male" className="form-check-input" id="male" />
-                        <label htmlFor="male" className="form-check-label">Male</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <Field type="radio" name="gender" value="Female" className="form-check-input" id="female" />
-                        <label htmlFor="female" className="form-check-label">Female</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <Field type="radio" name="gender" value="Others" className="form-check-input" id="others" />
-                        <label htmlFor="others" className="form-check-label">Others</label>
+                    <label className="form-label fw-semibold">Gender</label><br />
+                    <div className="form-control shadow-sm d-flex justify-content-around">
+                        <div className="form-check form-check-inline">
+                            <Field type="radio" name="gender" value="Male" className="form-check-input" id="male" />
+                            <label htmlFor="male" className="form-check-label">Male</label>
+                        </div>
+                        <div className="form-check form-check-inline">
+                            <Field type="radio" name="gender" value="Female" className="form-check-input" id="female" />
+                            <label htmlFor="female" className="form-check-label">Female</label>
+                        </div>
+                        <div className="form-check form-check-inline">
+                            <Field type="radio" name="gender" value="Others" className="form-check-input" id="others" />
+                            <label htmlFor="others" className="form-check-label">Others</label>
+                        </div>
                     </div>
                     <ErrorMessage name="gender" component="div" className="error" />
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label fw-semibold">  Birth Date:</label>
-                    <Field type="date" name="birthDate" className="form-control" max="2005-12-31" />
+                    <label className="form-label fw-semibold">Birth Date</label>
+                    <Field type="date" name="birthDate" className="form-control shadow-sm" max="2005-12-31" />
                     <ErrorMessage name="birthDate" component="div" className="error" />
                 </div>
 
@@ -39,8 +41,8 @@ export default function StudentFormFields() {
 
             <div className="col-md-6">
                 <div className="mb-3">
-                    <label className="form-label fw-semibold">Stream:</label>
-                    <Field as="select" name="stream" className="form-select">
+                    <label className="form-label fw-semibold">Stream</label>
+                    <Field as="select" name="stream" className="form-select shadow-sm">
                         <option value="" disabled hidden>---Select Your Stream---</option>
                         <option value="681d97af40bddaf9a63d9336">Science</option>
                         <option value="681d97f940bddaf9a63d9338">Commerce</option>
@@ -50,8 +52,8 @@ export default function StudentFormFields() {
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label fw-semibold">  Course Type:</label>
-                    <Field as="select" name="preference.courseType" className="form-select">
+                    <label className="form-label fw-semibold">Course Type</label>
+                    <Field as="select" name="preference.courseType" className="form-select shadow-sm">
                         <option value="" disabled hidden>---Select Course Type---</option>
                         <option value="FullTime">FullTime</option>
                         <option value="PartTime">PartTime</option>
@@ -70,14 +72,14 @@ export default function StudentFormFields() {
 
 
                 <div className="mb-3">
-                    <label className="form-label fw-semibold">  Your Fee Range:</label>
+                    <label className="form-label fw-semibold">Your Fee Range</label>
                     <div className="row g-2">
                         <div className="col">
                             <Field type="number" name="preference.minFee" className="form-control shadow-sm" placeholder="Minimum Fee" min="3000" />
                             <ErrorMessage name="preference.minFee" component="div" className="error" />
                         </div>
                         <div className="col">
-                            <Field type="number" name="preference.maxFee" className="form-control shadow-sm" placeholder="Maximum Fee" />
+                            <Field type="number" name="preference.maxFee" className="form-control shadow-sm" placeholder="Maximum Fee" min="3500" />
                             <ErrorMessage name="preference.maxFee" component="div" className="error" />
                         </div>
                     </div>

@@ -6,6 +6,7 @@ import {
   deleteUniversityService, updateCourseService, updateStreamService,
   updateSubjectService,
   updateUniversityService,
+  upsertFeeCapacitiesService,
 } from "../services/admin.services";
 
 import StreamModel from "../models/stream";
@@ -23,16 +24,16 @@ export const createUniversity = async (req: Request, res: Response) => {
 
     // fee and capacity per course
     const insertedFeeCaps = await Promise.all(
-      course.map(async (courseId: string) => {
-        const detail = courseDetails[courseId];//fee,capacity
+      courseDetails.map(async (detail: { courseId: string; fee: number; capacity: number; }) => {
+
         const mongoose = require("mongoose");
         const feecapacity = await createFeeCapacityService(
           detail.fee,
           detail.capacity,
           new mongoose.Types.ObjectId(university?._id),
-          new mongoose.Types.ObjectId(courseId)
+          new mongoose.Types.ObjectId(detail.courseId)
         );
-        return feecapacity
+        return feecapacity;
       })
     );
 
@@ -293,15 +294,20 @@ export const updateUniversity = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { name, jobPlacement, scholarship,
       nearbyUniversity, transportation,
-      accommodation, address, stream, course } = req.body;
+      accommodation, address, stream, course, courseDetails } = req.body;
 
-    const result = await updateUniversityService(id, name, jobPlacement, scholarship,
+    const university = await updateUniversityService(id, name, jobPlacement, scholarship,
       nearbyUniversity, transportation, accommodation, address, stream, course);
+
+    if (!university) throw new Error(`Failed to Update ${name}`);
+
+    const updatedFeeCaps = await upsertFeeCapacitiesService(university._id.toString(), courseDetails);
 
     res.status(201).json({
       success: true,
-      message: `${result?.name} Updated Successfully`,
-      University: result,
+      message: `${university?.name} Updated Successfully`,
+      University: university,
+      feeCapacities: updatedFeeCaps
     });
   } catch (error) {
     console.log("error: ", error);

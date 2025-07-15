@@ -5,6 +5,7 @@ import { checkIfUserExists, generateOTP, IsUser, sendEmail, userExists } from ".
 import { ObjectId } from "mongoose";
 import UserModel, { UserSchema } from "../models/user";
 import UniversityModel from "../models/university";
+import FeeCapacityModel from "../models/feecapacity";
 
 
 interface TCreateUserResponse {
@@ -279,7 +280,9 @@ export const getUniversityByIDService = async (id: string, userId: ObjectId) => 
         throw new Error("University Not Found");
       }
 
-      return university
+      const FeeAndCapacity = await FeeCapacityModel.find({ universityId: id })
+
+      return { university, FeeAndCapacity }
     } else {
       throw new Error("User Not Found");
     }

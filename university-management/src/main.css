@@ -9,6 +9,25 @@
   transform: translateY(-3px);
 }
 
+.shadow1,
+.shadow2 {
+  transition: box-shadow 0.3s linear;
+}
+
+.shadow1:hover {
+  /* box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important; */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.shadow2:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+  /* box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important; */
+}
+
+.cardbg {
+  background-color: #e4eaf2;
+}
+
 /* .loader {
   width: 50px;
   aspect-ratio: 1;

@@ -1,19 +1,5 @@
 import Joi from "joi";
-import { addressSchema, ArrayObjectId, courseType, fullname, booleanItem, name, objectId, customValidation, objectIdPattern, } from "./commenValidator";
-
-const feeCapSchema = Joi.object({
-    fee: Joi.number().min(3000).required().messages({
-        "number.base": "Fee must be a number",
-        "number.min": "Minimum ₹3000 Fee required",
-        "any.required": "Fee is required",
-    }),
-    capacity: Joi.number().min(10).max(100).required().messages({
-        "number.base": "Capacity must be a number",
-        "number.min": "Minimum 10 students required",
-        "number.max": "Maximum 100 students allowed",
-        "any.required": "Capacity is required",
-    }),
-});
+import { addressSchema, ArrayObjectId, courseType, fullname, booleanItem, name, objectId, customValidation, } from "./commenValidator";
 
 export const createUniversitySchema = Joi.object({
     name: name,
@@ -28,16 +14,23 @@ export const createUniversitySchema = Joi.object({
 
     stream: ArrayObjectId,
     course: ArrayObjectId,
-    courseDetails: Joi.object()
-        .pattern(
-            Joi.string().pattern(objectIdPattern), // key: string (course id)
-            feeCapSchema                           // value: fee and capacity object
-        )
-        .required()
-        .messages({
-            "object.pattern.base": "Invalid course detail entry",
-            "any.required": "Course details are required",
-        }),
+
+    courseDetails: Joi.array().items(
+        Joi.object({
+            courseId: objectId,
+            fee: Joi.number().min(3000).required().messages({
+                "number.base": "Fee must be a number",
+                "number.min": "Minimum ₹3000 Fee required",
+                "any.required": "Fee is required",
+            }),
+            capacity: Joi.number().min(10).max(100).required().messages({
+                "number.base": "Capacity must be a number",
+                "number.min": "Minimum 10 students required",
+                "number.max": "Maximum 100 students allowed",
+                "any.required": "Capacity is required",
+            }),
+        })
+    ).required()
 })
 
 export const createStreamSchema = Joi.object({

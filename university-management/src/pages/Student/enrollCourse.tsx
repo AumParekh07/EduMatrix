@@ -26,7 +26,7 @@ export function EnrollCourse() {
 
     if (!state) return <ErrorComponent error={error} />;
 
-    const { course, universityID } = state;
+    const { course, universityID, feeCapacities } = state;
 
 
     const handleSubmit = async (values: EnrollCourseI) => {
@@ -69,47 +69,54 @@ export function EnrollCourse() {
 
     return (
         <div className="container d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 57.6px)" }}>
-            <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "850px" }}>
-                <h2 className="text-center card-header mb-4">Enroll Course</h2>
-                <h2>Enroll in {course.fullname}</h2>
-                <p><strong>Course Code:</strong> {course.name}</p>
-                <p><strong>Type:</strong> {course.courseType}</p>
-
-                <div>
-                    <h5>📘 Compulsory Subjects</h5>
-                    <ul>
-                        {course.subjects.compulsory.map((sub: Subject) => (
-                            <li key={sub._id}>{sub.fullName} ({sub.name})</li>
-                        ))}
-                    </ul>
-                </div>
-
+            <div className="card  shadow-lg p-4 w-100 rounded-4" style={{ maxWidth: "850px" }}>
+                {/* <h2 className="text-center mb-4 fw-bold text-primary">Enroll Course</h2> */}
                 <Formik
                     initialValues={EnrollCourseinitialValues}
                     validationSchema={EnrollCourseSchema}
                     onSubmit={handleSubmit}>
                     <Form>
-                        <div>
-                            <h5>📗 Optional Subjects</h5>
-                            {course.subjects.optional.map((sub: Subject) => (
-                                <div className="container" key={sub._id}>
-                                    <label>
-                                        <Field
-                                            type="checkbox"
-                                            name="optionalSubjectID"
-                                            value={sub._id}
-                                        />
-                                        {sub.fullName} ({sub.name})
-                                    </label>
-                                </div>
-                            ))}
-                            <ErrorMessage name="optionalSubjectID" component="div" className="text-danger small" />
-                            <p className="m-0 text-muted">Need to select at least one subject.</p>
+                        <h2 className="border-2 border-bottom p-2 pt-0 fw-bold text-center text-primary">{course.fullname}({course.name})</h2>
+                        <div className="d-flex gap-3 fs-5 justify-content-center">
+                            <p> <strong>Fee:</strong> ₹{feeCapacities?.find((fc: any) => fc.courseId === course._id)?.fee}</p>
+                            <p> <strong>Capacity:</strong> {feeCapacities?.find((fc: any) => fc.courseId === course._id)?.capacity} </p>
+                            <p><strong>Type:</strong> {course.courseType}</p>
+
                         </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <h5>📘 Compulsory Subjects</h5>
+                                <ul>
+                                    {course.subjects.compulsory.map((sub: Subject) => (
+                                        <li key={sub._id}>{sub.fullName} ({sub.name})</li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className="col-md-6">
+                                <h5>📗 Optional Subjects</h5>
+                                <p className="m-0 text-muted">Need to select at least one subject.</p>
+                                {course.subjects.optional.map((sub: Subject) => (
+                                    <div className="container" key={sub._id}>
+                                        <label>
+                                            <Field
+                                                type="checkbox"
+                                                name="optionalSubjectID"
+                                                value={sub._id}
+                                                className="form-check-input me-1"
+                                            />
+                                            {sub.fullName} ({sub.name})
+                                        </label>
+                                    </div>
+                                ))}
+                                <ErrorMessage name="optionalSubjectID" component="div" className="error" />
+
+                            </div>
+                        </div >
 
                         <div className="d-flex justify-content-between">
                             <BackButton />
-                            <button type="submit" className="btn btn-primary m-2 fw-semibold shadow-sm">
+                            <button type="submit" className="btn btn-primary m-2 fw-semibold shadow-sm rounded4">
                                 Enroll
                             </button>
                         </div>
@@ -117,5 +124,6 @@ export function EnrollCourse() {
                 </Formik>
             </div>
         </div>
+
     );
 }

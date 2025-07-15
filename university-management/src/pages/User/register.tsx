@@ -20,7 +20,7 @@ export function Register() {
                 >
                     <Form id="registerForm">
                         <InputFiled1 title="Full Name" type="text" id="name" placeholder="Enter your full name" />
-                        <InputFiled1 title="Username" type="text" id="username" placeholder="Choose a username" />
+                        <InputFiled1 title="User Name" type="text" id="username" placeholder="Choose a username" />
                         <InputFiled1 title="Email" type="email" id="email" placeholder="Enter your email address" />
                         <InputFiled1 title="Password" type="password" id="password" placeholder="Create a strong password" />
 

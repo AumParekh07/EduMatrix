@@ -105,13 +105,12 @@ export function UniversityList() {
 
     return (
         <div className="container pt-5 d-flex justify-content-center align-items-center">
-            <div className="card shadow p-4 w-100" style={{ maxWidth: "1050px" }}>
-                <h1 className="card-header fw-bold text-center">University</h1>
-
+            <div className="card rounded-4 shadow p-4 w-100" style={{ maxWidth: "1050px" }}>
+                <h1 className="card-heade pb-2 rounded-top-4 border-2 border-bottom fw-bold text-primary text-center">University</h1>
                 <div className="card-body pb-0">
-                    <div className="mb-4 d-flex flex-wrap gap-3 justify-content-center">
+                    <div className="d-flex flex-wrap gap-3 justify-content-center">
                         {Object.entries(filters).map(([key, value]) => (
-                            <label key={key} className="form-check-label text-capitalize">
+                            <label key={key} className="text-capitalize fw-medium p-2 border border-1 border-primary shadow-sm rounded-pill btn" style={{ background: '#e4eaf2', color: '#0d6efd' }}>
                                 <input
                                     type="checkbox"
                                     className="form-check-input me-1"
@@ -146,7 +145,7 @@ export function UniversityList() {
                                 key={uni._id}
                                 className="text-decoration-none text-center"
                             >
-                                <li className="card shadow p-3 m-3" style={{ backgroundColor: "#e4eaf2" }}>
+                                <li className="card cardbg shadow rounded-4 p-3 m-3">
                                     <strong className="card-title">{uni.name}</strong> — {uni.address.address},{" "}
                                     {uni.address.city}, {uni.address.state}, {uni.address.country},{" "}
                                     {uni.address.pincode}

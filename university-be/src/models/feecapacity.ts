@@ -26,8 +26,5 @@ const FeeCapacitySchema: Schema = new mongoose.Schema({
     ref: "courses",
   },
 });
-const FeeCapacityModel = mongoose.model<feecapacity>(
-  "fee_capacity",
-  FeeCapacitySchema
-);
+const FeeCapacityModel = mongoose.model<feecapacity>("fee_capacity", FeeCapacitySchema);
 export default FeeCapacityModel;
