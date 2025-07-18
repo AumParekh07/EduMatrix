@@ -56,8 +56,9 @@ export function EnrollCourse() {
             }
         } catch (err: any) {
             console.error("Enroll Error:", err);
-            const msg = err || "Error occurred during enrollment.";
+            const msg: string = err || "Error occurred during enrollment.";
             errorToast(msg);
+            if (msg.includes("Complete Your Profile First")) navigate("/std-detail")
             setError(msg);
         } finally {
             setLoading(false);

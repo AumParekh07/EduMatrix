@@ -7,6 +7,7 @@ import FeeCapacityModel from "../models/feecapacity";
 import { IsUser } from "../helper/userHelper";
 import { UserProfileCompleted } from "../helper/stdHelper";
 import { IsCourse, IsStream, IsUniversity } from "../helper/adminHelper";
+import UserModel from "../models/user";
 
 
 export const studentDetailService = async (
@@ -97,6 +98,8 @@ export const enrollCourseService = async (userID: ObjectId, universityID: Object
     try {
 
         const User = await IsUser(userID)
+        const isProfileComleted = User?.profileCompleted
+        if (!isProfileComleted) throw new Error("Complete Your Profile First")
 
         const course = await IsCourse(courseID.toString())
 
