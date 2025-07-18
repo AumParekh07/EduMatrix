@@ -76,25 +76,21 @@ export const getstudentDetailService = async (userID: ObjectId) => {
             .populate('universityID', 'address name')
             .populate('courseID', 'name fullname courseType')
 
+        const FeeAndCapacity = await Promise.all(enrollCourseDetail.map(async (detail) => {
+            const feeCap = await FeeCapacityModel.find({ universityId: detail.universityID, courseId: detail.courseID })
+            return feeCap;
+        })
+        )
         if (!studentDetail && enrollCourseDetail.length == 0) {
             throw new Error(`${User.username} Detail Not Found!`);
         }
-        else if (!studentDetail && enrollCourseDetail.length > 0) {
-            const emptyProfileDetails = `${User.username} Detail Not Found! Please update Your Profile`
-            return { emptyProfileDetails, enrollCourseDetail }
-        }
 
-        else if (enrollCourseDetail.length == 0 && studentDetail) {
-            const emptyenrollCourseDetail = `${User.username} does not Enrolled in any Course`;
-            return { studentDetail, emptyenrollCourseDetail }
-        }
-        else {
-            return { studentDetail, enrollCourseDetail };
-        }
+        return { studentDetail, enrollCourseDetail, FeeAndCapacity };
     } catch (error) {
         throw error
     }
 }
+
 
 export const enrollCourseService = async (userID: ObjectId, universityID: ObjectId, courseID: ObjectId, optionalSubjectID: ObjectId[]) => {
 
@@ -137,7 +133,7 @@ export const enrollCourseService = async (userID: ObjectId, universityID: Object
         const capacity = FeeAndCapacity?.capacity!
         console.log('capacity: ', capacity);
 
-        const enrolledCount = await EnrollCourseModel.find({ universityID: university._id, courseID: course._id }).countDocuments()
+        const enrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id, courseID: course._id })
         console.log('enrolledCount: ', enrolledCount);
 
         if (enrolledCount > capacity) {

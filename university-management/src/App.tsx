@@ -4,6 +4,7 @@ import { Login } from "./pages/User/loginWPass";
 import { Register } from "./pages/User/register";
 import { SendOtp } from "./pages/User/SendOTP";
 import { VerifyOtp } from "./pages/User/VerifyOTP";
+import { Home } from "./pages/User/Home";
 
 // import { AllUniversityList } from "./components/alluniversity";
 
@@ -23,17 +24,25 @@ import PageNotFound from "./components/PageNotFound";
 import PrivateRoute from "./components/RoleBasedRoute";
 import { CreateCourse } from "./pages/Admin/createCourse";
 import { CreateUniversity } from "./pages/Admin/createUniversity";
-import { CreateFeeCapacity } from "./pages/Admin/createFeeCapacity";
 import { AdminUniversityList } from "./pages/Admin/adminUniversity";
 import { UniversityList1 } from "./pages/Admin/listUniversity";
+import StdNavbar from "./components/navbar";
+
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
 
 function App() {
+  useEffect(() => {
+    AOS.init({ duration: 800 });
+  }, []);
   return (
 
     <Routes>
-      <Route path="/" element={<Register />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<> <StdNavbar /><Home /></>} />
+      <Route path="/register" element={<> <StdNavbar /><Register /></>} />
+      <Route path="/login" element={<>  <StdNavbar /><Login /></>} />
       <Route path="/send-otp" element={<SendOtp />} />
       <Route path="/verify-otp" element={<VerifyOtp />} />
 
@@ -56,8 +65,6 @@ function App() {
       <Route path="/admin/create-subject" element={<PrivateRoute allowedRole="admin"><CreateSubject /></PrivateRoute>} />
       <Route path="/admin/create-course" element={<PrivateRoute allowedRole="admin"><CreateCourse /></PrivateRoute>} />
       <Route path="/admin/create-university" element={<PrivateRoute allowedRole="admin"><CreateUniversity /></PrivateRoute>} />
-      <Route path="/admin/create-feeCapacity" element={<PrivateRoute allowedRole="admin"><CreateFeeCapacity /></PrivateRoute>} />
-
 
       <Route path="*" element={<PageNotFound />} />
 

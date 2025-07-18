@@ -2,7 +2,7 @@ import type { FormikValues, FormikHelpers } from "formik";
 
 import type {
     RegisterI, LoginI, SendOtpI, verifyOtpI,
-    StdDetailI, StreamI, SubjectI, CourseI, UniversityI, FeeCapI
+    StdDetailI, StreamI, SubjectI, CourseI, UniversityI,
 } from "./FormikValidation";
 import { errorToast, successToast } from "./helperToast";
 import { apiCall } from "../api/apiCaller";
@@ -60,7 +60,7 @@ export async function LoginHandleSubmit(
 
 
         if (response?.role === "admin") {
-            navigate("/admin/stream")
+            navigate("/admin/university")
         } else {
             if (response?.profileCompleted) {
                 navigate("/university");
@@ -101,10 +101,8 @@ export async function SendOtpHandleSubmit(
         console.log("OTP sent:", response);
         successToast(response?.message || "OTP sent successfully");
 
-        setTimeout(() => {
-            localStorage.setItem("email", values.email);
-            navigate("/verify-otp");
-        }, 1500);
+        localStorage.setItem("email", values.email);
+        navigate("/verify-otp");
     } catch (error: any) {
         console.error("Error sending OTP:", error);
         errorToast(error || "Failed to send OTP");
@@ -229,12 +227,6 @@ export async function UniversityHandleSubmit(
             setSubmitting(false);
         }, 500);
     }
-}
-
-export function FeeCapHandleSubmit(
-    values: FormikValues, formikHelpers: FormikHelpers<FeeCapI>
-) {
-    return genericHandleSubmit<FeeCapI>(values, formikHelpers, "/admin/create-feecapacity");
 }
 
 

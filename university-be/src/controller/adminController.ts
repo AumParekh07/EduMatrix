@@ -12,6 +12,32 @@ import {
 import StreamModel from "../models/stream";
 import SubjectModel from "../models/subject";
 import CourseModel from "../models/course";
+import UniversityModel from "../models/university";
+import StudentModel from "../models/student";
+
+export const getCounts = async (req: Request, res: Response) => {
+  try {
+    const universityCount = await UniversityModel.countDocuments();
+    const courseCount = await CourseModel.countDocuments();
+    const studentCount = await StudentModel.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      message: "Counts fetched successfully",
+      data: {
+        universities: universityCount,
+        courses: courseCount,
+        students: studentCount,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching counts:", error);
+    res.status(400).json({
+      success: false,
+      message: "Failed to fetch counts",
+    });
+  }
+};
 
 export const createUniversity = async (req: Request, res: Response) => {
   try {

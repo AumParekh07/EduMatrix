@@ -55,16 +55,18 @@ function FetchCardList<T>({
     if (error) return <ErrorComponent error={error} />;
     // 
     return (
-        <div className="container card rounded-4 p-4 pb-0 my-4">
+        <div className="container card rounded-4 p-4 pb-0 my-4" data-aos="" data-aos-duration="">
             <div className="border-2 border-bottom p-2 pt-0 justify-content-between d-flex">
                 <h2 className="mb-0 text-primary fw-bold">{title}</h2>
                 <Link to={addPath} className="btn btn-outline-primary fw-semibold shadow-sm">
                     <Plus style={{ marginTop: "-4.5px", marginLeft: "-6px" }} /> {addLabel}
                 </Link>
             </div>
-            <div className="row card-body justify-content-center">
-                {items.map((item) => renderItem(item, () => setReload(!reload)))}
-            </div>
+            {loading ? <LoadingComponent h={false} /> :
+                <div className="row card-body justify-content-center">
+                    {items.map((item) => renderItem(item, () => setReload(!reload)))}
+                </div>
+            }
             <p className="text-center border-2 border-top p-2 p-0 rounded-bottom-4 fw-semibold">{totalLabel}: {items.length}</p>
         </div>
     );

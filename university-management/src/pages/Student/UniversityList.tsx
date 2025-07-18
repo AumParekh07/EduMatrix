@@ -6,6 +6,35 @@ import { ErrorComponent, Facilities, LoadingComponent } from "../../components/h
 import { errorToast } from "../../helper/helperToast";
 import { apiCall } from "../../api/apiCaller";
 
+export type Address = {
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    pincode: number;
+}
+
+export type Stream = {
+    _id: string;
+    name: string;
+}
+
+export type Subject = {
+    _id: string;
+    name: string;
+    fullName: string;
+}
+
+export type Course = {
+    _id: string;
+    name: string;
+    fullname: string;
+    courseType: string;
+    subjects: {
+        compulsory: Subject[];
+        optional: Subject[];
+    };
+}
 export type University = {
     _id: string;
     name: string;
@@ -14,27 +43,9 @@ export type University = {
     nearbyUniversity: boolean;
     transportation: boolean;
     accommodation: boolean;
-    address: {
-        address: string;
-        city: string;
-        state: string;
-        country: string;
-        pincode: number;
-    };
-    stream: Array<{
-        _id: string;
-        name: string;
-    }>;
-    course: Array<{
-        _id: string;
-        name: string;
-        fullname: string;
-        courseType: string;
-        subjects: {
-            compulsory: Array<{ _id: string; name: string; fullName: string }>;
-            optional: Array<{ _id: string; name: string; fullName: string }>;
-        };
-    }>;
+    address: Address;
+    stream: Stream[];
+    course: Course[];
 };
 
 export function UniversityList() {
@@ -89,7 +100,7 @@ export function UniversityList() {
 
     const totalPages = Math.ceil(totalData / parseInt(pageSize));
 
-    if (loading) return <LoadingComponent />;
+    // if (loading) return <LoadingComponent />;
     if (error) return <ErrorComponent error={error} />;
 
     const updateSearchParams = (updatedPage: string, updatedFilters = filters) => {
@@ -105,7 +116,7 @@ export function UniversityList() {
 
     return (
         <div className="container pt-5 d-flex justify-content-center align-items-center">
-            <div className="card rounded-4 shadow p-4 w-100" style={{ maxWidth: "1050px" }}>
+            <div className="card rounded-4 shadow p-4 w-100" data-aos="fade-in" style={{ maxWidth: "1050px" }}>
                 <h1 className="card-heade pb-2 rounded-top-4 border-2 border-bottom fw-bold text-primary text-center">University</h1>
                 <div className="card-body pb-0">
                     <div className="d-flex flex-wrap gap-3 justify-content-center">
@@ -122,53 +133,55 @@ export function UniversityList() {
                                             [key]: !filters[key as keyof typeof filters],
                                         };
                                         setFilters(updatedFilters);
-                                        updateSearchParams("1", updatedFilters); // reset to page 1 on filter change
+                                        updateSearchParams("1", updatedFilters);
                                     }}
                                 />
                                 {key}
                             </label>
                         ))}
                     </div>
-
-                    <ul className="list-inline">
-                        {universities.length === 0 && (
-                            <p className="text-center text-danger">
-                                No universities match the selected filters.
-                            </p>
-                        )}
-                        {universities.map((uni) => (
-                            <Link
-                                to={`${localStorage.getItem("role") === "admin"
-                                    ? `/admin/university/${uni._id}`
-                                    : `/university/${uni._id}`
-                                    }`}
-                                key={uni._id}
-                                className="text-decoration-none text-center"
-                            >
-                                <li className="card cardbg shadow rounded-4 p-3 m-3">
-                                    <strong className="card-title">{uni.name}</strong> — {uni.address.address},{" "}
-                                    {uni.address.city}, {uni.address.state}, {uni.address.country},{" "}
-                                    {uni.address.pincode}
-                                    <div className="mt-2">
-                                        <strong>Stream:</strong>
-                                        <ul className="list-inline">
-                                            {uni.stream.map((stream) => (
-                                                <li key={stream._id} className="list-inline-item">
-                                                    ● {stream.name}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                    <div className="d-flex flex-wrap justify-content-center gap-2 mt-2">
-                                        <Facilities university={uni} />
-                                    </div>
-                                </li>
-                            </Link>
-                        ))}
-                    </ul>
+                    {loading ? <LoadingComponent h={false} /> :
+                        <ul className="list-inline">
+                            {universities.length === 0 && (
+                                <p className="text-center p-4 text-danger">
+                                    No Universities match the selected filters.
+                                </p>
+                            )}
+                            {universities.map((uni) => (
+                                <Link
+                                    to={`${localStorage.getItem("role") === "admin"
+                                        ? `/admin/university/${uni._id}`
+                                        : `/university/${uni._id}`
+                                        }`}
+                                    key={uni._id}
+                                    className="text-decoration-none text-center"
+                                    data-aos="fade-up"
+                                >
+                                    <li className="card cardbg shadow rounded-4 p-3 m-3">
+                                        <strong className="card-title">{uni.name}</strong> — {uni.address.address},{" "}
+                                        {uni.address.city}, {uni.address.state}, {uni.address.country},{" "}
+                                        {uni.address.pincode}
+                                        <div className="mt-2">
+                                            <strong>Stream:</strong>
+                                            <ul className="list-inline">
+                                                {uni.stream.map((stream) => (
+                                                    <li key={stream._id} className="list-inline-item">
+                                                        ● {stream.name}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div className="d-flex flex-wrap justify-content-center gap-2 mt-2">
+                                            <Facilities university={uni} />
+                                        </div>
+                                    </li>
+                                </Link>
+                            ))}
+                        </ul>
+                    }
                 </div>
 
-                <div className="card-footer d-flex justify-content-center gap-3">
+                <div className="card-footer d-flex justify-content-center gap-3 rounded-bottom-4">
                     <button
                         className="btn btn-sm p-0 btn-outline-primary fw-semibold shadow-sm"
                         onClick={() => {

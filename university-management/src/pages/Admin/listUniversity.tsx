@@ -4,7 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 
 import { ErrorComponent, Facilities, LoadingComponent } from "../../components/helperComponents";
 import { errorToast } from "../../helper/helperToast";
-import GetToken from "../../helper/authtoken";
+import { GetToken } from "../../helper/authtoken";
 
 export type University = {
     _id: string;

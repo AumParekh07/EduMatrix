@@ -6,6 +6,7 @@ import { ObjectId } from "mongoose";
 import UserModel, { UserSchema } from "../models/user";
 import UniversityModel from "../models/university";
 import FeeCapacityModel from "../models/feecapacity";
+import EnrollCourseModel from "../models/enrollCourse";
 
 
 interface TCreateUserResponse {
@@ -263,26 +264,33 @@ export const getUniversityByIDService = async (id: string, userId: ObjectId) => 
         .populate("stream")
         .populate({
           path: "course",
-          populate: {
+          populate: [{
             path: "subjects.compulsory",
             model: "subject",
           },
-        })
-        .populate({
-          path: "course",
-          populate: {
+          {
             path: "subjects.optional",
             model: "subject",
           },
-        });
+          ]
+        })
 
       if (!university) {
         throw new Error("University Not Found");
       }
-
+      const enrollCourses = await EnrollCourseModel.find({ userID: User._id, universityID: id })
       const FeeAndCapacity = await FeeCapacityModel.find({ universityId: id })
+      // total std in university
+      // const TotalEnrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id });
 
-      return { university, FeeAndCapacity }
+      const courseEnrollCounts = await Promise.all(university.course.map(async (course: any) => {
+
+        const count = await EnrollCourseModel.countDocuments({ universityID: university._id, courseID: course._id, });
+
+        return { courseId: course._id, enrollCount: count };
+      })
+      );
+      return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses }
     } else {
       throw new Error("User Not Found");
     }

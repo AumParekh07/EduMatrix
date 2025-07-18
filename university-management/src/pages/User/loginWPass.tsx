@@ -10,8 +10,8 @@ export function Login() {
     const navigate = useNavigate();
 
     return (
-        <div className="container d-flex justify-content-center align-items-center vh-100">
-            {/* style={{ height: "calc(100vh - 57.6px)" }}> */}
+        <div className="container d-flex justify-content-center align-items-center "
+            style={{ height: "calc(100vh - 57.6px)" }}>
             <div className="card shadow-lg p-4 w-100 rounded-4" style={{ maxWidth: "350px" }} >
                 <h2 className="text-center mb-4 fw-bold text-primary" >Login</h2>
                 <Formik
@@ -30,7 +30,7 @@ export function Login() {
                 </Formik>
                 <p className="text-center mt-3 mb-0">
                     Don't Have An Account?{" "}
-                    <Link to="/" className="fw-semibold">Register Here</Link>
+                    <Link to="/register" className="fw-semibold">Register Here</Link>
                 </p>
             </div>
         </div>

@@ -8,9 +8,9 @@ import StreamFormFields from "../../components/FormFields/streamFormFields";
 
 export const CreateStream = () => {
     return (
-        <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
+        <div className="container-fluid d-flex justify-content-center align-items-center vh-100" >
             {/* style={{ height: "calc(100vh - 57.6px)" }}> */}
-            <div className=" card shadow-lg p-4 w-100 rounded-4 " style={{ maxWidth: "350px" }}>
+            <div className=" card shadow-lg p-4 w-100 rounded-4 " data-aos="fade-in" style={{ maxWidth: "350px" }}>
                 <h2 className="text-center mb-4 fw-bold text-primary">Create Stream</h2>
                 <Formik initialValues={StreamInitialValues}
                     validationSchema={streamSchema}

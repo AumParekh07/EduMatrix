@@ -4,7 +4,7 @@ import { errorToast } from "../helper/helperToast";
 import { ErrorComponent } from "./helperComponents";
 import StdNavbar from "./navbar";
 import AdminSidebar from "./adminSidebar";
-import GetToken from "../helper/authtoken";
+import { GetToken } from "../helper/authtoken";
 import { SidebartoggelContext } from "../context/context";
 
 const isTokenExpired = (token: string): boolean => {
@@ -54,7 +54,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
     }
 
     if (isAuthorized === null) {
-        return null; // or a loading spinner if you prefer
+        return null;
     }
 
 
@@ -80,7 +80,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
     if (role === "student") {
         return (
             <>
-                <StdNavbar />
+                <StdNavbar data-aos="fade-down" data-aos-once="ture" />
                 {children}
             </>
         );

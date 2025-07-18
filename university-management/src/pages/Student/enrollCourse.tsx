@@ -26,7 +26,7 @@ export function EnrollCourse() {
 
     if (!state) return <ErrorComponent error={error} />;
 
-    const { course, universityID, feeCapacities } = state;
+    const { course, universityID, feeCapacities, remainingCapacity } = state;
 
 
     const handleSubmit = async (values: EnrollCourseI) => {
@@ -69,7 +69,7 @@ export function EnrollCourse() {
 
     return (
         <div className="container d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 57.6px)" }}>
-            <div className="card  shadow-lg p-4 w-100 rounded-4" style={{ maxWidth: "850px" }}>
+            <div className="card  shadow-lg p-4 w-100 rounded-4" data-aos="fade" style={{ maxWidth: "850px" }}>
                 {/* <h2 className="text-center mb-4 fw-bold text-primary">Enroll Course</h2> */}
                 <Formik
                     initialValues={EnrollCourseinitialValues}
@@ -79,7 +79,7 @@ export function EnrollCourse() {
                         <h2 className="border-2 border-bottom p-2 pt-0 fw-bold text-center text-primary">{course.fullname}({course.name})</h2>
                         <div className="d-flex gap-3 fs-5 justify-content-center">
                             <p> <strong>Fee:</strong> ₹{feeCapacities?.find((fc: any) => fc.courseId === course._id)?.fee}</p>
-                            <p> <strong>Capacity:</strong> {feeCapacities?.find((fc: any) => fc.courseId === course._id)?.capacity} </p>
+                            <p> <strong>Capacity:</strong> {remainingCapacity}/{feeCapacities?.find((fc: any) => fc.courseId === course._id)?.capacity} </p>
                             <p><strong>Type:</strong> {course.courseType}</p>
 
                         </div>

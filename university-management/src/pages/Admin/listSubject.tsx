@@ -30,8 +30,8 @@ export function AdminSubjects() {
                 apiEndPoint="get-subjects"
                 totalLabel="Total Subject"
                 renderItem={(subject) => (
-                    <div key={subject._id} className="col-md-4 mb-3">
-                        <div className="card cardbg shadow-sm shadow1 rounded-4 h-100">
+                    <div key={subject._id} className="col-md-4 mb-3" data-aos="fade-up">
+                        <div className="card cardbg shadow-sm hoverShadowMd rounded-4 h-100">
                             <div className="card-body">
                                 <div className="card-title justify-content-between d-flex" >
                                     <h5 className="mb-0">{subject.name}</h5>

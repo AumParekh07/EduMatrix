@@ -41,8 +41,8 @@ export function AdminCourses() {
                 apiEndPoint="get-courses"
                 totalLabel="Total Course"
                 renderItem={(course) => (
-                    <div key={course._id} className="col-lg-5 m-3">
-                        <div className="card cardbg rounded-4 shadow-sm shadow1 h-100">
+                    <div key={course._id} className="col-lg-5 m-3" data-aos="fade-up">
+                        <div className="card cardbg rounded-4 shadow-sm hoverShadowMd h-100">
                             <div className="card-body">
                                 <div className="card-title justify-content-between d-flex">
                                     <h5>{course.fullname} ({course.name})</h5>

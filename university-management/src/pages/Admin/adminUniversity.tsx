@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ErrorComponent, LoadingComponent } from "../../components/helperComponents";
-import GetToken from "../../helper/authtoken";
+import { GetToken } from "../../helper/authtoken";
 
 type Subject = {
     _id: string;

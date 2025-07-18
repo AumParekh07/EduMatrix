@@ -74,7 +74,7 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
 
     return (
         <div className="row">
-            <div className="col">
+            <div className="col-sm">
                 <InputFiled1 title="Name" type="text" id="name" placeholder="Enter University Name " />
                 <InputFiled1 title="Address" type="text" id="address.address" placeholder="Enter address" />
                 <InputFiled1 title="City" type="text" id="address.city" placeholder="Enter city" />
@@ -83,7 +83,7 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
                 <InputFiled1 title="Pincode" type="number" id="address.pincode" placeholder="Enter pincode" />
             </div>
 
-            <div className="col mt-3">
+            <div className="col-sm">
                 <Preferencefield title="Job Placement Available" id1="jyes" id2="jno" labelHtmlFor="jobPlacement" />
                 <Preferencefield title="Scholarship Available" id1="syes" id2="sno" labelHtmlFor="scholarship" />
                 <Preferencefield title="Nearby University Available" id1="nyes" id2="nno" labelHtmlFor="nearbyUniversity" />

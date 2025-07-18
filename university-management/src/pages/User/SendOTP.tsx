@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Form, Formik } from "formik"
 
 
@@ -7,8 +7,12 @@ import { sendOptSchema, SendOtpInitialValues } from "../../helper/FormikValidati
 import { SendOtpHandleSubmit } from "../../helper/SubmitHendle";
 
 export function SendOtp() {
+    const navigate = useNavigate();
+
     return (
-        <div className="container d-flex justify-content-center align-items-center vh-100">
+        <div className="container d-flex justify-content-center align-items-center "
+            style={{ height: "calc(100vh - 57.6px)" }}>
+
             <div className=" card shadow-lg p-4 w-100 rounded-4" style={{ maxWidth: "350px" }} >
 
                 <h2 className="text-center mb-4 fw-bold text-primary ">
@@ -18,7 +22,7 @@ export function SendOtp() {
                 <Formik
                     initialValues={SendOtpInitialValues}
                     validationSchema={sendOptSchema}
-                    onSubmit={SendOtpHandleSubmit}>
+                    onSubmit={(...arg) => SendOtpHandleSubmit(...arg, navigate)}>
 
                     <Form id="SendOtpForm">
                         <InputFiled1 title="Email" type="email" id="email" placeholder="Enter Your Email" />
@@ -33,7 +37,7 @@ export function SendOtp() {
                     </Form>
                 </Formik>
                 <p className="m-1 mb-0">Don't Have An Account?{" "}
-                    <Link to="/" className="fw-semibold">Register Here</Link></p>
+                    <Link to="/register" className="fw-semibold">Register Here</Link></p>
             </div>
         </div>
     )

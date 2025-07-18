@@ -91,11 +91,6 @@ export interface UniversityI {
     courseDetails: CourseDetail[];
 };
 
-export interface FeeCapI {
-    fee: number,
-    capacity: number,
-    courseId: string
-}
 
 export const RegisterInitialValues: RegisterI = {
     name: '',
@@ -186,12 +181,6 @@ export const UniversityInitialValues: UniversityI = {
     courseDetails: []
 };
 
-export const FeeCapInitialValues: FeeCapI = {
-    fee: 3000,
-    capacity: 10,
-    courseId: ""
-
-}
 
 const email = Yup.string().email('Invalid email').required('Email is required');
 const name = Yup.string().min(2, 'Too Short!').required('Name is required');
