@@ -6,8 +6,6 @@ import { SendOtp } from "./pages/User/SendOTP";
 import { VerifyOtp } from "./pages/User/VerifyOTP";
 import { Home } from "./pages/User/Home";
 
-// import { AllUniversityList } from "./components/alluniversity";
-
 import { StdDetail } from "./pages/Student/studentDetail";
 import { UniversityList } from "./pages/Student/UniversityList";
 import { UniversityById } from "./pages/Student/UniversityById";
@@ -19,13 +17,11 @@ import { AdminSubjects } from "./pages/Admin/listSubject";
 import { AdminCourses } from "./pages/Admin/listCourse";
 import { CreateStream } from "./pages/Admin/createStream";
 import { CreateSubject } from "./pages/Admin/createSubject";
+import { CreateCourse } from "./pages/Admin/createCourse";
+import { CreateUniversity } from "./pages/Admin/createUniversity";
 
 import PageNotFound from "./components/PageNotFound";
 import PrivateRoute from "./components/RoleBasedRoute";
-import { CreateCourse } from "./pages/Admin/createCourse";
-import { CreateUniversity } from "./pages/Admin/createUniversity";
-import { AdminUniversityList } from "./pages/Admin/adminUniversity";
-import { UniversityList1 } from "./pages/Admin/listUniversity";
 import StdNavbar from "./components/navbar";
 
 import AOS from "aos";
@@ -37,8 +33,8 @@ function App() {
   useEffect(() => {
     AOS.init({ duration: 800 });
   }, []);
-  return (
 
+  return (
     <Routes>
       <Route path="/" element={<> <StdNavbar /><Home /></>} />
       <Route path="/register" element={<> <StdNavbar /><Register /></>} />
@@ -69,7 +65,6 @@ function App() {
       <Route path="*" element={<PageNotFound />} />
 
     </Routes>
-
 
   );
 }

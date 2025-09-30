@@ -10,7 +10,7 @@ import UniversityFormFields from "../../components/FormFields/universityFormFiel
 import { UniversitySchema } from "../../helper/FormikValidation";
 import DeleteModal from "../../components/deletModal";
 import { apiCall } from "../../api/apiCaller";
-import { GetRole } from "../../helper/authtoken";
+import { GetRole } from "../../helper/getAuth";
 
 export type FeeAndCapacity = {
     fee: number;
@@ -19,7 +19,7 @@ export type FeeAndCapacity = {
     courseId: string;
 };
 
-export type CourseEnrollCounts = {
+type CourseEnrollCounts = {
     courseId: string;
     enrollCount: number;
 }[];
@@ -60,12 +60,13 @@ export function UniversityById() {
             setCourseEnrollCounts(response.data.courseEnrollCounts)
             setEnrollCourses(response.data.enrollCourses)
         } catch (err: any) {
-            const msg = err || "Failed to fetch University";
+            const msg = err
             console.error('err: ', err);
             setError(msg);
             errorToast(msg);
         } finally {
             setLoading(false)
+            setError("")
         }
     }
     useEffect(() => {
@@ -73,18 +74,9 @@ export function UniversityById() {
     }, []);
 
     const remainingCapacity = (courseId: string) => {
-        const feeCap = feeCapacities.find(fc => fc.courseId === courseId);
-        const enroll = courseEnrollCounts.find(ec => ec.courseId === courseId);
 
-        if (!feeCap || !enroll) {
-            return { remain: -1, capacity: 0, enrolled: 0 };
-        }
-
-        const capacity = feeCap.capacity;
-        const enrolled = enroll.enrollCount;
-
-        // const capacity = feeCapacities.find((fc) => fc.courseId === courseId)?.capacity!;
-        // const enrolled = courseEnrollCounts.find((count) => count.courseId === courseId)?.enrollCount!;
+        const capacity = feeCapacities.find((fc) => fc.courseId === courseId)?.capacity ?? 0;
+        const enrolled = courseEnrollCounts.find((count) => count.courseId === courseId)?.enrollCount ?? 0;
         const remain = capacity - enrolled;
 
         return { remain, capacity, enrolled };
@@ -106,7 +98,7 @@ export function UniversityById() {
         }
     };
 
-    if (!university || !feeCapacities || !courseEnrollCounts || !enrollCourses) return <ErrorComponent error="Error Fetching University" />;
+    if (!university) return <ErrorComponent error="Error Fetching University By ID" />;
 
     const initialValues = {
         name: university.name,
@@ -191,7 +183,7 @@ export function UniversityById() {
                                 const isEnrolled = !!enrollCourses.find(ec => ec.courseID === course._id);
                                 return (
                                     <div className="col-md-5 " data-aos="zoom-in-up" key={course._id}>
-                                        <div className={`card position-relative cardbg p-2 m-3 shadow-sm hoverShadowlg rounded-5 border-2 border-primary`}
+                                        <div className={"card position-relative cardbg p-2 m-3 shadow-sm hoverShadowlg rounded-5 border-2 border-primary"}
                                             style={{ cursor: (isAdmin || remainingCapacity(course._id).remain <= 0) || isEnrolled ? "default" : "pointer", backgroundColor: "" }}//94bdfe //#e4eaf2 //rgb(33 37 41 / 4%)
                                             onClick={() => {
                                                 if (isStudent) {
@@ -202,23 +194,20 @@ export function UniversityById() {
                                             }>
                                             <div className="position-absolute m-4 bottom-0 end-0">
                                                 {isEnrolled && (
-                                                    <p><span className="p-2 rounded-pill text-white fw-medium bg-danger">Allready Enrolled</span></p>
+                                                    <p><span className="p-2 rounded-pill text-white fw-medium bg-danger">Already Enrolled</span></p>
                                                 )}
                                             </div>
 
-                                            <h5 className="fw-bold text-light bg-primary rounded-top-5  p-2 text-center">  👨🏻‍🏫 {course.fullname} ({course.name})</h5>
-                                            <div className="d-flex gap-3 justify-content-center">
+                                            <h5 className="fw-bold text-light bg-primary rounded-top-5 p-2 text-center">  👨🏻‍🏫 {course.fullname} ({course.name})</h5>
+                                            <div className="d-flex flex-wrap justify-content-evenly">
                                                 <p>
-                                                    <strong>Fee:</strong>
-                                                    <span className="badge bg-warning">₹{feeCapacities.find((fc) => fc.courseId === course._id)?.fee}</span>
+                                                    <strong>Fee:</strong> <span className="badge bg-warning">₹{feeCapacities.find((fc) => fc.courseId === course._id)?.fee}</span>
                                                 </p>
                                                 <p>
-                                                    <strong>Seats:</strong>
-                                                    <span className="badge bg-success">{remainingCapacity(course._id).remain} / {remainingCapacity(course._id).capacity} </span>
+                                                    <strong>Seats:</strong> <span className="badge bg-success">{remainingCapacity(course._id).remain} / {remainingCapacity(course._id).capacity} </span>
                                                 </p>
                                                 <p>
-                                                    <strong>Type:</strong>
-                                                    <span className={`badge ${course.courseType === "FullTime" ? "bg-primary" : course.courseType === "PartTime" ? "bg-info" : "bg-success"}`}>{course.courseType}</span>
+                                                    <strong>Type:</strong> <span className={`badge ${course.courseType === "FullTime" ? "bg-primary" : course.courseType === "PartTime" ? "bg-info" : "bg-success"}`}>{course.courseType}</span>
                                                 </p>
 
                                             </div>
@@ -245,6 +234,7 @@ export function UniversityById() {
                     <span className="d-flex justify-content-end"> <BackButton /></span>
                 </div>
             </div >
+
             {showEditModal && (
                 <EditModal
                     title="Edit University"
@@ -258,12 +248,15 @@ export function UniversityById() {
                 >
                     {({ values, setFieldValue }) => (
                         <UniversityFormFields
-                            values={values}
+                            values={{ ...values, enrollCourseDetails: remainingCapacity, courseEnrollCounts }}
                             setFieldValue={setFieldValue}
+
+                            courseEnrollCounts={courseEnrollCounts}
                         />
                     )}
                 </EditModal>
             )}
+
             {showDeleteModal && (
                 <DeleteModal
                     title="Delete University"

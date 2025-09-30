@@ -43,6 +43,10 @@ const UserSchema = new mongoose_1.default.Schema({
     otpExpiry: {
         type: Date,
     },
+    profileCompleted: {
+        type: Boolean,
+        default: false,
+    }
 }, {
     timestamps: true,
 });

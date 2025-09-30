@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const StudentSchema = new mongoose_1.default.Schema({
-    userID: { type: mongoose_1.default.Schema.Types.ObjectId, required: true, unique: [true, "This Student is already Present"], ref: "user" },
+    userID: { type: mongoose_1.default.Schema.Types.ObjectId, required: true, unique: [true, "This Student is already Present"], ref: "User" },
     gender: { type: String, required: true, enum: ["Male", "Female", "Others"], },
     birthDate: { type: Date, required: true, },
     stream: { type: mongoose_1.default.Schema.Types.ObjectId, required: true, ref: "stream" },

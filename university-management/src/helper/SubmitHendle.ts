@@ -218,7 +218,6 @@ export async function UniversityHandleSubmit(
 
         console.log("Response from server:", response);
         successToast(response?.message || "University Created successfully");
-        // navigate("/admin/create-feeCapacity", { state: { university: response } });
     } catch (error: any) {
         errorToast(error || "Something went wrong");
         console.error("Error occurred while creating University:", error);

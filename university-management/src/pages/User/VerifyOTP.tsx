@@ -19,7 +19,6 @@ export function VerifyOtp() {
                     onSubmit={(...arg) => VerifyOtpHandleSubmit(...arg, navigate)}
                 >
                     <Form id="LoginForm">
-                        {/* <InputFiled1 title="Email" type="email" id="email" placeholder="Enter Your Email" /> */}
                         <InputFiled1 title="OTP" type="string" id="otp" placeholder="Enter Your OTP" />
                         <SubmitButton title="Verify OTP" />
                     </Form>

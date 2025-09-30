@@ -70,8 +70,7 @@ export function EnrollCourse() {
 
     return (
         <div className="container d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 57.6px)" }}>
-            <div className="card  shadow-lg p-4 w-100 rounded-4" data-aos="fade" style={{ maxWidth: "850px" }}>
-                {/* <h2 className="text-center mb-4 fw-bold text-primary">Enroll Course</h2> */}
+            <div className="card  shadow-lg p-4 w-100 rounded-4 fadeIn-animation" style={{ maxWidth: "850px" }}>
                 <Formik
                     initialValues={EnrollCourseinitialValues}
                     validationSchema={EnrollCourseSchema}

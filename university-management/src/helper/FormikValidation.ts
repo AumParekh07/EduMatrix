@@ -5,7 +5,7 @@ export interface RegisterI {
     username: string;
     email: string;
     password: string;
-    // confirmPassword: string;
+    confirmPassword: string;
     userGrpId: string;
 }
 
@@ -97,7 +97,7 @@ export const RegisterInitialValues: RegisterI = {
     username: '',
     email: '',
     password: '',
-    // confirmPassword: '',
+    confirmPassword: '',
     userGrpId: '682c19922bb32dfa02ed0eab',
 };
 
@@ -186,8 +186,9 @@ const email = Yup.string().email('Invalid email').required('Email is required');
 const name = Yup.string().min(2, 'Too Short!').required('Name is required');
 const fullname = Yup.string().min(4, 'Too Short!').required('Full Name is required');
 const booleanItem = Yup.boolean().required();
-const password = Yup.string()/*.matches(/^(?=.*[!@#$*_])[a-zA-Z0-9]{6,15}$/,"")*/
-    .min(3, 'Password must be at least 3 characters')
+const password = Yup.string().matches(/^[a-zA-Z0-9]+$/, "Password must be Alphanumeric")
+    .min(6, 'Password must be at least 6 characters')
+    .max(15, 'Password must be at most 15 characters')
     .required('Password is required');
 
 const objectIdPattern = /^[a-fA-F0-9]{24}$/;
@@ -203,9 +204,9 @@ export const RegisterSchema = Yup.object().shape({
         .min(3, 'Too Short!').required('User Name is required'),
     email: email,
     password: password,
-    // confirmPassword: Yup.string()
-    //     .oneOf([Yup.ref('password')], 'Passwords must match')
-    //     .required('Confirm Password is required'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password')], 'Passwords must match')
+        .required('Confirm Password is required'),
     userGrpId: Yup.string().matches(objectIdPattern, "Invalid User").required("User Group is required"),
 
 });

@@ -12,12 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUniversityByID = exports.getUniversities = exports.getAllUniversities = exports.getUniversityByPayload = exports.verifyOtp = exports.sendOtp = exports.loginUser = exports.createUser = void 0;
+exports.getUniversityByID = exports.getAllUniversities = exports.verifyOtp = exports.sendOtp = exports.loginUser = exports.createUser = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const user_services_1 = require("../services/user.services");
-const user_services_2 = require("../services/user.services");
-const joi_1 = __importDefault(require("joi"));
-const adminController_1 = require("./adminController");
+// import { AuthenticatedRequest } from "../middlerware/auth";
 dotenv_1.default.config();
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -46,8 +44,10 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield (0, user_services_1.loginUserService)(email, password);
         res.status(200).json({
             success: true,
-            message: `welcome: ${result.user.name}`,
+            message: `Welcome: ${result.user.name}`,
+            profileCompleted: result.user.profileCompleted,
             token: result.jwtToken,
+            role: result.role
         });
     }
     catch (error) {
@@ -85,7 +85,9 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json({
             success: true,
             message: `OTP verified successfully welcome: ${result.user.name}`,
+            profileCompleted: result.user.profileCompleted,
             token: result.jwtToken,
+            role: result.role
         });
     }
     catch (error) {
@@ -97,41 +99,29 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.verifyOtp = verifyOtp;
-const getUniversityByPayload = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllUniversities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { page, pageSize } = req.query;
-        const { userId } = req.user;
-        const { jobPlacement, scholarship, nearbyUniversity, transportation, accommodation } = req.body;
+        const { page, pageSize, jobPlacement, scholarship, nearbyUniversity, transportation, accommodation } = req.query;
+        const userId = res.locals.userId;
+        // const { userId } = (req as AuthenticatedRequest).user!;
         const pageNumber = parseInt(page, 10) || 1;
         const pageLimit = parseInt(pageSize, 10) || 2;
-        const result = yield (0, user_services_1.getUniversityByPayloadService)(userId, pageNumber, pageLimit, jobPlacement, scholarship, nearbyUniversity, transportation, accommodation);
+        const filter = {};
+        if (jobPlacement === "true")
+            filter.jobPlacement = true;
+        if (scholarship === "true")
+            filter.scholarship = true;
+        if (nearbyUniversity === "true")
+            filter.nearbyUniversity = true;
+        if (transportation === "true")
+            filter.transportation = true;
+        if (accommodation === "true")
+            filter.accommodation = true;
+        const result = yield (0, user_services_1.getAllUniversityService)(pageNumber, pageLimit, userId, filter);
         res.status(200).json({
             success: true,
             message: "Universities fetched successfully",
             pagination: { TotalData: result.totalUniversities, PageNo: page, PageLimit: pageSize },
-            data: result.universities
-        });
-    }
-    catch (error) {
-        console.log("error: ", error);
-        res.status(400).json({
-            success: false,
-            message: `${error}`,
-        });
-    }
-});
-exports.getUniversityByPayload = getUniversityByPayload;
-const getAllUniversities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { page, pageSize } = req.query;
-        const { userId } = req.user;
-        const pageNumber = parseInt(page, 10) || 1;
-        const pageLimit = parseInt(pageSize, 10) || 2;
-        const result = yield (0, user_services_1.getAllUniversityService)(pageNumber, pageLimit, userId);
-        res.status(200).json({
-            success: true,
-            message: "Universities fetched successfully",
-            pagination: { TotalData: result.totalUniversities, PageNo: page, PageLimit: pageSize, user: userId },
             data: result.university
         });
     }
@@ -144,41 +134,11 @@ const getAllUniversities = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getAllUniversities = getAllUniversities;
-const getUniversities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { page, pageSize } = req.query;
-        const { userId } = req.user;
-        const pageNumber = parseInt(page, 10) || 1;
-        const pageLimit = parseInt(pageSize, 10) || 2;
-        const result = yield (0, user_services_2.getUniversityService)(pageNumber, pageLimit, userId);
-        res.status(200).json({
-            success: true,
-            message: "Universities fetched successfully",
-            pagination: { TotalData: result.totalUniversities, PageNo: page, PageLimit: pageSize, user: userId },
-            data: result.universities
-            // data: {
-            //   metadata: { totalcount: result[0].metadata[0].totalCount, pageNumber, pageLimit },
-            //   University: result[0].data
-            // }
-        });
-    }
-    catch (error) {
-        console.log("error: ", error);
-        res.status(400).json({
-            success: false,
-            message: `${error}`,
-        });
-    }
-});
-exports.getUniversities = getUniversities;
 const getUniversityByID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const { userId } = req.user;
-        const schema = joi_1.default.object({
-            id: joi_1.default.string().pattern(adminController_1.objectIdPattern).required(),
-        });
-        yield schema.validateAsync({ id });
+        const userId = res.locals.userId;
+        // const { userId } = (req as AuthenticatedRequest).user!;
         const result = yield (0, user_services_1.getUniversityByIDService)(id, userId);
         res.status(200).json({
             success: true,

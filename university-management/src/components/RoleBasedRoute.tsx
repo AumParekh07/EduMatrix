@@ -4,7 +4,7 @@ import { errorToast } from "../helper/helperToast";
 import { ErrorComponent } from "./helperComponents";
 import StdNavbar from "./navbar";
 import AdminSidebar from "./adminSidebar";
-import { GetToken } from "../helper/authtoken";
+import { GetToken } from "../helper/getAuth";
 import { SidebartoggelContext } from "../context/context";
 
 const isTokenExpired = (token: string): boolean => {
@@ -49,12 +49,16 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
         setIsAuthorized(true);
     }, [allowedRole, navigate]);
 
-    if (isAuthorized === false) {
-        return <ErrorComponent error="Forbidden: You Do Not Have The Required Permission" />;
-    }
 
-    if (isAuthorized === null) {
-        return null;
+    useEffect(() => {
+        if (isAuthorized === false || null) {
+            const t = setTimeout(() => navigate("/"), 2000);
+            return () => clearTimeout(t);
+        }
+    }, [isAuthorized, navigate]);
+
+    if (isAuthorized === false || null) {
+        return <ErrorComponent error="Forbidden: You Do Not Have The Required Permission" />;
     }
 
 
@@ -80,7 +84,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
     if (role === "student") {
         return (
             <>
-                <StdNavbar data-aos="fade-down" data-aos-once="ture" />
+                <StdNavbar />
                 {children}
             </>
         );

@@ -2,8 +2,8 @@ import { UserRound, LogOut } from 'lucide-react';
 import { LogoutHandle } from '../helper/SubmitHendle';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Navbar, Nav, Container, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { GetRole } from '../helper/authtoken';
-
+import { GetRole } from '../helper/getAuth';
+import "./navbar.css"
 const StdNavbar = () => {
     const navigate = useNavigate();
     const isStudent: boolean = (GetRole() === 'student')
@@ -11,7 +11,7 @@ const StdNavbar = () => {
 
     return (
 
-        <Navbar expand="md" sticky="top" bg="light" variant="light" className="bg-opacity-100" collapseOnSelect >
+        <Navbar className='blur-navbar' data-aos="fade-down" data-aos-once="true" expand="md" sticky="top" bg="light" variant="light" collapseOnSelect >
             <Container fluid>
                 <Navbar.Brand href="#" className="fw-semibold ">University Management</Navbar.Brand>
                 <Navbar.Toggle aria-controls="main-navbar" />
@@ -31,8 +31,8 @@ const StdNavbar = () => {
                                     placement="bottom"
                                     overlay={<Tooltip id="profile-tooltip"><b>Profile</b></Tooltip>}
                                 >
-                                    <Nav.Link as={NavLink} to="/dashboard">
-                                        <UserRound className='' style={{ marginTop: '-5px' }} />
+                                    <Nav.Link as={NavLink} to="/dashboard" aria-label="Profile">
+                                        <UserRound style={{ marginTop: '-5px' }} />
                                     </Nav.Link>
                                 </OverlayTrigger>
 

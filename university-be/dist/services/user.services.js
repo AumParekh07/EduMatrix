@@ -12,13 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUniversityByIDService = exports.getAllUniversityService = exports.getUniversityService = exports.getUniversityByPayloadService = exports.verifyOtpService = exports.sendOtpService = exports.loginUserService = exports.createUserService = void 0;
+exports.getUniversityByIDService = exports.getAllUniversityService = exports.verifyOtpService = exports.sendOtpService = exports.loginUserService = exports.createUserService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userHelper_1 = require("../helper/userHelper");
 const user_1 = __importDefault(require("../models/user"));
 const university_1 = __importDefault(require("../models/university"));
-const student_1 = __importDefault(require("../models/student"));
+const feecapacity_1 = __importDefault(require("../models/feecapacity"));
+const enrollCourse_1 = __importDefault(require("../models/enrollCourse"));
 const createUserService = (name, username, email, password, userGrpId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield (0, userHelper_1.checkIfUserExists)(email);
@@ -48,19 +49,15 @@ const loginUserService = (email, password) => __awaiter(void 0, void 0, void 0, 
     try {
         //find user
         const user = yield (0, userHelper_1.userExists)(email);
-        if (user) {
-            const validPassword = yield bcrypt_1.default.compare(password, user.password);
-            if (!validPassword)
-                throw new Error("Invalid Email Or Password");
-            const jwtSecret = process.env.JWT_SECRET_KEY;
-            const jwtToken = jsonwebtoken_1.default.sign({ userId: user._id }, jwtSecret, {
-                expiresIn: "1d",
-            });
-            return { user, jwtToken };
-        }
-        else {
-            throw new Error("User Not Found");
-        }
+        const validPassword = yield bcrypt_1.default.compare(password, user.password);
+        if (!validPassword)
+            throw new Error("Invalid Password");
+        const jwtSecret = process.env.JWT_SECRET_KEY;
+        const jwtToken = jsonwebtoken_1.default.sign({ userId: user._id }, jwtSecret, { expiresIn: "1d" });
+        let role = 'student';
+        if (user.userGrpId.toString() === '682c18dc2bb32dfa02ed0ea9')
+            role = 'admin';
+        return { user, jwtToken, role };
     }
     catch (error) {
         throw error;
@@ -70,16 +67,11 @@ exports.loginUserService = loginUserService;
 const sendOtpService = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield (0, userHelper_1.userExists)(email);
-        if (user) {
-            const otp = (0, userHelper_1.generateOTP)();
-            const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
-            yield user_1.default.findByIdAndUpdate(user._id, { otp, otpExpiry });
-            yield (0, userHelper_1.sendEmail)(email, otp);
-            return { otp };
-        }
-        else {
-            throw new Error("User Not Found");
-        }
+        const otp = (0, userHelper_1.generateOTP)();
+        const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
+        yield user_1.default.findByIdAndUpdate(user._id, { otp, otpExpiry });
+        yield (0, userHelper_1.sendEmail)(email, otp);
+        return { otp };
     }
     catch (error) {
         throw error;
@@ -89,198 +81,100 @@ exports.sendOtpService = sendOtpService;
 const verifyOtpService = (email, otp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield (0, userHelper_1.userExists)(email);
-        if (user) {
-            if (!user.otp || !user.otpExpiry)
-                throw new Error("No OTP Sent");
-            if (user.otp !== otp)
-                throw new Error("Invalid OTP");
-            const now = new Date();
-            if (now > user.otpExpiry)
-                throw new Error("OTP expired. Please login Again");
-            const jwtSecret = process.env.JWT_SECRET_KEY;
-            const jwtToken = jsonwebtoken_1.default.sign({ userId: user._id }, jwtSecret, {
-                expiresIn: "1d",
-            });
-            // Clear OTP  successful verification
-            yield user_1.default.findByIdAndUpdate(user._id, {
-                otp: null,
-                otpExpiry: null,
-            });
-            return { user, jwtToken };
-        }
-        else {
-            throw new Error("User Not Found");
-        }
+        if (!user.otp || !user.otpExpiry)
+            throw new Error("No OTP Sent");
+        if (user.otp !== otp)
+            throw new Error("Invalid OTP");
+        const now = new Date();
+        if (now > user.otpExpiry)
+            throw new Error("OTP expired. Please login Again");
+        const jwtSecret = process.env.JWT_SECRET_KEY;
+        const jwtToken = jsonwebtoken_1.default.sign({ userId: user._id }, jwtSecret, {
+            expiresIn: "1d",
+        });
+        let role = 'student';
+        if (user.userGrpId.toString() === '682c18dc2bb32dfa02ed0ea9')
+            role = 'admin';
+        // Clear OTP  successful verification
+        yield user_1.default.findByIdAndUpdate(user._id, {
+            otp: null,
+            otpExpiry: new Date(0),
+        });
+        return { user, jwtToken, role };
     }
     catch (error) {
         throw error;
     }
 });
 exports.verifyOtpService = verifyOtpService;
-const getUniversityByPayloadService = (userId, page, pageLimit, jobPlacement, scholarship, nearbyUniversity, transportation, accommodation) => __awaiter(void 0, void 0, void 0, function* () {
+//by default std preference
+//         const universities = await UniversityModel.find({
+//           jobPlacement: student?.preference.jobPlacement,
+//           scholarship: student?.preference.scholarship,
+//           nearbyUniversity: student?.preference.nearbyUniversity,
+//           transportation: student?.preference.transportation,
+//           accommodation: student?.preference.accommodation
+//         })
+// Using aggregation pipeline
+// const universities1 = await UniversityModel.aggregate([
+//   {
+//     $lookup: {
+//       from: "courses",
+//       localField: "course",
+//       foreignField: "_id",
+//       as: "course",
+//     },
+//   },
+//   { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } },
+//   {
+//     $lookup: {
+//       from: "streams",
+//       localField: "stream",
+//       foreignField: "_id",
+//       as: "stream",
+//     },
+//   },
+//   { $unwind: { path: "$stream", preserveNullAndEmptyArrays: true } },
+//   {
+//     $lookup: {
+//       from: "subjects",
+//       localField: "course.subjects.compulsory",
+//       foreignField: "_id",
+//       as: "course.subjects.compulsory",
+//     },
+//   },
+//   {
+//     $lookup: {
+//       from: "subjects",
+//       localField: "course.subjects.optional",
+//       foreignField: "_id",
+//       as: "course.subjects.optional",
+//     },
+//   },
+//   {
+//     $facet: {
+//       metadata: [{ $count: 'totalCount' }],
+//       data: [{ $skip: (page - 1) * pageLimit }, { $limit: pageLimit }, {
+//         $project: { /*stream: 0, course: 0,*/ createdAt: 0, updatedAt: 0,
+//           __v: 0,
+//           "course.__v": 0,
+//           "stream.__v": 0,
+//           "course.subjects.compulsory.__v": 0,
+//           "course.subjects.optional.__v": 0,
+//         }
+//       }],
+//     }
+//   },
+// ])
+// return universities1
+const getAllUniversityService = (page, pageLimit, userId, filter) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let totalUniversities = yield university_1.default.countDocuments(filter);
         const User = yield (0, userHelper_1.IsUser)(userId);
         if (User) {
-            const totalUniversities = yield university_1.default.countDocuments();
-            const universities = yield university_1.default.find({
-                jobPlacement: jobPlacement, scholarship: scholarship,
-                nearbyUniversity: nearbyUniversity, transportation: transportation, accommodation: accommodation
-            })
+            const university = yield university_1.default.find(filter)
                 .limit(pageLimit)
                 .skip((page - 1) * pageLimit)
-                .populate("course")
-                .populate("stream")
-                .populate({
-                path: "course",
-                populate: {
-                    path: "subjects.compulsory",
-                    model: "subject",
-                },
-            })
-                .populate({
-                path: "course",
-                populate: {
-                    path: "subjects.optional",
-                    model: "subject",
-                },
-            });
-            return { universities, totalUniversities };
-        }
-        else {
-            throw new Error("User Not Found");
-        }
-    }
-    catch (error) {
-        throw error;
-    }
-});
-exports.getUniversityByPayloadService = getUniversityByPayloadService;
-const getUniversityService = (page, pageLimit, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const User = yield (0, userHelper_1.IsUser)(userId);
-        // if (!User) {
-        //   throw new Error("User Not Found");
-        // }
-        if (User) {
-            let totalUniversities = yield university_1.default.countDocuments();
-            const student = yield student_1.default.findOne({ userID: userId });
-            if (student) {
-                const universities = yield university_1.default.find({
-                    jobPlacement: student === null || student === void 0 ? void 0 : student.preference.jobPlacement,
-                    scholarship: student === null || student === void 0 ? void 0 : student.preference.scholarship,
-                    nearbyUniversity: student === null || student === void 0 ? void 0 : student.preference.nearbyUniversity,
-                    transportation: student === null || student === void 0 ? void 0 : student.preference.transportation,
-                    accommodation: student === null || student === void 0 ? void 0 : student.preference.accommodation
-                }).limit(pageLimit)
-                    .skip((page - 1) * pageLimit)
-                    .populate("course")
-                    .populate("stream")
-                    .populate({
-                    path: "course",
-                    populate: {
-                        path: "subjects.compulsory",
-                        model: "subject",
-                    },
-                })
-                    .populate({
-                    path: "course",
-                    populate: {
-                        path: "subjects.optional",
-                        model: "subject",
-                    },
-                });
-                totalUniversities = universities.length;
-                return { universities, totalUniversities };
-            }
-            else {
-                const universities = yield university_1.default.find()
-                    .limit(pageLimit)
-                    .skip((page - 1) * pageLimit)
-                    .populate("course")
-                    .populate("stream")
-                    .populate({
-                    path: "course",
-                    populate: {
-                        path: "subjects.compulsory",
-                        model: "subject",
-                    },
-                })
-                    .populate({
-                    path: "course",
-                    populate: {
-                        path: "subjects.optional",
-                        model: "subject",
-                    },
-                });
-                return { universities, totalUniversities };
-            }
-        }
-        else {
-            throw new Error("User Not Found");
-        }
-        // const universities1 = await UniversityModel.aggregate([
-        //   {
-        //     $lookup: {
-        //       from: "courses",
-        //       localField: "course",
-        //       foreignField: "_id",
-        //       as: "course",
-        //     },
-        //   },
-        //   { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } },
-        //   {
-        //     $lookup: {
-        //       from: "streams",
-        //       localField: "stream",
-        //       foreignField: "_id",
-        //       as: "stream",
-        //     },
-        //   },
-        //   { $unwind: { path: "$stream", preserveNullAndEmptyArrays: true } },
-        //   {
-        //     $lookup: {
-        //       from: "subjects",
-        //       localField: "course.subjects.compulsory",
-        //       foreignField: "_id",
-        //       as: "course.subjects.compulsory",
-        //     },
-        //   },
-        //   {
-        //     $lookup: {
-        //       from: "subjects",
-        //       localField: "course.subjects.optional",
-        //       foreignField: "_id",
-        //       as: "course.subjects.optional",
-        //     },
-        //   },
-        //   {
-        //     $facet: {
-        //       metadata: [{ $count: 'totalCount' }],
-        //       data: [{ $skip: (page - 1) * pageLimit }, { $limit: pageLimit }, {
-        //         $project: { /*stream: 0, course: 0,*/ createdAt: 0, updatedAt: 0,
-        //           __v: 0,
-        //           "course.__v": 0,
-        //           "stream.__v": 0,
-        //           "course.subjects.compulsory.__v": 0,
-        //           "course.subjects.optional.__v": 0,
-        //         }
-        //       }],
-        //     }
-        //   },
-        // ])
-        // return universities1
-    }
-    catch (error) {
-        throw error;
-    }
-});
-exports.getUniversityService = getUniversityService;
-const getAllUniversityService = (page, pageLimit, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let totalUniversities = yield university_1.default.countDocuments();
-        const User = yield (0, userHelper_1.IsUser)(userId);
-        if (User) {
-            const university = yield university_1.default.find()
                 .populate("course")
                 .populate("stream")
                 .populate({
@@ -320,25 +214,31 @@ const getUniversityByIDService = (id, userId) => __awaiter(void 0, void 0, void 
                 .populate("stream")
                 .populate({
                 path: "course",
-                populate: {
-                    path: "subjects.compulsory",
-                    model: "subject",
-                },
-            })
-                .populate({
-                path: "course",
-                populate: {
-                    path: "subjects.optional",
-                    model: "subject",
-                },
+                populate: [{
+                        path: "subjects.compulsory",
+                        model: "subject",
+                    },
+                    {
+                        path: "subjects.optional",
+                        model: "subject",
+                    },
+                ]
             });
             if (!university) {
                 throw new Error("University Not Found");
             }
-            return university;
+            const enrollCourses = yield enrollCourse_1.default.find({ userID: User._id, universityID: id });
+            const FeeAndCapacity = yield feecapacity_1.default.find({ universityId: id });
+            // total std in university
+            // const TotalEnrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id });
+            const courseEnrollCounts = yield Promise.all(university.course.map((course) => __awaiter(void 0, void 0, void 0, function* () {
+                const enrollCourse_Uni = yield enrollCourse_1.default.find({ universityID: university._id, courseID: course._id, });
+                return { courseId: course._id, enrollCount: enrollCourse_Uni.length, enrollCourse_Uni };
+            })));
+            return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses };
         }
         else {
-            throw new Error("User Not Found");
+            throw new Error("Error Fetching University Details");
         }
     }
     catch (error) {

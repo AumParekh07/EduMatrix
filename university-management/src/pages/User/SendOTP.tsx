@@ -10,8 +10,7 @@ export function SendOtp() {
     const navigate = useNavigate();
 
     return (
-        <div className="container d-flex justify-content-center align-items-center "
-            style={{ height: "calc(100vh - 57.6px)" }}>
+        <div className="container d-flex justify-content-center align-items-center vh-100 flip-animation">
 
             <div className=" card shadow-lg p-4 w-100 rounded-4" style={{ maxWidth: "350px" }} >
 

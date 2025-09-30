@@ -11,7 +11,7 @@ export const CreateCourse = () => {
 
     return (
         <div className="container-fluid pt-5 d-flex justify-content-center align-items-center vh-100 ">
-            <div className="card shadow-lg p-4 w-100 rounded-4" data-aos="fade-in" style={{ maxWidth: "750px" }}>
+            <div className="card shadow-lg p-4 w-100 rounded-4 fadeIn-animation" style={{ maxWidth: "750px" }}>
                 <h2 className="text-center mb-4 fw-bold text-primary">Create Course</h2>
                 <Formik
                     initialValues={CourseInitialValues}

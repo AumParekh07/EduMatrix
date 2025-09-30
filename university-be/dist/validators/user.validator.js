@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUniversitySchema = exports.verifyOtpSchema = exports.sendOtpSchema = exports.loginUserSchema = exports.createUserSchema = void 0;
+exports.getUniversitiesSchema = exports.getUniversityByPayloadSchema = exports.verifyOtpSchema = exports.sendOtpSchema = exports.loginUserSchema = exports.createUserSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const commenValidator_1 = require("./commenValidator");
 exports.createUserSchema = joi_1.default.object({
@@ -28,10 +28,20 @@ exports.verifyOtpSchema = joi_1.default.object({
         .message(`"otp" must be a 6-digit number`)
         .required()
 });
-exports.getUniversitySchema = joi_1.default.object({
+exports.getUniversityByPayloadSchema = joi_1.default.object({
     jobPlacement: commenValidator_1.booleanItem,
     scholarship: commenValidator_1.booleanItem,
     nearbyUniversity: commenValidator_1.booleanItem,
     transportation: commenValidator_1.booleanItem,
     accommodation: commenValidator_1.booleanItem
+});
+const booleanString = joi_1.default.string().valid("true");
+exports.getUniversitiesSchema = joi_1.default.object({
+    page: joi_1.default.string().pattern(/^\d+$/).required(),
+    pageSize: joi_1.default.string().pattern(/^\d+$/).required(),
+    jobPlacement: booleanString.optional(),
+    scholarship: booleanString.optional(),
+    nearbyUniversity: booleanString.optional(),
+    transportation: booleanString.optional(),
+    accommodation: booleanString.optional()
 });

@@ -10,7 +10,7 @@ export function Register() {
     const navigate = useNavigate();
 
     return (
-        <div className="container d-flex justify-content-center align-items-center"
+        <div className="container d-flex justify-content-center align-items-center flip-animation"
             style={{ height: "calc(100vh - 57.6px)" }}>
 
             <div className="card shadow-lg p-4 w-100 rounded-4" style={{ maxWidth: "350px", }} >
@@ -25,6 +25,7 @@ export function Register() {
                         <InputFiled1 title="User Name" type="text" id="username" placeholder="Choose a username" />
                         <InputFiled1 title="Email" type="email" id="email" placeholder="Enter your email address" />
                         <InputFiled1 title="Password" type="password" id="password" placeholder="Create a strong password" />
+                        <InputFiled1 title="confirm Password" type="password" id="confirmPassword" placeholder="Confirm your password" />
 
                         <SubmitButton title="Register" />
                     </Form>

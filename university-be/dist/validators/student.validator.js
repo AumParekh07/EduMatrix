@@ -24,7 +24,6 @@ exports.studentDetailSchema = joi_1.default.object({
     }).required(),
 });
 exports.ECSchema = joi_1.default.object({
-    userID: commenValidator_1.objectId,
     universityID: commenValidator_1.objectId,
     courseID: commenValidator_1.objectId,
     optionalSubjectID: commenValidator_1.ArrayObjectId

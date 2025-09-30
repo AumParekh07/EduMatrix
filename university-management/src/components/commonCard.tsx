@@ -53,7 +53,7 @@ function FetchCardList<T>({
 
     if (loading) return <LoadingComponent />;
     if (error) return <ErrorComponent error={error} />;
-    // 
+
     return (
         <div className="container card rounded-4 p-4 pb-0 my-4" data-aos="" data-aos-duration="">
             <div className="border-2 border-bottom p-2 pt-0 justify-content-between d-flex">

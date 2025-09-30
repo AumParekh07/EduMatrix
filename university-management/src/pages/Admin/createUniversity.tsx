@@ -8,7 +8,7 @@ import UniversityFormFields from "../../components/FormFields/universityFormFiel
 export const CreateUniversity = () => {
     return (
         <div className="container-fluid pt-5 d-flex justify-content-center align-items-center">
-            <div className=" card shadow-lg p-4 w-100 rounded-4" data-aos="fade-in" style={{ maxWidth: "750px" }} >
+            <div className=" card shadow-lg p-4 w-100 rounded-4 fadeIn-animation" style={{ maxWidth: "750px" }} >
 
                 <h2 className="text-center mb-4 fw-bold text-primary">Create University</h2>
                 <Formik
@@ -23,9 +23,6 @@ export const CreateUniversity = () => {
                                 setFieldValue={setFieldValue}
                             />
                             <SubmitButton title="Create" />
-                            {/* <button type='submit' className="btn btn-outline-primary fw-semibold shadow-sm" onSubmit={() => navigate('/admin/create-feeCapacity')}>
-                            Create
-                        </button> */}
                             <Link to="/admin/university" className="btn btn-outline-primary m-2 fw-semibold shadow-sm">View University</Link>
                         </Form>
                     )}

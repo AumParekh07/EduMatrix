@@ -285,14 +285,14 @@ export const getUniversityByIDService = async (id: string, userId: ObjectId) => 
 
       const courseEnrollCounts = await Promise.all(university.course.map(async (course: any) => {
 
-        const count = await EnrollCourseModel.countDocuments({ universityID: university._id, courseID: course._id, });
+        const enrollCourse_Uni = await EnrollCourseModel.find({ universityID: university._id, courseID: course._id, });
 
-        return { courseId: course._id, enrollCount: count };
+        return { courseId: course._id, enrollCount: enrollCourse_Uni.length, enrollCourse_Uni };
       })
       );
       return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses }
     } else {
-      throw new Error("User Not Found");
+      throw new Error("Error Fetching University Details");
     }
   } catch (error) {
     throw error

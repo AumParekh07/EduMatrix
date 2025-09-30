@@ -1,0 +1,27 @@
+.nav-underline1 .nav-link {
+  position: relative;
+  text-decoration: none !important;
+}
+
+.nav-underline1 .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 2px;
+  width: 0%;
+  background-color: black;
+  transition: all 0.3s ease-in-out;
+  transform: translateX(-50%);
+}
+
+.nav-underline1 .nav-link:hover::after,
+.nav-underline1 .nav-link.active::after {
+  width: 100%;
+}
+
+.blur-navbar {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(5px);
+  transition: background-color 0.3s ease;
+}

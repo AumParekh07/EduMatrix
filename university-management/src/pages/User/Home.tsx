@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { apiCall } from "../../api/apiCaller";
 import { LoadingComponent } from "../../components/helperComponents";
 import CountUp from "react-countup";
-import { GetToken } from "../../helper/authtoken";
+import { GetToken } from "../../helper/getAuth";
 
 export function Home() {
     const [counts, setCounts] = useState({ universities: 0, courses: 0, students: 0 });
@@ -36,7 +36,7 @@ export function Home() {
     return (
         <>
             <div className="container d-flex justify-content-center align-items-center  pt-md-5 pb-md-3" style={{ height: "calc(100vh - 57.6px)" }} >
-                <div className="card rounded-4 shadow p-4 w-100" style={{ maxWidth: "900px" }} data-aos="fade-in">
+                <div className="card rounded-4 shadow p-4 w-100" style={{ maxWidth: "900px" }}>
                     <h1 className=" pb-2 rounded-top-4 border-2 border-bottom fw-bold text-primary text-center">
                         Welcome to University Management System
                     </h1>
@@ -45,9 +45,9 @@ export function Home() {
                             Manage and explore universities, courses, and student enrollments with ease.
                         </p>
                         {loading ? (
-                            <LoadingComponent />
+                            <LoadingComponent h={false} />
                         ) : error ? (
-                            <p className="text-danger">{error}</p>
+                            <p style={{ color: "red" }}>{error}</p>
                         ) : (
                             <>
                                 <section className="d-flex flex-wrap justify-content-center gap-md-5 gap-sm-4 gap-3 my-4">
@@ -91,11 +91,6 @@ export function Home() {
                                     ENROLL NOW
                                 </Link>
                             }
-                            {/* <Link to="/register" className="btn btn-outline-primary btn-lg">
-                                Register
-                            </Link> */}
-
-
                         </div>
                     </div>
                 </div>

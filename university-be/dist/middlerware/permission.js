@@ -13,26 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.permission = void 0;
-const user_1 = __importDefault(require("../models/user"));
 const user_group_1 = __importDefault(require("../models/user_group"));
+const userHelper_1 = require("../helper/userHelper");
 const permission = (module, reqpermission) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        var _a;
         try {
+            console.group("Requested Permission");
             console.log('module: ', module);
             console.log('reqpermission: ', reqpermission);
-            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
-            // console.log('userId: ', userId);
-            const user = yield user_1.default.findById(userId);
+            console.groupEnd();
+            const userId = res.locals.userId;
+            const user = yield (0, userHelper_1.IsUser)(userId);
             const userGroupID = user === null || user === void 0 ? void 0 : user.userGrpId;
-            // console.log('userGroupID: ', userGroupID);
             const userGroup = yield user_group_1.default.findById(userGroupID);
-            // console.log('userGroup: ', userGroup);
             if (!userGroup) {
                 console.error("No user group found for ID:");
             }
             const permission = userGroup === null || userGroup === void 0 ? void 0 : userGroup.module_permission;
-            // console.log('permission: ', permission);
             if (!permission[module] || !permission[module].includes(reqpermission)) {
                 res.status(403).json({
                     success: false,

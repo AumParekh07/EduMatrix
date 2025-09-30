@@ -1,5 +1,5 @@
 import { ErrorMessage } from "formik";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import { ErrorComponent, InputFiled1, LoadingComponent, Preferencefield } from "../helperComponents";
 import { customStyles } from "./courseFormFields";
 import { useState, useEffect } from "react";
@@ -7,15 +7,17 @@ import type { Course } from "../../pages/Admin/listCourse";
 import type { Stream } from "../../pages/Admin/listStream";
 import type { Option } from "./courseFormFields";
 import { apiCall } from "../../api/apiCaller";
-import type { CourseDetail } from "../../helper/FormikValidation";
+import type { CourseDetail, UniversityI } from "../../helper/FormikValidation";
 
 type Props = {
     values: any;
     setFieldValue: (field: string, value: any) => void;
+
+    courseEnrollCounts?: { courseId: string; enrollCount: number }[];
 };
 
 
-const UniversityFormFields = ({ values, setFieldValue }: Props) => {
+const UniversityFormFields = ({ values, setFieldValue, courseEnrollCounts }: Props) => {
 
     const [stream, setStream] = useState<Stream[]>([]);
     const [course, setCourse] = useState<Course[]>([]);
@@ -64,11 +66,50 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
         value: stm._id,
     }));
 
-    const courseOptions: Option[] = course.map((cou) => ({
-        label: cou.name,
-        value: cou._id,
+    // const courseOptions: Option[] = course.map((cou) => ({
+    //     label: cou.name,
+    //     value: cou._id,
+    // }));
+
+    // const courseOptions: Option[] = course.map(course => ({
+    //     value: course._id,
+    //     label: course.name,
+    //     isFixed: courseEnrollCounts.some(c => c.courseId === course._id && c.enrollCount > 0),
+    // }));
+    const courseOptions: Option[] = course.map(course => ({
+        value: course._id,
+        label: course.name,
+        isFixed: courseEnrollCounts?.some(c => c.courseId === course._id && c.enrollCount > 0),
     }));
 
+    const handleCourseChange = (
+        selected: Option[],
+        values: UniversityI,
+        setFieldValue: (field: string, value: any) => void,
+        courseOptions: Option[]
+    ) => {
+        // All current options
+        const currentSelectedOptions = courseOptions.filter(opt => values.course.includes(opt.value));
+
+        // Get full selected options including fixed ones
+        const fixedSelected = currentSelectedOptions.filter(opt => opt.isFixed);
+        const newSelected = [...fixedSelected, ...selected.filter(opt => !opt.isFixed)];
+
+        const newCourseIds = newSelected.map(item => item.value);
+        setFieldValue("course", newCourseIds);
+
+        const updatedCourseDetails = newCourseIds.map((id) => {
+            const existing = values.courseDetails.find((cDetail) => cDetail.courseId === id);
+            return existing || { courseId: id, fee: "", capacity: "" };
+        });
+
+        setFieldValue("courseDetails", updatedCourseDetails);
+    };
+
+    const MultiValueRemove = (props: any) => {
+        if (props.data.isFixed) return null;
+        return <components.MultiValueRemove {...props} />;
+    };
     if (loading) return <LoadingComponent h={false} />;
     if (error) return <ErrorComponent error={error} hw={false} />;
 
@@ -111,7 +152,7 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
 
                 <div className="mb-3">
                     <div> <p className="form-label fw-semibold">Course</p></div>
-                    <Select
+                    {/* <Select
                         isMulti
                         name="course"
                         placeholder="Select Course"
@@ -119,6 +160,10 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
                         value={courseOptions.filter((opt) => values.course.includes(opt.value))}
                         // onChange={(selected) => {
                         //     setFieldValue("course", selected.map((item: Option) => item.value));
+                        // }}
+                        // isOptionDisabled={(option) => {
+                        //     const enrollData = values.courseEnrollCounts.find((c: { courseId: string; }) => c.courseId === option.value);
+                        //     return enrollData?.enrollCount > 0; // or use >= capacity
                         // }}
                         onChange={(selected) => {
                             const selectedCourses = selected.map((item: Option) => item.value);
@@ -135,7 +180,22 @@ const UniversityFormFields = ({ values, setFieldValue }: Props) => {
                         styles={customStyles}
                         classNamePrefix="coreui"
                         className="shadow-sm"
+                    /> */}
+                    <Select
+                        isMulti
+                        name="course"
+                        options={courseOptions}
+                        placeholder="Select Course"
+                        value={courseOptions.filter(opt => values.course.includes(opt.value))}
+                        onChange={(selected) =>
+                            handleCourseChange(selected as Option[], values, setFieldValue, courseOptions)
+                        }
+                        styles={customStyles}
+                        classNamePrefix="coreui"
+                        className="shadow-sm"
+                        components={{ MultiValueRemove }}
                     />
+
                     <ErrorMessage name="course" component="div" className="error" />
                 </div>
                 {values.course.length > 0 && (

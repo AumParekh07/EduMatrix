@@ -12,22 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-const mongoURI = process.env.MONGODB_URL;
-if (!mongoURI) {
-    throw new Error("Missing MONGODB_URI in .env file");
-}
-const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default
-        .connect(mongoURI)
-        .then(() => {
-        console.log("MongoDB connected successfully");
-    })
-        .catch((error) => {
-        console.error("MongoDB connection error:", error);
-        process.exit(1); // Exit the process with failure
-    });
+exports.UserProfileCompleted = void 0;
+const user_1 = __importDefault(require("../models/user"));
+const UserProfileCompleted = (userID) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_1.default.findByIdAndUpdate(userID, { profileCompleted: true }, { new: true });
+    if (!user)
+        throw new Error("User Not Found");
+    return user;
 });
-exports.default = connectDB;
+exports.UserProfileCompleted = UserProfileCompleted;

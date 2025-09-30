@@ -13,7 +13,6 @@ createRoot(document.getElementById("main-container")!).render(
   <BrowserRouter>
     <StrictMode>
 
-      {/* <Navbar /> */}
       <App />
       <ToastContainer />
 

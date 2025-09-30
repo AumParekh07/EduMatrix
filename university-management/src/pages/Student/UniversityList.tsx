@@ -117,8 +117,10 @@ export function UniversityList() {
     return (
         <div className="container pt-5 d-flex justify-content-center align-items-center">
             <div className="card rounded-4 shadow p-4 w-100" data-aos="fade-in" style={{ maxWidth: "1050px" }}>
-                <h1 className="card-heade pb-2 rounded-top-4 border-2 border-bottom fw-bold text-primary text-center">University</h1>
+                <h1 className="pb-2 rounded-top-4 border-2 border-bottom fw-bold text-primary text-center">University</h1>
                 <div className="card-body pb-0">
+
+                    {/* Filter */}
                     <div className="d-flex flex-wrap gap-3 justify-content-center">
                         {Object.entries(filters).map(([key, value]) => (
                             <label key={key} className="text-capitalize fw-medium p-2 border border-1 border-primary shadow-sm rounded-pill btn" style={{ background: '#e4eaf2', color: '#0d6efd' }}>
@@ -140,6 +142,7 @@ export function UniversityList() {
                             </label>
                         ))}
                     </div>
+
                     {loading ? <LoadingComponent h={false} /> :
                         <ul className="list-inline">
                             {universities.length === 0 && (
@@ -181,6 +184,7 @@ export function UniversityList() {
                     }
                 </div>
 
+                {/* Pagination */}
                 <div className="card-footer d-flex justify-content-center gap-3 rounded-bottom-4">
                     <button
                         className="btn btn-sm p-0 btn-outline-primary fw-semibold shadow-sm"

@@ -25,7 +25,7 @@ export const objectId = Joi.string().pattern(objectIdPattern).required()
 
 export const email = Joi.string().email().required();
 
-export const password = Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,15}$')).required();
+export const password = Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{6,15}$')).required();
 
 
 export const booleanItem = Joi.boolean().required();

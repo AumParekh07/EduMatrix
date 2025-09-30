@@ -10,6 +10,7 @@ import { errorToast } from "../../helper/helperToast";
 export type Option = {
     value: string;
     label: string;
+    isFixed?: boolean
 };
 
 type Props = {
