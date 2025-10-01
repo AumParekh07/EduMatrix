@@ -7,11 +7,11 @@ import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
 import studentRoutes from "./routes/studentRoutes";
-import passRoutes from "./routes/passRoutes";
+
 dotenv.config();
 const app = express();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors({
   origin: process.env.CLIENT_URL,
@@ -26,7 +26,6 @@ app.use("/api/v1", userRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/student", studentRoutes)
 
-app.use("/api/v1/auth", passRoutes);
 app.get("/", (req: Request, res: Response) => {
   res.send("<h1 style='color:blue'>SERVER  IS  Running..... </h1>");
 });

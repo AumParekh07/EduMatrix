@@ -28,7 +28,7 @@ export default function DeleteModal({
         try {
             const respons = await apiCall({
                 method: 'delete',
-                url: `/admin/${apiPath}`,
+                url: `v1/admin/${apiPath}`,
             })
             successToast(respons?.message);
             onHide();

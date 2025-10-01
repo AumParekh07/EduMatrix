@@ -18,7 +18,7 @@ export async function RegisterHandleSubmit(
     try {
         const response = await apiCall({
             method: "post",
-            url: "/register",
+            url: "v1/register",
             data: values,
         });
 
@@ -47,7 +47,7 @@ export async function LoginHandleSubmit(
     try {
         const response = await apiCall({
             method: "post",
-            url: "/login",
+            url: "v1/login",
             data: values,
         });
 
@@ -94,7 +94,7 @@ export async function SendOtpHandleSubmit(
     try {
         const response = await apiCall({
             method: "post",
-            url: "/send-otp",
+            url: "v1/send-otp",
             data: values,
         });
 
@@ -125,7 +125,7 @@ export async function VerifyOtpHandleSubmit(
     try {
         const response = await apiCall({
             method: "post",
-            url: "/verify-otp",
+            url: "v1/verify-otp",
             data: payload,
         });
 
@@ -169,7 +169,7 @@ export async function StdHandleSubmit(
     try {
         const response = await apiCall({
             method: "post",
-            url: "/student/std-detail",
+            url: "v1/student/std-detail",
             data: values,
         });
 
@@ -212,7 +212,7 @@ export async function UniversityHandleSubmit(
     try {
         const response = await apiCall({
             method: "post",
-            url: "/admin/create-university",
+            url: "v1/admin/create-university",
             data: values,
         });
 

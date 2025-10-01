@@ -31,7 +31,7 @@ const UniversityFormFields = ({ values, setFieldValue, courseEnrollCounts }: Pro
         try {
             const res = await apiCall({
                 method: "get",
-                url: "/admin/get-streams"
+                url: "v1/admin/get-streams"
             })
             setStream(res.data);
         } catch (err: any) {
@@ -46,7 +46,7 @@ const UniversityFormFields = ({ values, setFieldValue, courseEnrollCounts }: Pro
         try {
             const res = await apiCall({
                 method: 'get',
-                url: "/admin/get-courses"
+                url: "v1/admin/get-courses"
             })
             setCourse(res.data);
         } catch (err: any) {

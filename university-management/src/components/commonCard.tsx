@@ -33,7 +33,7 @@ function FetchCardList<T>({
         try {
             const Response = await apiCall({
                 method: "get",
-                url: `/admin/${apiEndPoint}`,
+                url: `v1/admin/${apiEndPoint}`,
             });
 
             setItems(Response.data);

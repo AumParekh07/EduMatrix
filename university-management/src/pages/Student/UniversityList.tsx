@@ -80,7 +80,7 @@ export function UniversityList() {
         try {
             const response = await apiCall({
                 method: "get",
-                url: `/get-university?${query}`
+                url: `v1/get-university?${query}`
             })
 
             setUniversities(response.data);

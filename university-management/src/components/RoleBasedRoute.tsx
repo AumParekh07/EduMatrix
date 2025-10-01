@@ -69,7 +69,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
             <div className="d-flex">
                 <SidebartoggelContext.Provider value={{ collapsed, setCollapsed }}>
                     <AdminSidebar />
-                    <div className="px-md-5"
+                    <div className="px-md-5 px-3"
                         style={{
                             flex: 1, marginLeft: collapsed ? "55px" : "250px",
                             transition: "margin 0.3s ease-in-out",

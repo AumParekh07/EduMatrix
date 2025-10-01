@@ -8,6 +8,8 @@ export const createUserSchema = Joi.object({
 
     email: email,
     password: password,
+    confirmPassword: Joi.string().valid(Joi.ref('password')).required()
+        .messages({ 'string.only': '"confirmPassword" does not match' }),
     userGrpId: objectId
 })
 

@@ -12,6 +12,8 @@ exports.createUserSchema = joi_1.default.object({
         .messages({ "string.pattern.base": `"username" must have at least one number and one special character from "!@.&*_"` }),
     email: commenValidator_1.email,
     password: commenValidator_1.password,
+    confirmPassword: joi_1.default.string().valid(joi_1.default.ref('password')).required()
+        .messages({ 'string.only': '"confirmPassword" does not match' }),
     userGrpId: commenValidator_1.objectId
 });
 exports.loginUserSchema = joi_1.default.object({

@@ -61,7 +61,7 @@ export default function CourseFormFields({ values, setFieldValue }: Props) {
         try {
             const res = await apiCall({
                 method: "get",
-                url: '/admin/get-subjects'
+                url: "v1/admin/get-subjects"
             })
             setSubjects(res.data);
         } catch (err: any) {

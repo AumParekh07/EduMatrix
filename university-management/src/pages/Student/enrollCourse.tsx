@@ -42,7 +42,7 @@ export function EnrollCourse() {
 
             const response = await apiCall({
                 method: "post",
-                url: "/student/enroll-course",
+                url: "v1/student/enroll-course",
                 data: payload,
             });
 

@@ -11,7 +11,6 @@ const db_1 = __importDefault(require("./config/db"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const adminRoutes_1 = __importDefault(require("./routes/adminRoutes"));
 const studentRoutes_1 = __importDefault(require("./routes/studentRoutes"));
-const passRoutes_1 = __importDefault(require("./routes/passRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT;
@@ -25,7 +24,6 @@ app.use((0, morgan_1.default)("dev"));
 app.use("/api/v1", userRoutes_1.default);
 app.use("/api/v1/admin", adminRoutes_1.default);
 app.use("/api/v1/student", studentRoutes_1.default);
-app.use("/api/v1/auth", passRoutes_1.default);
 app.get("/", (req, res) => {
     res.send("<h1 style='color:blue'>SERVER  IS  Running..... </h1>");
 });

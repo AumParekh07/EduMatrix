@@ -65,7 +65,7 @@ export function StudentDashboard() {
         try {
             const response = await apiCall({
                 method: "get",
-                url: "/student/std-detail",
+                url: "v1/student/std-detail",
             });
 
             console.log("Student Dashboard Data:", response.data);

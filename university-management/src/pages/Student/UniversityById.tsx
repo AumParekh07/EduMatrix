@@ -52,7 +52,7 @@ export function UniversityById() {
         try {
             const response = await apiCall({
                 method: "get",
-                url: `/get-university/${id}`
+                url: `v1/get-university/${id}`
             });
             console.log('University BY ID Data:', response);
             setUniversity(response.data.university);

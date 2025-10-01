@@ -17,7 +17,7 @@ export function Home() {
             try {
                 const response = await apiCall({
                     method: "get",
-                    url: "/get-counts",
+                    url: "v1/get-counts",
                 });
                 if (response.success) {
                     setCounts(response.data);
