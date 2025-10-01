@@ -12,9 +12,10 @@ dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+const origin_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: origin_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true // because sending authorization headers
 }));
