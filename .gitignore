@@ -5,7 +5,7 @@ university-management/package-lock.json
 university-be/.env
 university-be/node_modules
 university-be/package-lock.json
-
+university-be/dist
 
 university-be/text.txt
 

@@ -91,11 +91,9 @@ export const sendOtpService = async (
 ): Promise<TSendOtpResponse> => {
   try {
 
-
     const user = await userExists(email);
 
-    const otp: string = generateOTP();
-    const otpExpiry: Date = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
+    const { otp, otpExpiry } = generateOTP();
 
     await UserModel.findByIdAndUpdate(user._id, { otp, otpExpiry });
 

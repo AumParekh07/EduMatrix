@@ -99,7 +99,7 @@ export async function SendOtpHandleSubmit(
         });
 
         console.log("OTP sent:", response);
-        successToast(response?.message || "OTP sent successfully");
+        successToast(response?.message || "OTP sent successfully! Check in your spam also");
 
         localStorage.setItem("email", values.email);
         navigate("/verify-otp");

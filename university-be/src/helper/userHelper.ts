@@ -2,9 +2,9 @@ import sgMail from "@sendgrid/mail";
 import UserModel from "../models/user";
 import { ObjectId } from "mongoose";
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
 export const sendEmail = async (email: string, otp: string) => {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
   try {
     const msg = {
       to: email,
@@ -24,8 +24,10 @@ export const sendEmail = async (email: string, otp: string) => {
   }
 };
 
-export const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+export const generateOTP = (): { otp: string; otpExpiry: Date } => {
+  const otp: string = Math.floor(100000 + Math.random() * 900000).toString();
+  const otpExpiry: Date = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
+  return { otp, otpExpiry };
 };
 
 export const userExists = async (email: string) => {

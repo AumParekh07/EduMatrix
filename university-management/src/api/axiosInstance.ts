@@ -4,7 +4,7 @@ import { GetToken } from '../helper/getAuth';
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3007/api/";
 const axiosInstance = axios.create({
     baseURL: backendUrl,
-    timeout: 300000,
+    timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
     },
