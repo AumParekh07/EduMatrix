@@ -98,7 +98,8 @@ export const sendOtpService = async (
     const otpExpiry: Date = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
 
     await UserModel.findByIdAndUpdate(user._id, { otp, otpExpiry });
-    await sendEmail(email, otp);
+
+    sendEmail(email, otp).catch(err => console.error("Email send failed:", err));
 
     return { otp };
 

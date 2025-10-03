@@ -1,24 +1,14 @@
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 import UserModel from "../models/user";
 import { ObjectId } from "mongoose";
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+
 export const sendEmail = async (email: string, otp: string) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    const msg = {
       to: email,
+      from: process.env.EMAIL_USER!, // Use the verified sender
       subject: "Email Verification OTP",
       html: `<div style="font-family: Arial, sans-serif; padding: 20px;">
         <h2>Email Verification</h2>
@@ -26,8 +16,9 @@ export const sendEmail = async (email: string, otp: string) => {
         <h1 style="color:rgba(0, 158, 226, 0.94); letter-spacing: 5px;">${otp}</h1>
         <p>This OTP will expire in 5 minutes.</p>
       </div>`,
-    });
-    console.log("Email info: ", info);
+    };
+    const info = await sgMail.send(msg);
+    console.log("Email sent: ", info);
   } catch (error) {
     console.log(error);
   }
