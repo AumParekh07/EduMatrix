@@ -5,11 +5,16 @@ import { ObjectId } from "mongoose";
 export const sendEmail = async (email: string, otp: string) => {
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      // tls: {
+      //   rejectUnauthorized: false,
+      // },
     });
     const info = await transporter.sendMail({
       from: process.env.EMAIL_USER,
