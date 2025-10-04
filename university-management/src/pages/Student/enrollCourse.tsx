@@ -45,12 +45,11 @@ export function EnrollCourse() {
                 url: "v1/student/enroll-course",
                 data: payload,
             });
-
-            if (response.success) {
+            if (response.success && response.data?.url) {
                 successToast("Successfully enrolled in the course!");
-                navigate("/dashboard");
+                window.location.href = response.data.url;
             } else {
-                const msg = response.data.message || "Failed to enroll.";
+                const msg = response.data?.message || "Failed to enroll.";
                 errorToast(msg);
                 setError(msg);
             }

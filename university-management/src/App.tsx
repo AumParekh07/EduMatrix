@@ -27,6 +27,7 @@ import StdNavbar from "./components/navbar";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
+import Verify from "./pages/Student/Verify";
 
 
 function App() {
@@ -48,7 +49,7 @@ function App() {
       <Route path="/university/:id" element={<PrivateRoute allowedRole="student"><UniversityById /></PrivateRoute>} />
       <Route path="/enroll-course/:id" element={<PrivateRoute allowedRole="student"><EnrollCourse /></PrivateRoute>} />
       <Route path="/dashboard" element={<PrivateRoute allowedRole="student"><StudentDashboard /></PrivateRoute>} />
-
+      <Route path="/verify" element={<PrivateRoute allowedRole="student"><Verify /></PrivateRoute>} />
 
       <Route path="/admin/stream" element={<PrivateRoute allowedRole="admin"><AdminStreams /></PrivateRoute>} />
       <Route path="/admin/subject" element={<PrivateRoute allowedRole="admin"><AdminSubjects /></PrivateRoute>} />

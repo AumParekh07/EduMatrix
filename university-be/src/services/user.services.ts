@@ -95,7 +95,7 @@ export const sendOtpService = async (
 
     const { otp, otpExpiry } = generateOTP();
 
-    await UserModel.findByIdAndUpdate(user._id, { otp, otpExpiry });
+    await UserModel.findByIdAndUpdate(user._id, { otp, otpExpiry }, { new: true });
 
     sendEmail(email, otp).catch(err => console.error("Email send failed:", err));
 
@@ -133,7 +133,7 @@ export const verifyOtpService = async (email: string, otp: string): Promise<TLog
     await UserModel.findByIdAndUpdate(user._id, {
       otp: null as unknown as string,
       otpExpiry: new Date(0),
-    });
+    }, { new: true });
     return { user, jwtToken, role };
 
   } catch (error) {
@@ -277,14 +277,14 @@ export const getUniversityByIDService = async (id: string, userId: ObjectId) => 
       if (!university) {
         throw new Error("University Not Found");
       }
-      const enrollCourses = await EnrollCourseModel.find({ userID: User._id, universityID: id })
+      const enrollCourses = await EnrollCourseModel.find({ userID: User._id, universityID: id, paymentStatus: true })
       const FeeAndCapacity = await FeeCapacityModel.find({ universityId: id })
       // total std in university
-      // const TotalEnrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id });
+      // const TotalEnrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id,paymentStatus: true });
 
       const courseEnrollCounts = await Promise.all(university.course.map(async (course: any) => {
 
-        const enrollCourse_Uni = await EnrollCourseModel.find({ universityID: university._id, courseID: course._id, });
+        const enrollCourse_Uni = await EnrollCourseModel.find({ universityID: university._id, courseID: course._id, paymentStatus: true });
 
         return { courseId: course._id, enrollCount: enrollCourse_Uni.length, enrollCourse_Uni };
       })

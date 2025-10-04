@@ -122,7 +122,7 @@ export function StudentDashboard() {
 
     return (
         <>
-            <div className="container py-5 px-lg-5 p-0 " data-aos="fade-in">
+            <div className="container py-5 px-lg-5" data-aos="fade-in">
                 <div className="card rounded-4 p-4">
                     <h2 className="text-center rounded-top-4 border-2 border-bottom p-2 pt-0 text-primary fw-bold" >
                         Student Dashboard
@@ -160,7 +160,7 @@ export function StudentDashboard() {
                                     <div className="col-md-5 d-flex align-items-center justify-content-center" data-aos="zoom-out-down" data-aos-anchor-placement="top-bottom"
                                         key={course._id}
                                     >
-                                        <div className="card cardbg rounded-5 border-2 border-primary shadow-sm hoverShadowlg p-3 m-3 w-100"
+                                        <div className="card cardbg rounded-5 border-2 border-primary shadow-sm hoverShadowlg p-3 m-md-3 my-3 w-100"
                                         // style={{ backgroundColor: "#94bdfe" }}
                                         >
                                             {course.courseID ? course.universityID ? (

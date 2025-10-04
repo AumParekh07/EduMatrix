@@ -48,7 +48,8 @@ export function UniversityById() {
     const navigate = useNavigate();
 
     async function fetchUniversity() {
-        setLoading(true)
+        setLoading(true);
+        setError("");
         try {
             const response = await apiCall({
                 method: "get",
@@ -66,7 +67,6 @@ export function UniversityById() {
             errorToast(msg);
         } finally {
             setLoading(false)
-            setError("")
         }
     }
     useEffect(() => {
@@ -98,6 +98,10 @@ export function UniversityById() {
         }
     };
 
+    if (loading) return <LoadingComponent />
+
+    if (error) return <ErrorComponent error={error} />
+
     if (!university) return <ErrorComponent error="Error Fetching University By ID" />;
 
     const initialValues = {
@@ -124,15 +128,10 @@ export function UniversityById() {
 
     }
 
-    if (loading) return <LoadingComponent />
-
-    if (error) return <ErrorComponent error={error} />
-
-
     return (
         <>
-            <div className="container py-5 px-lg-5 p-0 ">
-                <div className="card p-4 rounded-5 ">
+            <div className="container py-5 px-lg-5">
+                <div className="card p-4 rounded-5 " style={{ minWidth: "300px" }}>
                     <div className='d-flex border-2 border-bottom p-2 pt-0 align-items-center justify-content-between'>
                         <h2 className='m-0  text-primary fw-bold text-center flex-grow-1'>{university.name}</h2>
                         {isAdmin && (
@@ -182,8 +181,8 @@ export function UniversityById() {
                             {university.course.map((course) => {
                                 const isEnrolled = !!enrollCourses.find(ec => ec.courseID === course._id);
                                 return (
-                                    <div className="col-md-5 " data-aos="zoom-in-up" key={course._id}>
-                                        <div className={"card position-relative cardbg p-2 m-3 shadow-sm hoverShadowlg rounded-5 border-2 border-primary"}
+                                    <div className="col-md-5" data-aos="zoom-in-up" key={course._id}>
+                                        <div className="card position-relative cardbg p-2 m-md-3 my-3 shadow-sm hoverShadowlg rounded-5 border-2 border-primary"
                                             style={{ cursor: (isAdmin || remainingCapacity(course._id).remain <= 0) || isEnrolled ? "default" : "pointer", backgroundColor: "" }}//94bdfe //#e4eaf2 //rgb(33 37 41 / 4%)
                                             onClick={() => {
                                                 if (isStudent) {

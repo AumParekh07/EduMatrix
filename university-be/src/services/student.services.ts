@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import Stripe from "stripe";
 
 import UniversityModel, { Address } from "../models/university";
 import StudentModle, { Preference } from "../models/student";
@@ -71,7 +72,7 @@ export const getstudentDetailService = async (userID: ObjectId) => {
             .populate('stream')
             .populate('userID', 'name username email profileCompleted')
 
-        const enrollCourseDetail = await EnrollCourseModel.find({ userID: User._id })
+        const enrollCourseDetail = await EnrollCourseModel.find({ userID: User._id, paymentStatus: true })
             .populate('subjects.compulsory')
             .populate('subjects.optional')
             .populate('universityID', 'address name')
@@ -93,10 +94,13 @@ export const getstudentDetailService = async (userID: ObjectId) => {
 }
 
 
-export const enrollCourseService = async (userID: ObjectId, universityID: ObjectId, courseID: ObjectId, optionalSubjectID: ObjectId[]) => {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+export const enrollCourseService = async (userID: ObjectId, universityID: ObjectId, courseID: ObjectId, optionalSubjectID: ObjectId[], origin: string) => {
 
     try {
-
+        console.log("Origin url:", origin)
+        //checking that data is exist or not
         const User = await IsUser(userID)
         const isProfileComleted = User?.profileCompleted
         if (!isProfileComleted) throw new Error("Complete Your Profile First")
@@ -127,33 +131,110 @@ export const enrollCourseService = async (userID: ObjectId, universityID: Object
             throw new Error("Subject duplication detected,Subject must have in Course already");
         }
 
-        const enrolledStd = await EnrollCourseModel.findOne({ userID: User._id, universityID: university._id, courseID: course._id })
+        const enrolledStd = await EnrollCourseModel.findOne({ userID: User._id, universityID: university._id, courseID: course._id, paymentStatus: true })
         if (enrolledStd) {
             throw new Error(`${User.username} Already Enrolled For This Course`);
         }
 
         const FeeAndCapacity = await FeeCapacityModel.findOne({ universityId: university._id, courseId: course._id })
         const capacity = FeeAndCapacity?.capacity!
-        console.log('capacity: ', capacity);
+        const fee = FeeAndCapacity?.fee!
+        // console.log('capacity: ', capacity);
 
-        const enrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id, courseID: course._id })
-        console.log('enrolledCount: ', enrolledCount);
+        const enrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id, courseID: course._id, paymentStatus: true })
+        // console.log('enrolledCount: ', enrolledCount);
 
         if (enrolledCount > capacity) {
             throw new Error("This course's Seats are Full");
         }
 
-
+        //saveing in databaes
         const subjects = {
             compulsory: compulsorySubject,
             optional: optionalSubjectID
         }
 
-        const newEnroll = new EnrollCourseModel({ userID: User._id, universityID: university._id, courseID: course._id, subjects })
-
+        const EnrollData = {
+            userID: User._id,
+            universityID: university._id,
+            courseID: course._id,
+            subjects,
+            paymentStatus: false,
+            paymentDate: new Date()
+        }
+        const newEnroll = new EnrollCourseModel(EnrollData)
         await newEnroll.save()
-        return newEnroll
+
+        //stripe payment
+        const line_items = [{
+            price_data: {
+                currency: 'inr',
+                product_data: {
+                    name: course.name,
+                    description: `Enrollment for ${course.fullname} at ${university.name}`,
+                },
+                unit_amount: fee * 100,
+            },
+            quantity: 1,
+        },]
+        line_items.push({
+            price_data: {
+                currency: 'inr',
+                product_data: {
+                    name: "Additional Charges",
+                    description: "This includes Additional and other fees for enrollmenet process",
+                },
+                unit_amount: 50 * 100,
+            },
+            quantity: 1,
+        });
+
+        // Create stripe checkout session
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items,
+            mode: 'payment',
+            success_url: `${origin}/verify?success=true&session_id={CHECKOUT_SESSION_ID}&enrollId=${newEnroll._id}`,
+            cancel_url: `${origin}/verify?success=false&enrollId=${newEnroll._id}`,
+            metadata: {
+                enrollId: newEnroll._id.toString(),
+                userId: User._id.toString(),
+                universityId: university._id.toString(),
+            },
+        })
+        return { url: session.url }
+
     } catch (error) {
         throw error
+    }
+}
+
+export const verifyPaymentService = async (session_id: string) => {
+    try {
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+
+        if (session.payment_status === "paid") {
+            const enrollId = session.metadata?.enrollId;
+            if (enrollId) {
+                await EnrollCourseModel.findByIdAndUpdate(enrollId, { paymentStatus: true, paymentDate: new Date(), }, { new: true })
+            }
+
+            return {
+                success: true,
+                message: "Payment verified successfully",
+                data: session,
+            };
+        }
+        const universityId = session.metadata?.universityId;
+
+        return {
+            success: false,
+            message: "Payment not completed yet",
+            data: { session, universityId },
+        };
+    } catch (error) {
+        console.error("Error verifying payment:", error);
+        throw error;
+
     }
 }

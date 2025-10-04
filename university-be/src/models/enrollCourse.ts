@@ -5,7 +5,9 @@ interface enrollCourse {
     universityID: ObjectId,
     courseID: ObjectId,
     // optionalSubjectID: ObjectId[],
-    subjects: Subject
+    subjects: Subject,
+    paymentStatus: boolean,
+    paymentDate: Date
 }
 
 export const EnrollCourseSchema = new mongoose.Schema({
@@ -21,7 +23,13 @@ export const EnrollCourseSchema = new mongoose.Schema({
             { type: mongoose.Types.ObjectId, required: true, ref: "subject" },
         ],
     },
-})
+    paymentStatus: { type: Boolean, required: true, default: false },
+    paymentDate: { type: Date, required: true }
+},
+    {
+        timestamps: true,
+    }
+)
 
 const EnrollCourseModel = mongoose.model<enrollCourse>("enrollCourse", EnrollCourseSchema)
 export default EnrollCourseModel

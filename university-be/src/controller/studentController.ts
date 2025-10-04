@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { enrollCourseService, getstudentDetailService, studentDetailService, updateStdDetailService } from "../services/student.services";
+import { enrollCourseService, getstudentDetailService, studentDetailService, updateStdDetailService, verifyPaymentService } from "../services/student.services";
 // import { type AuthenticatedRequest } from "../middlerware/auth";
 
 export const studentDetail = async (req: Request, res: Response) => {
@@ -75,10 +75,11 @@ export const enrollCourse = async (req: Request, res: Response) => {
         const { universityID, courseID, optionalSubjectID } = req.body
 
         const userId = res.locals.userId;
+        const { origin } = req.headers
 
         // const { userId } = (req as AuthenticatedRequest).user!;
 
-        const result = await enrollCourseService(userId, universityID, courseID, optionalSubjectID)
+        const result = await enrollCourseService(userId, universityID, courseID, optionalSubjectID, origin as string)
 
         res.status(200).json({
             success: true,
@@ -88,6 +89,24 @@ export const enrollCourse = async (req: Request, res: Response) => {
     } catch (error) {
         console.log('error: ', error);
 
+        res.status(400).json({
+            success: false,
+            message: `${error}`
+        })
+    }
+}
+
+
+export const verifyStripePayment = async (req: Request, res: Response) => {
+    try {
+        const { session_id } = req.query;
+
+        const result = await verifyPaymentService(session_id! as string)
+
+        res.status(200).json(result)
+    }
+    catch (error) {
+        console.log('error: ', error);
         res.status(400).json({
             success: false,
             message: `${error}`

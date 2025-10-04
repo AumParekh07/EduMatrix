@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ErrorComponent, Facilities, LoadingComponent } from "../../components/helperComponents";
 import { errorToast } from "../../helper/helperToast";
 import { apiCall } from "../../api/apiCaller";
+import { GetRole } from "../../helper/getAuth";
 
 export type Address = {
     address: string;
@@ -66,7 +67,7 @@ export function UniversityList() {
     const [error, setError] = useState("");
     const [totalData, setTotalData] = useState(0);
     const [filters, setFilters] = useState(initialFilters);
-
+    const isAdmin: boolean = (GetRole() === 'admin')
     const fetchData = async () => {
         setLoading(true);
         const query = new URLSearchParams({
@@ -115,8 +116,8 @@ export function UniversityList() {
     };
 
     return (
-        <div className="container pt-5 d-flex justify-content-center align-items-center">
-            <div className="card rounded-4 shadow p-4 w-100" data-aos="fade-in" style={{ maxWidth: "1050px" }}>
+        <div className={`container pt-5 d-flex justify-content-center align-items-center ${isAdmin ? 'p-0' : ''}`}>
+            <div className="card rounded-4 shadow p-4 w-100" data-aos="fade-in" style={{ maxWidth: "1050px", minWidth: "300px" }}>
                 <h1 className="pb-2 rounded-top-4 border-2 border-bottom fw-bold text-primary text-center">University</h1>
                 <div className="card-body pb-0">
 
@@ -152,15 +153,12 @@ export function UniversityList() {
                             )}
                             {universities.map((uni) => (
                                 <Link
-                                    to={`${localStorage.getItem("role") === "admin"
-                                        ? `/admin/university/${uni._id}`
-                                        : `/university/${uni._id}`
-                                        }`}
+                                    to={`${isAdmin ? `/admin/university/${uni._id}` : `/university/${uni._id}`}`}
                                     key={uni._id}
                                     className="text-decoration-none text-center"
                                     data-aos="fade-up"
                                 >
-                                    <li className="card cardbg shadow rounded-4 p-3 m-3">
+                                    <li className="card cardbg shadow rounded-4 p-3 m-md-3 my-3">
                                         <strong className="card-title">{uni.name}</strong> — {uni.address.address},{" "}
                                         {uni.address.city}, {uni.address.state}, {uni.address.country},{" "}
                                         {uni.address.pincode}

@@ -135,7 +135,7 @@ export const updateCourseService = async (
     await IsCourseName(name, id);
     await validateCourseSubjects(subjects);
 
-    const updatedCourse = await CourseModel.findByIdAndUpdate(course._id, { name, fullname, courseType, subjects })
+    const updatedCourse = await CourseModel.findByIdAndUpdate(course._id, { name, fullname, courseType, subjects }, { new: true })
 
     return updatedCourse
 
@@ -227,7 +227,7 @@ export const updateUniversityService = async (
       address,
       stream,
       course
-    })
+    }, { new: true })
 
     return updatedUniversity
   } catch (error) {
