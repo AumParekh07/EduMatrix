@@ -57,7 +57,7 @@ export default function Verify() {
 
     if (error) return <ErrorComponent error={error} />
     if (loading) return (
-        <div className="d-flex justify-content-center align-items-center z-1" style={{ height: "calc(100vh - 57.6px)" }}>
+        <div className="d-flex justify-content-center align-items-center z-1" style={{ height: "calc(100vh - 72px)" }}>
             <div className="border border-3 rounded-3 border-primary bg-white bg-opacity-50 p-4 text-center">
                 <LoadingComponent h={false} />
                 <h3 className="m-3 mb-0 justify-content-center">Verifying Payment...</h3>
@@ -66,7 +66,7 @@ export default function Verify() {
 
 
     if (status === "success") return (
-        <div className="d-flex justify-content-center align-items-center z-1" style={{ height: "calc(100vh - 57.6px)" }}>
+        <div className="d-flex justify-content-center align-items-center z-1" style={{ height: "calc(100vh - 72px)" }}>
             <div className="border border-3 rounded-3 border-success bg-white bg-opacity-50 p-4 text-center">
                 <h3 className="m-0 text-center text-success fw-bold">✅ Payment successful! Enrollment confirmed.</h3>
                 <p className="mt-2 mb-0">You will be redirected to your <b>Dashboard</b> shortly...</p>
@@ -76,7 +76,7 @@ export default function Verify() {
 
     if (status === "failed")
         return (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 57.6px)" }}>
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 72px)" }}>
                 <div className="border border-3 rounded-3 border-danger bg-white bg-opacity-50 p-4 text-center">
                     <h3 className="m-0 text-center text-danger fw-bold" >❌ Payment failed or canceled.</h3>
                     <p className="mt-2 mb-0">Please try enrolling again.</p>

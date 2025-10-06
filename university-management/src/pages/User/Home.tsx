@@ -35,7 +35,7 @@ export function Home() {
 
     return (
         <>
-            <div className="container d-flex justify-content-center align-items-center  pt-md-5 pb-md-3" style={{ height: "calc(100vh - 57.6px)" }} >
+            <div className="container d-flex justify-content-center align-items-center  pt-md-5 pb-md-3" style={{ height: "calc(100vh - 72px )" }} >
                 <div className="card rounded-4 shadow p-4 w-100" style={{ maxWidth: "900px" }}>
                     <h1 className=" pb-2 rounded-top-4 border-2 border-bottom fw-bold text-primary text-center">
                         Welcome to University Management System

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Layers, Book, University, PlusCircle, LogOut, BookOpen } from "lucide-react";
+import { Menu, Layers, Book, University, PlusCircle, LogOut, BookOpen, UserRoundCog } from "lucide-react";
 import { LogoutHandle } from "../helper/SubmitHendle";
 import { SidebartoggelContext } from "../context/context";
 import './adminSidebar.css'
@@ -32,7 +32,7 @@ function AdminSidebar() {
             }}
         >
             <div className="d-flex align-items-center justify-content-between px-3 py-3 border-bottom">
-                {!collapsed && <h4 className="mb-0 text-dark ">Admin</h4>}
+                {!collapsed && <h4 className="mb-0 text-dark "><UserRoundCog style={{ marginTop: '-5px' }} /> Admin</h4>}
                 <Menu className="text-dark" size={20} role="button" onClick={() => setCollapsed(!collapsed)} />
             </div>
 

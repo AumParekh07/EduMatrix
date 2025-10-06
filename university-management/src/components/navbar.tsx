@@ -1,7 +1,7 @@
 import { UserRound, LogOut } from 'lucide-react';
 import { LogoutHandle } from '../helper/SubmitHendle';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Navbar, Nav, Container, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Navbar, Nav, Container, OverlayTrigger, Tooltip, Image } from 'react-bootstrap';
 import { GetRole } from '../helper/getAuth';
 import "./navbar.css"
 const StdNavbar = () => {
@@ -11,12 +11,14 @@ const StdNavbar = () => {
 
     return (
 
-        <Navbar className='blur-navbar' data-aos="fade-down" data-aos-once="true" expand="md" sticky="top" bg="light" variant="light" collapseOnSelect >
+        <Navbar className='blur-navbar rounded-5 mt-3 mx-3' data-aos="fade-down" data-aos-once="true" expand="md" sticky="top" bg="light" variant="light" collapseOnSelect >
             <Container fluid>
-                <Navbar.Brand href="#" className="fw-semibold ">University Management</Navbar.Brand>
+                <Navbar.Brand href="#" className="fw-semibold text-light bg-dark px-2 py-1 rounded-5">
+                    <Image alt="Logo" src="/edu.png" width="30" height="30" className="d-inline-block align-top" roundedCircle />
+                    {' '}EDU MATRIX</Navbar.Brand>
                 <Navbar.Toggle aria-controls="main-navbar" />
                 <Navbar.Collapse id="main-navbar" className="justify-content-end">
-                    <Nav className="nav-underline1 gap-3">
+                    <Nav className="nav-underline1 pe-2 gap-3">
                         <Nav.Link as={NavLink} to="/" className="fw-semibold  ">
                             Home
                         </Nav.Link>

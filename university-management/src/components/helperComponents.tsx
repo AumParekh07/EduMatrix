@@ -46,12 +46,12 @@ export function Preferencefield({ title, id1, id2, labelHtmlFor }: { labelHtmlFo
 // import {DotLottieReact} from '@lottiefiles/dotlottie-react';
 export function LoadingComponent({ h = true }: { h?: boolean }) {
     return (
-        <div className="d-flex justify-content-center  align-items-center" style={{ height: `${h ? 'calc(100vh - 57.6px)' : ''}` }}>
+        <div className="d-flex justify-content-center  align-items-center" style={{ height: `${h ? "calc(100vh - 72px)" : ''}` }}>
             <div className="loader" id="otp-loader"></div>
         </div>
 
         // <DotLottieReact
-        //     style={{ height: "calc(100vh - 57.6px)" }}
+        //     style={{ height: "calc(100vh - 72px)" }}
         //     src="https://lottie.host/af4641be-02b0-4c6a-a26b-ea4a2779f2ac/yM8keXXIg3.lottie"
         //     loop 
         //     autoplay
@@ -63,7 +63,7 @@ export function ErrorComponent({ error, hw = true }: { error: string, hw?: boole
     return (
         <div
             className="d-flex justify-content-center align-items-center z-1"
-            style={hw ? { margin: "0 auto", height: "calc(100vh - 57.6px)" } : {}}
+            style={hw ? { margin: "0 auto", height: "calc(100vh - 72px)" } : {}}
         >
             <div className="border border-3 rounded-3 border-danger bg-white bg-opacity-50 p-4 text-center">
                 <h2 className="fw-bold  p-1" style={{ color: "red" }}>{error}</h2>

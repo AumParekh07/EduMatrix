@@ -11,7 +11,7 @@ export function Login() {
 
     return (
         <div className="container d-flex justify-content-center align-items-center flip-animation "
-            style={{ height: "calc(100vh - 57.6px)" }}>
+            style={{ height: "calc(100vh - 72px)" }}>
             <div className="card shadow-lg p-4 w-100 rounded-4" style={{ maxWidth: "350px" }} >
                 <h2 className="text-center mb-4 fw-bold text-primary" >Login</h2>
                 <Formik
