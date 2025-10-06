@@ -99,7 +99,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 export const enrollCourseService = async (userID: ObjectId, universityID: ObjectId, courseID: ObjectId, optionalSubjectID: ObjectId[], origin: string) => {
 
     try {
-        console.log("Origin url:", origin)
         //checking that data is exist or not
         const User = await IsUser(userID)
         const isProfileComleted = User?.profileCompleted
@@ -191,11 +190,12 @@ export const enrollCourseService = async (userID: ObjectId, universityID: Object
 
         // Create stripe checkout session
         const session = await stripe.checkout.sessions.create({
+            customer_email: User.email,
             payment_method_types: ['card'],
             line_items,
             mode: 'payment',
-            success_url: `${origin}/verify?success=true&session_id={CHECKOUT_SESSION_ID}&enrollId=${newEnroll._id}`,
-            cancel_url: `${origin}/verify?success=false&enrollId=${newEnroll._id}`,
+            success_url: `${origin}/verify-payment?success=true&session_id={CHECKOUT_SESSION_ID}&enrollId=${newEnroll._id}`,
+            cancel_url: `${origin}/verify-payment?success=false&session_id={CHECKOUT_SESSION_ID}&enrollId=${newEnroll._id}`,
             metadata: {
                 enrollId: newEnroll._id.toString(),
                 userId: User._id.toString(),
@@ -216,7 +216,7 @@ export const verifyPaymentService = async (session_id: string) => {
         if (session.payment_status === "paid") {
             const enrollId = session.metadata?.enrollId;
             if (enrollId) {
-                await EnrollCourseModel.findByIdAndUpdate(enrollId, { paymentStatus: true, paymentDate: new Date(), }, { new: true })
+                await EnrollCourseModel.findByIdAndUpdate(enrollId, { paymentStatus: true, paymentIntentId: session.payment_intent, paymentDate: new Date(), }, { new: true })
             }
 
             return {

@@ -19,7 +19,7 @@ export const studentDetail = async (req: Request, res: Response) => {
             profileCompleted: result.user.profileCompleted
         });
     } catch (error) {
-        console.log("error: ", error);
+        console.error("error: ", error);
 
         res.status(400).json({
             success: false,
@@ -41,7 +41,7 @@ export const getStudentDetail = async (req: Request, res: Response) => {
             data: result
         });
     } catch (error) {
-        console.log("error: ", error);
+        console.error("error: ", error);
 
         res.status(400).json({
             success: false,
@@ -62,7 +62,7 @@ export const updateStdDetail = async (req: Request, res: Response) => {
             Student: result
         })
     } catch (error) {
-        console.log("error: ", error);
+        console.error("error: ", error);
         res.status(400).json({
             success: false,
             message: `${error}`,
@@ -87,7 +87,7 @@ export const enrollCourse = async (req: Request, res: Response) => {
             data: result
         })
     } catch (error) {
-        console.log('error: ', error);
+        console.error("error: ", error);
 
         res.status(400).json({
             success: false,
@@ -106,7 +106,7 @@ export const verifyStripePayment = async (req: Request, res: Response) => {
         res.status(200).json(result)
     }
     catch (error) {
-        console.log('error: ', error);
+        console.error("error: ", error);
         res.status(400).json({
             success: false,
             message: `${error}`

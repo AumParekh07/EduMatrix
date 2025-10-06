@@ -71,7 +71,7 @@ export const createUniversity = async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -92,7 +92,7 @@ export const createStream = async (req: Request, res: Response) => {
       Stream: result.name,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -113,7 +113,7 @@ export const createSubject = async (req: Request, res: Response) => {
       Subject: result.name + ":" + result.fullName,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -133,7 +133,7 @@ export const createUserGroup = async (req: Request, res: Response) => {
       Course: result,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -154,7 +154,7 @@ export const createCourse = async (req: Request, res: Response) => {
       Course: result.name + ":" + result.fullname,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -175,7 +175,7 @@ export const createFeeCapacity = async (req: Request, res: Response) => {
       Data: result,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -194,7 +194,7 @@ export const getStreams = async (req: Request, res: Response) => {
       data: Streams,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -213,7 +213,7 @@ export const getSubjects = async (req: Request, res: Response) => {
       data: subjects,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
     res.status(500).json({
       success: false,
       message: `${error}`,
@@ -239,7 +239,7 @@ export const getCourses = async (req: Request, res: Response) => {
       data: Courses,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(500).json({
       success: false,
@@ -262,7 +262,7 @@ export const updateStream = async (req: Request, res: Response) => {
       Stream: result?.name,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -284,7 +284,7 @@ export const updateSubject = async (req: Request, res: Response) => {
       Subject: result?.name,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -305,7 +305,7 @@ export const updateCourse = async (req: Request, res: Response) => {
       Course: result?.name,
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -336,7 +336,7 @@ export const updateUniversity = async (req: Request, res: Response) => {
       feeCapacities: updatedFeeCaps
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -359,7 +359,7 @@ export const deleteStream = async (req: Request, res: Response) => {
       data: result?.name || result
     })
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -381,7 +381,7 @@ export const deleteSubject = async (req: Request, res: Response) => {
       data: result?.name || result
     })
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -403,7 +403,7 @@ export const deleteCourse = async (req: Request, res: Response) => {
       data: result?.name || result
     })
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,
@@ -425,7 +425,7 @@ export const deleteUniversity = async (req: Request, res: Response) => {
       data: result?.name || result
     })
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
 
     res.status(400).json({
       success: false,

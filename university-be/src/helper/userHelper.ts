@@ -18,9 +18,9 @@ export const sendEmail = async (email: string, otp: string) => {
       </div>`,
     };
     const info = await sgMail.send(msg);
-    console.log("Email sent: ", info);
+    console.info("Email sent: ", info);
   } catch (error) {
-    console.log(error);
+    console.error("error", error);
   }
 };
 

@@ -30,7 +30,7 @@ export const createUser = async (req: Request, res: Response) => {
       email: result.email,
     });
   } catch (error) {
-    console.log(error);
+    console.error("error:", error);
     res.status(400).json({
       success: false,
       message: `${error}`,
@@ -52,7 +52,7 @@ export const loginUser = async (req: Request, res: Response) => {
       role: result.role
     });
   } catch (error) {
-    console.log(error);
+    console.error("error:", error);
 
     res.status(400).json({
       success: false,
@@ -73,7 +73,7 @@ export const sendOtp = async (req: Request, res: Response) => {
       otp: result.otp,
     });
   } catch (error) {
-    console.log(error);
+    console.error("error:", error);
     res.status(400).json({
       success: false,
       message: `${error}`,
@@ -95,7 +95,7 @@ export const verifyOtp = async (req: Request, res: Response) => {
       role: result.role
     });
   } catch (error) {
-    console.log(error);
+    console.error("error:", error);
 
     res.status(400).json({
       success: false,
@@ -140,7 +140,7 @@ export const getAllUniversities = async (req: Request, res: Response) => {
       data: result.university
     });
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
     res.status(400).json({
       success: false,
       message: `${error}`,
@@ -162,7 +162,7 @@ export const getUniversityByID = async (req: Request, res: Response) => {
       data: result
     })
   } catch (error) {
-    console.log('error: ', error);
+    console.error("error: ", error);
     res.status(400).json({
       success: false,
       message: `${error}`,

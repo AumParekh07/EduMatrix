@@ -46,7 +46,7 @@ export function EnrollCourse() {
                 data: payload,
             });
             if (response.success && response.data?.url) {
-                successToast("Successfully enrolled in the course!");
+                successToast("Successfully Selected the course!");
                 window.location.href = response.data.url;
             } else {
                 const msg = response.data?.message || "Failed to enroll.";

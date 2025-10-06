@@ -68,7 +68,6 @@ export function StudentDashboard() {
                 url: "v1/student/std-detail",
             });
 
-            console.log("Student Dashboard Data:", response.data);
             setStudentData(response.data);
             setLoading(false);
         } catch (err: any) {

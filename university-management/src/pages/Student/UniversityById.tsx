@@ -55,7 +55,7 @@ export function UniversityById() {
                 method: "get",
                 url: `v1/get-university/${id}`
             });
-            console.log('University BY ID Data:', response);
+
             setUniversity(response.data.university);
             setFeeCapacities(response.data.FeeAndCapacity)
             setCourseEnrollCounts(response.data.courseEnrollCounts)

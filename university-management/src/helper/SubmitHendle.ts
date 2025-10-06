@@ -13,7 +13,6 @@ export async function RegisterHandleSubmit(
     navigate: (url: string) => void
 
 ) {
-    console.log("Register form Data:", values);
 
     try {
         const response = await apiCall({
@@ -22,7 +21,6 @@ export async function RegisterHandleSubmit(
             data: values,
         });
 
-        console.log("Response from server:", response);
         successToast(response?.message || "Registration successful");
         navigate("/login");
 
@@ -42,7 +40,6 @@ export async function LoginHandleSubmit(
     navigate: (url: string) => void
 
 ) {
-    console.log("Login form Data:", values);
 
     try {
         const response = await apiCall({
@@ -50,8 +47,6 @@ export async function LoginHandleSubmit(
             url: "v1/login",
             data: values,
         });
-
-        console.log("Response from server:", response);
 
         localStorage.setItem("token", response?.token);
         localStorage.setItem("role", response?.role);
@@ -98,7 +93,6 @@ export async function SendOtpHandleSubmit(
             data: values,
         });
 
-        console.log("OTP sent:", response);
         successToast(response?.message || "OTP sent successfully! Check in your spam also");
 
         localStorage.setItem("email", values.email);
@@ -118,7 +112,6 @@ export async function VerifyOtpHandleSubmit(
     { setSubmitting }: FormikHelpers<verifyOtpI>,
     navigate: (url: string) => void
 ) {
-    console.log("verify OTP form Data:", values);
 
     const email = localStorage.getItem("email");
     const payload = { email, otp: values.otp };
@@ -128,8 +121,6 @@ export async function VerifyOtpHandleSubmit(
             url: "v1/verify-otp",
             data: payload,
         });
-
-        console.log("Response from server:", response);
 
         localStorage.setItem("token", response?.token);
         localStorage.setItem("role", response?.role);
@@ -164,7 +155,6 @@ export function LogoutHandle(navigate: (url: string) => void) {
 
 export async function StdHandleSubmit(
     values: FormikValues, { setSubmitting }: FormikHelpers<StdDetailI>, navigate: (url: string) => void) {
-    console.log("std detail form Data:", values);
 
     try {
         const response = await apiCall({
@@ -173,7 +163,6 @@ export async function StdHandleSubmit(
             data: values,
         });
 
-        console.log("Response from server:", response);
         successToast(response?.message || "Student details submitted");
         navigate('/university')
 
@@ -208,7 +197,7 @@ export function CourseHandleSubmit(
 export async function UniversityHandleSubmit(
     values: FormikValues, { setSubmitting }: FormikHelpers<UniversityI>
 ) {
-    console.log("University form Data:", values);
+
     try {
         const response = await apiCall({
             method: "post",
@@ -216,7 +205,6 @@ export async function UniversityHandleSubmit(
             data: values,
         });
 
-        console.log("Response from server:", response);
         successToast(response?.message || "University Created successfully");
     } catch (error: any) {
         errorToast(error || "Something went wrong");
@@ -236,8 +224,6 @@ export async function genericHandleSubmit<T>(
 ) {
     const { setSubmitting } = formikHelpers;
 
-    console.log(`Form data for ${endpoint}:`, values);
-
     try {
         const response = await apiCall({
             method: "post",
@@ -245,7 +231,6 @@ export async function genericHandleSubmit<T>(
             data: values
         })
 
-        console.log("Response from server:", response);
         successToast(response?.message);
     } catch (error: any) {
         console.error(`Error occurred while submitting to ${endpoint}:`, error);

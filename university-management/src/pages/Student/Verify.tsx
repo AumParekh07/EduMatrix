@@ -1,24 +1,27 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { apiCall } from "../../api/apiCaller";
-import { errorToast } from "../../helper/helperToast";
+import { errorToast, successToast } from "../../helper/helperToast";
 import { ErrorComponent, LoadingComponent } from "../../components/helperComponents";
+import PageNotFound from "../../components/PageNotFound";
 
-type Status = "loading" | "success" | "failed";
+type Status = "NotFound" | "success" | "failed";
 
 export default function Verify() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const [status, setStatus] = useState<Status>("loading");
-    const [loading, setLoading] = useState(true);
+    const [status, setStatus] = useState<Status>("NotFound");
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     useEffect(() => {
         const success = searchParams.get("success");
         const session_id = searchParams.get("session_id");
+        const enrollId = searchParams.get("enrollId");
 
-        if (success === "true" && session_id) {
+        if (session_id && (success === "true" || success === "false") && enrollId) {
             (async () => {
                 try {
+                    setLoading(true);
                     const response = await apiCall({
                         method: "get",
                         url: "v1/student/verifystripe",
@@ -27,19 +30,17 @@ export default function Verify() {
 
                     if (response.success) {
                         setStatus("success");
-                        setTimeout(() => {
-                            navigate("/dashboard");
-                        }, 4000);
+                        successToast("Successfully enrolled in the course!");
+                        setTimeout(() => navigate("/dashboard"), 4000);
                     }
                     else {
                         setStatus("failed");
                         const msg = response.message || "Payment verification failed.";
                         setError(msg);
                         errorToast(msg);
-                        if (response.data.universityID) {
-                            setTimeout(() => {
-                                navigate(`/university/${response.data.universityID}`);
-                            }, 4000);
+                        const uniId = response.data?.universityId;
+                        if (uniId) {
+                            setTimeout(() => navigate(`/university/${uniId}`), 4000);
                         }
                     }
                 } catch (err: any) {
@@ -51,9 +52,6 @@ export default function Verify() {
                     setLoading(false);
                 }
             })();
-        } else {
-            setStatus("failed");
-            setLoading(false);
         }
     }, []);
 
@@ -71,15 +69,20 @@ export default function Verify() {
         <div className="d-flex justify-content-center align-items-center z-1" style={{ height: "calc(100vh - 57.6px)" }}>
             <div className="border border-3 rounded-3 border-success bg-white bg-opacity-50 p-4 text-center">
                 <h3 className="m-0 text-center text-success fw-bold">✅ Payment successful! Enrollment confirmed.</h3>
+                <p className="mt-2 mb-0">You will be redirected to your <b>Dashboard</b> shortly...</p>
             </div>
         </div>
     )
+
     if (status === "failed")
         return (
             <div className="d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 57.6px)" }}>
                 <div className="border border-3 rounded-3 border-danger bg-white bg-opacity-50 p-4 text-center">
                     <h3 className="m-0 text-center text-danger fw-bold" >❌ Payment failed or canceled.</h3>
+                    <p className="mt-2 mb-0">Please try enrolling again.</p>
                 </div>
             </div>
         )
+
+    if (status === "NotFound") return <PageNotFound h={false} />;
 }

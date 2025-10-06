@@ -7,6 +7,7 @@ interface enrollCourse {
     // optionalSubjectID: ObjectId[],
     subjects: Subject,
     paymentStatus: boolean,
+    paymentIntentId?: string,
     paymentDate: Date
 }
 
@@ -24,6 +25,7 @@ export const EnrollCourseSchema = new mongoose.Schema({
         ],
     },
     paymentStatus: { type: Boolean, required: true, default: false },
+    paymentIntentId: { type: String },
     paymentDate: { type: Date, required: true }
 },
     {

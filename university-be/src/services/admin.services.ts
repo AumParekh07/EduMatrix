@@ -24,7 +24,7 @@ export const createStreamService = async (name: string) => {
     await newStream.save();
     return newStream;
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
     throw error;
   }
 };
@@ -39,7 +39,7 @@ export const updateStreamService = async (id: string, name: string) => {
 
     return updatedStream;
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
     throw error;
   }
 };

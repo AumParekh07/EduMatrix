@@ -7,6 +7,7 @@ export const successToast = (message: string) => {
         hideProgressBar: true,
         closeOnClick: false,
         pauseOnHover: true,
+        draggable: true,
         progress: undefined,
         theme: 'colored',
         transition: Slide,
@@ -15,10 +16,11 @@ export const successToast = (message: string) => {
 export const errorToast = (message: string, toastId?: string) => {
     toast.error(message || "Error Occurred.Please Try Again Later!", {
         position: "top-right",
-        autoClose: 3500,
+        autoClose: 4000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
+        draggable: true,
         progress: undefined,
         theme: "colored",
         transition: Slide,
