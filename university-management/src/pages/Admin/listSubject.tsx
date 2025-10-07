@@ -62,7 +62,7 @@ export function AdminSubjects() {
                 <>
                     <EditModal
                         title="Edit Subject"
-                        apiPath={`/admin/update-subject/${selectedSubject._id}`}
+                        apiPath={`v1/admin/update-subject/${selectedSubject._id}`}
                         initialValues={{ name: selectedSubject.name, fullname: selectedSubject.fullName }}
                         validationSchema={subjectSchema}
                         show={showEditModal}

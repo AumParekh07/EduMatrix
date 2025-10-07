@@ -9,29 +9,11 @@ import { apiCall } from "../api/apiCaller";
 
 export async function RegisterHandleSubmit(
     values: FormikValues,
-    { setSubmitting }: FormikHelpers<RegisterI>,
+    formikHelpers: FormikHelpers<RegisterI>,
     navigate: (url: string) => void
 
 ) {
-
-    try {
-        const response = await apiCall({
-            method: "post",
-            url: "v1/register",
-            data: values,
-        });
-
-        successToast(response?.message || "Registration successful");
-        navigate("/login");
-
-    } catch (error: any) {
-        errorToast(error || "Registration failed");
-        console.error("Error occurred while registering:", error);
-    } finally {
-        setTimeout(() => {
-            setSubmitting(false);
-        }, 500);
-    }
+    return genericHandleSubmit(values, formikHelpers, "v1/register", navigate, "/login");
 }
 
 export async function LoginHandleSubmit(
@@ -154,84 +136,58 @@ export function LogoutHandle(navigate: (url: string) => void) {
 
 
 export async function StdHandleSubmit(
-    values: FormikValues, { setSubmitting }: FormikHelpers<StdDetailI>, navigate: (url: string) => void) {
-
-    try {
-        const response = await apiCall({
-            method: "post",
-            url: "v1/student/std-detail",
-            data: values,
-        });
-
-        successToast(response?.message || "Student details submitted");
-        navigate('/university')
-
-    } catch (error: any) {
-        console.error("Error occurred while Updating Student Data:", error);
-        errorToast(error || "Failed to submit student details");
-    } finally {
-        setTimeout(() => {
-            setSubmitting(false);
-        }, 500);
-    }
+    values: FormikValues, formikHelpers: FormikHelpers<StdDetailI>, navigate: (url: string) => void
+) {
+    return genericHandleSubmit(values, formikHelpers, "v1/student/std-detail", navigate, "/university");
 }
 
 export function StreamHandleSubmit(
     values: FormikValues, formikHelpers: FormikHelpers<StreamI>
 ) {
-    return genericHandleSubmit<StreamI>(values, formikHelpers, "/admin/create-stream");
+    return genericHandleSubmit<StreamI>(values, formikHelpers, "v1/admin/create-stream");
 }
 
 export function SubjectHandleSubmit(
     values: FormikValues, formikHelpers: FormikHelpers<SubjectI>
 ) {
-    return genericHandleSubmit<SubjectI>(values, formikHelpers, "/admin/create-subject");
+    return genericHandleSubmit<SubjectI>(values, formikHelpers, "v1/admin/create-subject");
 }
 
 export function CourseHandleSubmit(
     values: FormikValues, formikHelpers: FormikHelpers<CourseI>
 ) {
-    return genericHandleSubmit<CourseI>(values, formikHelpers, "/admin/create-course");
+    return genericHandleSubmit<CourseI>(values, formikHelpers, "v1/admin/create-course");
 }
 
 export async function UniversityHandleSubmit(
-    values: FormikValues, { setSubmitting }: FormikHelpers<UniversityI>
+    values: FormikValues, formikHelpers: FormikHelpers<UniversityI>
 ) {
-
-    try {
-        const response = await apiCall({
-            method: "post",
-            url: "v1/admin/create-university",
-            data: values,
-        });
-
-        successToast(response?.message || "University Created successfully");
-    } catch (error: any) {
-        errorToast(error || "Something went wrong");
-        console.error("Error occurred while creating University:", error);
-    } finally {
-        setTimeout(() => {
-            setSubmitting(false);
-        }, 500);
-    }
+    return genericHandleSubmit<UniversityI>(values, formikHelpers, "v1/admin/create-university");
 }
 
 
 export async function genericHandleSubmit<T>(
     values: FormikValues,
     formikHelpers: FormikHelpers<T>,
-    endpoint: string
+    endpoint: string,
+    navigate?: (url: string) => void,
+    redirectPath?: string
 ) {
     const { setSubmitting } = formikHelpers;
 
     try {
         const response = await apiCall({
             method: "post",
-            url: `${endpoint}`,
+            url: endpoint,
             data: values
         })
 
         successToast(response?.message);
+
+        if (navigate && redirectPath) {
+            navigate(redirectPath);
+        }
+
     } catch (error: any) {
         console.error(`Error occurred while submitting to ${endpoint}:`, error);
         errorToast(error || "Something went wrong");

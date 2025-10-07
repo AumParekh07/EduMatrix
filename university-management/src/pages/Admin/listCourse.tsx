@@ -56,7 +56,7 @@ export function AdminCourses() {
                     <>
                         <EditModal
                             title="Edit Course"
-                            apiPath={`/admin/update-course/${selectedCourse?._id}`}
+                            apiPath={`v1/admin/update-course/${selectedCourse?._id}`}
                             show={showEditModal}
                             initialValues={{
                                 name: selectedCourse.name,

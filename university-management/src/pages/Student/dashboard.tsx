@@ -221,7 +221,7 @@ export function StudentDashboard() {
 
             <EditModal
                 title="Edit Subject"
-                apiPath={'/student/update-stdDetail'}
+                apiPath={'v1/student/update-stdDetail'}
                 initialValues={initialValues}
                 validationSchema={StdSchema}
                 size="lg"

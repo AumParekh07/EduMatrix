@@ -237,7 +237,7 @@ export function UniversityById() {
             {showEditModal && (
                 <EditModal
                     title="Edit University"
-                    apiPath={`/admin/update-university/${university._id}`}
+                    apiPath={`v1/admin/update-university/${university._id}`}
                     show={showEditModal}
                     initialValues={initialValues}
                     validationSchema={UniversitySchema}

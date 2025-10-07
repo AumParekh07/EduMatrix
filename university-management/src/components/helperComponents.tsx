@@ -1,4 +1,4 @@
-import { Field, ErrorMessage } from "formik";
+import { Field, ErrorMessage, useFormikContext } from "formik";
 import { ChevronLeft } from "lucide-react";
 
 import type { University } from "../pages/Student/UniversityList";
@@ -6,9 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 
 export function SubmitButton({ title }: { title: string }) {
+    const { isSubmitting } = useFormikContext<any>();
     return (
-        <button type="submit" className="btn btn-outline-primary fw-semibold shadow-sm rounded4" >
-            {title}
+        <button type="submit" className="btn btn-outline-primary fw-semibold shadow-sm rounded4" disabled={isSubmitting}>
+            {isSubmitting ? (
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            ) : (
+                title
+            )}
         </button>
     );
 }

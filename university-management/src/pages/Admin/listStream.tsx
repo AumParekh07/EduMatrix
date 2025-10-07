@@ -62,7 +62,7 @@ export function AdminStreams() {
                         onHide={() => setShowEditModal(false)}
                         initialValues={{ name: selectedStream.name }}
                         validationSchema={streamSchema}
-                        apiPath={`/admin/update-stream/${selectedStream._id}`}
+                        apiPath={`v1/admin/update-stream/${selectedStream._id}`}
                         reload={triggerRefetch}
                         size="sm" >
                         {() => <StreamFormFields />}
