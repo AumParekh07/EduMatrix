@@ -216,7 +216,9 @@ export const getAllUniversityService = async (
 ) => {
   try {
     let totalUniversities = await UniversityModel.countDocuments(filter);
-    const User = await IsUser(userId)
+    // const User = await IsUser(userId)
+    const User = true; //public access
+
 
     if (User) {
       const university = await UniversityModel.find(filter)
@@ -255,46 +257,55 @@ export const getAllUniversityService = async (
 
 export const getUniversityByIDService = async (id: string, userId: ObjectId) => {
   try {
-    const User = await IsUser(userId)
+    // const User = await IsUser(userId)
+    // const User = true; //public access
 
+    const university = await UniversityModel.findById(id)
+      .populate("course")
+      .populate("stream")
+      .populate({
+        path: "course",
+        populate: [{
+          path: "subjects.compulsory",
+          model: "subject",
+        },
+        {
+          path: "subjects.optional",
+          model: "subject",
+        },
+        ]
+      })
+
+    if (!university) {
+      throw new Error("University Not Found");
+    }
+
+    const FeeAndCapacity = await FeeCapacityModel.find({ universityId: id })
+    const courseEnrollCounts = await Promise.all(university.course.map(async (course: any) => {
+
+      const enrollCourse_Uni = await EnrollCourseModel.find({ universityID: university._id, courseID: course._id, paymentStatus: true });
+
+      return { courseId: course._id, enrollCount: enrollCourse_Uni.length, enrollCourse_Uni };
+    })
+    );
+
+    const User = await UserModel.findById(userId)
+
+    // const User = await IsUser(userId)
     if (User) {
-      const university = await UniversityModel.findById(id)
-        .populate("course")
-        .populate("stream")
-        .populate({
-          path: "course",
-          populate: [{
-            path: "subjects.compulsory",
-            model: "subject",
-          },
-          {
-            path: "subjects.optional",
-            model: "subject",
-          },
-          ]
-        })
-
-      if (!university) {
-        throw new Error("University Not Found");
-      }
       const enrollCourses = await EnrollCourseModel.find({ userID: User._id, universityID: id, paymentStatus: true })
-      const FeeAndCapacity = await FeeCapacityModel.find({ universityId: id })
       // total std in university
       // const TotalEnrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id,paymentStatus: true });
 
-      const courseEnrollCounts = await Promise.all(university.course.map(async (course: any) => {
-
-        const enrollCourse_Uni = await EnrollCourseModel.find({ universityID: university._id, courseID: course._id, paymentStatus: true });
-
-        return { courseId: course._id, enrollCount: enrollCourse_Uni.length, enrollCourse_Uni };
-      })
-      );
       return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses }
-    } else {
+    }
+    else if (!User) {
+      return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses: [] }
+    }
+    else {
       throw new Error("Error Fetching University Details");
     }
   } catch (error) {
     throw error
-
   }
 }

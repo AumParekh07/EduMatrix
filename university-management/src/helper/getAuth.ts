@@ -22,3 +22,15 @@ export function GetRole() {
         throw new Error(error);
     }
 }
+
+export const isTokenExpired = (): boolean => {
+    try {
+        const token = GetToken() || "";
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        return payload.exp < currentTime;
+    } catch (e) {
+        return true; // consider invalid token as expired
+    }
+};

@@ -18,4 +18,20 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
 });
 
+axiosInstance.interceptors.response.use((response) => {
+    return response;
+}, (error) => {
+    const status = error?.response?.status;
+    if (status === 401 || status === 403) {
+
+        localStorage.clear();
+        if (!window.location.pathname.includes('/login')) {
+            window.location.href = '/login';
+        }
+
+        console.error('Unauthorized! Please log in again.');
+    }
+    return Promise.reject(error);
+});
+
 export default axiosInstance;

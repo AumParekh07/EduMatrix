@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
@@ -7,6 +7,7 @@ import { errorToast, successToast } from "../../helper/helperToast";
 import { apiCall } from "../../api/apiCaller";
 import { EnrollCourseinitialValues, EnrollCourseSchema, type EnrollCourseI } from "../../helper/FormikValidation";
 import type { Subject } from "../Admin/listSubject";
+import { isTokenExpired } from "../../helper/getAuth";
 
 export function EnrollCourse() {
     const { state } = useLocation();
@@ -115,9 +116,15 @@ export function EnrollCourse() {
 
                         <div className="d-flex justify-content-between">
                             <BackButton />
-                            <button type="submit" className="btn btn-primary m-2 fw-semibold shadow-sm rounded4">
-                                Enroll
-                            </button>
+                            {isTokenExpired() ?
+                                < Link to={"/login"} onClick={() => errorToast("You Are Not Logged In.Please Log In First", 'not-login')} className="btn btn-primary m-2 fw-semibold shadow-sm rounded4">
+                                    ENROLL NOW
+                                </Link>
+                                :
+                                <button type="submit" className="btn btn-primary m-2 fw-semibold shadow-sm rounded4">
+                                    Enroll
+                                </button>
+                            }
                         </div>
                     </Form>
                 </Formik>

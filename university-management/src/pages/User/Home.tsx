@@ -3,13 +3,11 @@ import { useEffect, useState } from "react";
 import { apiCall } from "../../api/apiCaller";
 import { LoadingComponent } from "../../components/helperComponents";
 import CountUp from "react-countup";
-import { GetToken } from "../../helper/getAuth";
 
 export function Home() {
     const [counts, setCounts] = useState({ universities: 0, courses: 0, students: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const token = GetToken();
     const admin: boolean = (localStorage.getItem('role') === 'admin')
 
     useEffect(() => {
@@ -77,17 +75,12 @@ export function Home() {
                             </>
                         )}
                         <div className="d-flex justify-content-center gap-3 mt-4">
-                            {token ?
-                                admin ?
-                                    <Link to="/admin/university" className="btn btn-outline-primary btn-lg">
-                                        Admin Site
-                                    </Link>
-                                    :
-                                    <Link to="/university" className="btn btn-outline-primary btn-lg">
-                                        ENROLL NOW
-                                    </Link>
+                            {admin ?
+                                <Link to="/admin/university" className="btn btn-outline-primary btn-lg">
+                                    Admin Site
+                                </Link>
                                 :
-                                <Link to={"/login"} className="btn btn-outline-primary btn-lg">
+                                <Link to="/university" className="btn btn-outline-primary btn-lg">
                                     ENROLL NOW
                                 </Link>
                             }

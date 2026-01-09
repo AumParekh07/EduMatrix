@@ -43,6 +43,7 @@ export function AdminCourses() {
                 renderItem={(course) => {
                     return (
                         <Courselist {...course}
+                            key={course._id}
                             setSelectedCourse={setSelectedCourse}
                             setShowEditModal={setShowEditModal}
                             setShowDeleteModal={setShowDeleteModal} />

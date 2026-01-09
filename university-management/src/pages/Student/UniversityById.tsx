@@ -188,6 +188,10 @@ export function UniversityById() {
                                                 if (isStudent) {
                                                     if (isEnrolled) return errorToast("You Already Enrolled")
                                                     handleCourseClick(course)
+                                                } else if (isAdmin) {
+                                                    return;
+                                                } else {
+                                                    handleCourseClick(course)
                                                 }
                                             }
                                             }>

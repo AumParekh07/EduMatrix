@@ -42,12 +42,15 @@ function App() {
       <Route path="/login" element={<>  <StdNavbar /><Login /></>} />
       <Route path="/send-otp" element={<SendOtp />} />
       <Route path="/verify-otp" element={<VerifyOtp />} />
+      <Route path="/university" element={<><StdNavbar /><UniversityList /></>} />
+      <Route path="/university/:id" element={<><StdNavbar /><UniversityById /></>} />
+      <Route path="/enroll-course/:id" element={<><StdNavbar /><EnrollCourse /></>} />
 
 
       <Route path="/std-detail" element={<PrivateRoute allowedRole="student"><StdDetail /></PrivateRoute>} />
-      <Route path="/university" element={<PrivateRoute allowedRole="student"><UniversityList /></PrivateRoute>} />
-      <Route path="/university/:id" element={<PrivateRoute allowedRole="student"><UniversityById /></PrivateRoute>} />
-      <Route path="/enroll-course/:id" element={<PrivateRoute allowedRole="student"><EnrollCourse /></PrivateRoute>} />
+      {/* <Route path="/university" element={<PrivateRoute allowedRole="student"><UniversityList /></PrivateRoute>} /> */}
+      {/* <Route path="/university/:id" element={<PrivateRoute allowedRole="student"><UniversityById /></PrivateRoute>} /> */}
+      {/* <Route path="/enroll-course/:id" element={<PrivateRoute allowedRole="student"><EnrollCourse /></PrivateRoute>} /> */}
       <Route path="/dashboard" element={<PrivateRoute allowedRole="student"><StudentDashboard /></PrivateRoute>} />
       <Route path="/verify-payment" element={<PrivateRoute allowedRole="student"><Verify /></PrivateRoute>} />
 

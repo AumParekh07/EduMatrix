@@ -6,17 +6,7 @@ import StdNavbar from "./navbar";
 import AdminSidebar from "./adminSidebar";
 import { GetToken } from "../helper/getAuth";
 import { SidebartoggelContext } from "../context/context";
-
-const isTokenExpired = (token: string): boolean => {
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        return payload.exp < currentTime;
-    } catch (e) {
-        return true; // consider invalid token as expired
-    }
-};
+import { isTokenExpired } from "../helper/getAuth";
 
 const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowedRole: "admin" | "student"; }) => {
     const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
@@ -33,7 +23,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
             return
         }
 
-        if (isTokenExpired(token)) {
+        if (isTokenExpired()) {
             localStorage.removeItem("token");
             localStorage.removeItem("role");
             errorToast("JWT expired. Please log in again.", "JWT-expired");
