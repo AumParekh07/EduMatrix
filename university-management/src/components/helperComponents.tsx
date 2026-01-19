@@ -1,5 +1,6 @@
 import { Field, ErrorMessage, useFormikContext } from "formik";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 import type { University } from "../pages/Student/UniversityList";
 import { useNavigate } from "react-router-dom";
@@ -18,13 +19,37 @@ export function SubmitButton({ title }: { title: string }) {
     );
 }
 
-export function InputFiled1({ title, type, id, placeholder, min }: { title: string; type: string; id: string; placeholder: string, min?: string }) {
+export function InputField({ title, type, id, placeholder, min }: { title: string; type: string; id: string; placeholder: string, min?: string }) {
     return (
         <div className="mb-3">
             <label htmlFor={id} className="form-label fw-semibold">
                 {title}
             </label>
             <Field type={type} id={id} name={id} min={min} className="form-control shadow-sm" placeholder={placeholder} />
+            <ErrorMessage name={id} component="div" className="error" />
+        </div>
+    );
+}
+
+export function PassField({ title, id, placeholder }: { title: string; id: string; placeholder: string }) {
+    const [showPassword, setShowPassword] = useState(false);
+
+    return (
+        <div className="mb-3">
+            <label htmlFor={id} className="form-label fw-semibold">
+                {title}
+            </label>
+
+            <div className="position-relative">
+                <Field type={showPassword ? "text" : "password"} id={id} name={id} placeholder={placeholder} className="form-control shadow-sm pe-5" />
+                <span
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
+                    style={{ cursor: "pointer" }}>
+                    {showPassword ? <Eye /> : <EyeOff />}
+                </span>
+            </div>
+
             <ErrorMessage name={id} component="div" className="error" />
         </div>
     );

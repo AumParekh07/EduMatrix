@@ -3,8 +3,9 @@ import { Form, Formik } from "formik";
 
 
 import { RegisterSchema, RegisterInitialValues } from '../../helper/FormikValidation';
-import { InputFiled1, SubmitButton } from '../../components/helperComponents';
+import { InputField, PassField, SubmitButton } from '../../components/helperComponents';
 import { RegisterHandleSubmit } from "../../helper/SubmitHendle";
+
 
 export function Register() {
     const navigate = useNavigate();
@@ -21,12 +22,11 @@ export function Register() {
                     onSubmit={(...arg) => RegisterHandleSubmit(...arg, navigate)}
                 >
                     <Form id="registerForm">
-                        <InputFiled1 title="Full Name" type="text" id="name" placeholder="Enter your full name" />
-                        <InputFiled1 title="User Name" type="text" id="username" placeholder="Choose a username" />
-                        <InputFiled1 title="Email" type="email" id="email" placeholder="Enter your email address" />
-                        <InputFiled1 title="Password" type="password" id="password" placeholder="Create a strong password" />
-                        <InputFiled1 title="confirm Password" type="password" id="confirmPassword" placeholder="Confirm your password" />
-
+                        <InputField title="Full Name" type="text" id="name" placeholder="Enter your full name" />
+                        <InputField title="User Name" type="text" id="username" placeholder="Choose a username" />
+                        <InputField title="Email" type="email" id="email" placeholder="Enter your email address" />
+                        <PassField title="Password" id="password" placeholder="Create a strong password" />
+                        <PassField title="confirm Password" id="confirmPassword" placeholder="Confirm your password" />
                         <SubmitButton title="Register" />
                     </Form>
                 </Formik>

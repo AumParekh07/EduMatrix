@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik"
 
 
-import { SubmitButton, InputFiled1 } from "../../components/helperComponents"
+import { SubmitButton, InputField } from "../../components/helperComponents"
 import { verifyOtpInitialValues, verifyOtpSchema } from "../../helper/FormikValidation";
 import { VerifyOtpHandleSubmit } from "../../helper/SubmitHendle";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ export function VerifyOtp() {
                     onSubmit={(...arg) => VerifyOtpHandleSubmit(...arg, navigate)}
                 >
                     <Form id="LoginForm">
-                        <InputFiled1 title="OTP" type="string" id="otp" placeholder="Enter Your OTP" />
+                        <InputField title="OTP" type="string" id="otp" placeholder="Enter Your OTP" />
                         <SubmitButton title="Verify OTP" />
                     </Form>
                 </Formik>

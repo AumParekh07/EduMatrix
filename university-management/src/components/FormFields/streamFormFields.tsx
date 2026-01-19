@@ -1,9 +1,9 @@
-import { InputFiled1 } from "../helperComponents";
+import { InputField } from "../helperComponents";
 
 export default function StreamFormFields() {
     return (
         <>
-            <InputFiled1 title="Name" type="text" id="name" placeholder="Enter Stream Name" />
+            <InputField title="Name" type="text" id="name" placeholder="Enter Stream Name" />
         </>
     )
 }

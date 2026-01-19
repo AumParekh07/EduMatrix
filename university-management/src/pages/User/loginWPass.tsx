@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { Form, Formik } from "formik"
 
-import { SubmitButton, InputFiled1 } from "../../components/helperComponents"
+import { SubmitButton, InputField, PassField } from "../../components/helperComponents"
 import { LoginInitialValues, LoginSchema } from "../../helper/FormikValidation";
 import { LoginHandleSubmit } from "../../helper/SubmitHendle";
 import { useNavigate } from "react-router-dom";
@@ -20,8 +20,8 @@ export function Login() {
                     onSubmit={(...arg) => LoginHandleSubmit(...arg, navigate)}
                 >
                     <Form id="LoginForm">
-                        <InputFiled1 title="Email" type="email" id="email" placeholder="Enter Your Email" />
-                        <InputFiled1 title="Password" type="password" id="password" placeholder="Enter Password" />
+                        <InputField title="Email" type="email" id="email" placeholder="Enter Your Email" />
+                        <PassField title="Password" id="password" placeholder="Enter Password" />
                         <SubmitButton title="Login" />
                         <Link to="/send-otp" className="btn btn-outline-primary fw-semibold shadow-sm align-items-center rounded4 m-2">Login With Otp</Link>
 

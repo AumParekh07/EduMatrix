@@ -1,7 +1,7 @@
 import { ErrorMessage } from "formik";
 import Select from "react-select";
 import makeAnimated from 'react-select/animated';
-import { ErrorComponent, InputFiled1, LoadingComponent } from "../helperComponents";
+import { ErrorComponent, InputField, LoadingComponent } from "../helperComponents";
 import { useEffect, useState } from "react";
 import type { Subject } from "../../pages/Admin/listSubject";
 import { apiCall } from "../../api/apiCaller";
@@ -93,8 +93,8 @@ export default function CourseFormFields({ values, setFieldValue }: Props) {
         <>
             <div className="row">
                 <div className="col-sm">
-                    <InputFiled1 title="Name" type="text" id="name" placeholder="Enter Course Name" />
-                    <InputFiled1 title="Full Name" type="text" id="fullname" placeholder="Enter Course Full Name" />
+                    <InputField title="Name" type="text" id="name" placeholder="Enter Course Name" />
+                    <InputField title="Full Name" type="text" id="fullname" placeholder="Enter Course Full Name" />
                 </div>
 
                 <div className="col-sm">

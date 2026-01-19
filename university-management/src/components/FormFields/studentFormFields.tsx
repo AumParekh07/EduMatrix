@@ -1,5 +1,5 @@
 import { Field, ErrorMessage } from "formik";
-import { InputFiled1, Preferencefield } from "../helperComponents";
+import { InputField, Preferencefield } from "../helperComponents";
 
 export default function StudentFormFields() {
     return (
@@ -32,11 +32,11 @@ export default function StudentFormFields() {
                 </div>
 
 
-                <InputFiled1 title="Address" type="text" id="address.address" placeholder="Enter address" />
-                <InputFiled1 title="City" type="text" id="address.city" placeholder="Enter city" />
-                <InputFiled1 title="State" type="text" id="address.state" placeholder="Enter state" />
-                <InputFiled1 title="Country" type="text" id="address.country" placeholder="Enter country" />
-                <InputFiled1 title="Pincode" type="number" min="100000" id="address.pincode" placeholder="Enter pincode" />
+                <InputField title="Address" type="text" id="address.address" placeholder="Enter address" />
+                <InputField title="City" type="text" id="address.city" placeholder="Enter city" />
+                <InputField title="State" type="text" id="address.state" placeholder="Enter state" />
+                <InputField title="Country" type="text" id="address.country" placeholder="Enter country" />
+                <InputField title="Pincode" type="number" min="100000" id="address.pincode" placeholder="Enter pincode" />
             </div>
 
             <div className="col-md-6">
@@ -61,7 +61,7 @@ export default function StudentFormFields() {
                     </Field>
                     <ErrorMessage name="preference.courseType" component="div" className="error" />
                 </div>
-                <InputFiled1 title="Profession" type="text" id="preference.profession" placeholder="Enter Profession" />
+                <InputField title="Profession" type="text" id="preference.profession" placeholder="Enter Profession" />
 
                 <Preferencefield title="Need Job Placement" id1="jyes" id2="jno" labelHtmlFor="preference.jobPlacement" />
                 <Preferencefield title="Need Scholarship" id1="syes" id2="sno" labelHtmlFor="preference.scholarship" />

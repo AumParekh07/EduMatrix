@@ -1,6 +1,6 @@
 import { ErrorMessage } from "formik";
 import Select, { components } from "react-select";
-import { ErrorComponent, InputFiled1, LoadingComponent, Preferencefield } from "../helperComponents";
+import { ErrorComponent, InputField, LoadingComponent, Preferencefield } from "../helperComponents";
 import { customStyles } from "./courseFormFields";
 import { useState, useEffect } from "react";
 import type { Course } from "../../pages/Admin/listCourse";
@@ -116,12 +116,12 @@ const UniversityFormFields = ({ values, setFieldValue, courseEnrollCounts }: Pro
     return (
         <div className="row">
             <div className="col-sm">
-                <InputFiled1 title="Name" type="text" id="name" placeholder="Enter University Name " />
-                <InputFiled1 title="Address" type="text" id="address.address" placeholder="Enter address" />
-                <InputFiled1 title="City" type="text" id="address.city" placeholder="Enter city" />
-                <InputFiled1 title="State" type="text" id="address.state" placeholder="Enter state" />
-                <InputFiled1 title="Country" type="text" id="address.country" placeholder="Enter country" />
-                <InputFiled1 title="Pincode" type="number" id="address.pincode" placeholder="Enter pincode" />
+                <InputField title="Name" type="text" id="name" placeholder="Enter University Name " />
+                <InputField title="Address" type="text" id="address.address" placeholder="Enter address" />
+                <InputField title="City" type="text" id="address.city" placeholder="Enter city" />
+                <InputField title="State" type="text" id="address.state" placeholder="Enter state" />
+                <InputField title="Country" type="text" id="address.country" placeholder="Enter country" />
+                <InputField title="Pincode" type="number" id="address.pincode" placeholder="Enter pincode" />
             </div>
 
             <div className="col-sm">

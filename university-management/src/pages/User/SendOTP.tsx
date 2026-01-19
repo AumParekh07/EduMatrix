@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { Form, Formik } from "formik"
 
 
-import { InputFiled1, SubmitButton } from "../../components/helperComponents"
+import { InputField, SubmitButton } from "../../components/helperComponents"
 import { sendOptSchema, SendOtpInitialValues } from "../../helper/FormikValidation";
 import { SendOtpHandleSubmit } from "../../helper/SubmitHendle";
 
@@ -24,7 +24,7 @@ export function SendOtp() {
                     onSubmit={(...arg) => SendOtpHandleSubmit(...arg, navigate)}>
 
                     <Form id="SendOtpForm">
-                        <InputFiled1 title="Email" type="email" id="email" placeholder="Enter Your Email" />
+                        <InputField title="Email" type="email" id="email" placeholder="Enter Your Email" />
 
                         <div className="text-center mt-3" id="button-container">
                             <SubmitButton title="Send OTP" />
