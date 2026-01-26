@@ -31,6 +31,9 @@ app.get("/", (req: Request, res: Response) => {
   res.send("<h1 style='color:blue'>SERVER  IS  Running..... </h1>");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 connectDB();
 
 app.listen(PORT, () => {
