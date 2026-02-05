@@ -12,6 +12,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
     const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
     const [role, setRole] = useState<string | null>('');
     const [collapsed, setCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 590);
     const navigate = useNavigate();
     useEffect(() => {
         const role = localStorage.getItem("role");
@@ -47,6 +48,12 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
         }
     }, [isAuthorized, navigate]);
 
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 590);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     if (isAuthorized === false || null) {
         return <ErrorComponent error="Forbidden: You Do Not Have The Required Permission" />;
     }
@@ -61,7 +68,8 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
                     <AdminSidebar />
                     <div className="px-md-5 px-3"
                         style={{
-                            flex: 1, marginLeft: collapsed ? "55px" : "250px",
+                            flex: 1, 
+                            marginLeft: isMobile ? "55px" : (collapsed ? "55px" : "250px"),
                             transition: "margin 0.3s ease-in-out",
                         }}>
                         {children}

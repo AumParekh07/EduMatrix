@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Layers, Book, University, PlusCircle, LogOut, BookOpen, UserRoundCog } from "lucide-react";
+import { Menu, Layers, Book, University, PlusCircle, LogOut, BookOpen, UserRoundCog, ArrowBigLeft } from "lucide-react";
 import { LogoutHandle } from "../helper/SubmitHendle";
 import { SidebartoggelContext } from "../context/context";
 import './adminSidebar.css'
@@ -23,7 +23,7 @@ function AdminSidebar() {
     return (
 
         <div
-            className="position-fixed h-100"
+            className="position-fixed h-100 border-end border-2"
             style={{
                 width: collapsed ? "55px" : "250px",
                 backgroundColor: 'white',
@@ -33,7 +33,8 @@ function AdminSidebar() {
         >
             <div className="d-flex align-items-center justify-content-between px-3 py-3 border-bottom">
                 {!collapsed && <h4 className="mb-0 text-dark "><UserRoundCog style={{ marginTop: '-5px' }} /> Admin</h4>}
-                <Menu className="text-dark" size={20} role="button" onClick={() => setCollapsed(!collapsed)} />
+                {collapsed ? <Menu className="text-dark" size={20} role="button" onClick={() => setCollapsed(!collapsed)} /> :
+                    <ArrowBigLeft className="text-dark" size={23} role="button" onClick={() => setCollapsed(!collapsed)} />}
             </div>
 
             <ul className="list-unstyled mt-3 ">
