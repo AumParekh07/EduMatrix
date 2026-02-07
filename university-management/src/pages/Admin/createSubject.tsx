@@ -3,7 +3,7 @@ import { Form, Formik } from "formik"
 
 import { SubjectInitialValues, subjectSchema } from "../../helper/FormikValidation";
 import { SubmitButton } from "../../components/helperComponents";
-import { SubjectHandleSubmit } from "../../helper/SubmitHendle";
+import { SubjectHandleSubmit } from "../../helper/SubmitHandle";
 import SubjectFormFields from "../../components/FormFields/subjectFormFields";
 
 export const CreateSubject = () => {

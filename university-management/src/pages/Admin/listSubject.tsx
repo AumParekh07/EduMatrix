@@ -46,7 +46,6 @@ export function AdminSubjects() {
                                                 setSelectedSubject(subject);
                                                 setShowDeleteModal(true)
                                             }} />
-
                                     </div>
                                 </div>
                                 <p className="card-text"><strong>Full Name:</strong> {subject.fullName}</p>

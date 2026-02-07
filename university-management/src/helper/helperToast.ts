@@ -27,4 +27,3 @@ export const errorToast = (message: string, toastId?: string) => {
         toastId: toastId,
     });
 }
-

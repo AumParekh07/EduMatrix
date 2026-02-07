@@ -3,7 +3,7 @@ import { Form, Formik } from "formik"
 
 import { SubmitButton, InputField, PassField } from "../../components/helperComponents"
 import { LoginInitialValues, LoginSchema } from "../../helper/FormikValidation";
-import { LoginHandleSubmit } from "../../helper/SubmitHendle";
+import { LoginHandleSubmit } from "../../helper/SubmitHandle";
 import { useNavigate } from "react-router-dom";
 
 export function Login() {
@@ -24,9 +24,7 @@ export function Login() {
                         <PassField title="Password" id="password" placeholder="Enter Password" />
                         <SubmitButton title="Login" />
                         <Link to="/send-otp" className="btn btn-outline-primary fw-semibold shadow-sm align-items-center rounded4 m-2">Login With Otp</Link>
-
                     </Form>
-
                 </Formik>
                 <p className="text-center mt-3 mb-0">
                     Don't Have An Account?{" "}

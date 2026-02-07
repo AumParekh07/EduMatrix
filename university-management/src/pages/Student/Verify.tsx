@@ -24,7 +24,7 @@ export default function Verify() {
                     setLoading(true);
                     const response = await apiCall({
                         method: "get",
-                        url: "v1/student/verifystripe",
+                        url: "v1/student/verify-stripe",
                         params: { session_id },
                     });
 

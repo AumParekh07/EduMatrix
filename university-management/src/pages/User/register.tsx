@@ -1,11 +1,9 @@
 import { Link, useNavigate } from "react-router-dom"
 import { Form, Formik } from "formik";
 
-
 import { RegisterSchema, RegisterInitialValues } from '../../helper/FormikValidation';
 import { InputField, PassField, SubmitButton } from '../../components/helperComponents';
-import { RegisterHandleSubmit } from "../../helper/SubmitHendle";
-
+import { RegisterHandleSubmit } from "../../helper/SubmitHandle";
 
 export function Register() {
     const navigate = useNavigate();
@@ -38,5 +36,4 @@ export function Register() {
             </div>
         </div>
     );
-
 }

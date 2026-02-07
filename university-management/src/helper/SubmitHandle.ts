@@ -19,9 +19,7 @@ export async function RegisterHandleSubmit(
 export async function LoginHandleSubmit(
     values: FormikValues,
     { setSubmitting }: FormikHelpers<LoginI>,
-    navigate: (url: string) => void
-
-) {
+    navigate: (url: string) => void) {
 
     try {
         const response = await apiCall({

@@ -125,7 +125,6 @@ export function UniversityById() {
             fee: fc.fee,
             capacity: fc.capacity
         }))
-
     }
 
     return (

@@ -37,7 +37,6 @@ function FetchCardList<T>({
             });
 
             setItems(Response.data);
-
         } catch (err: any) {
             const msg = err || "Failed to fetch data";
             setError(msg);

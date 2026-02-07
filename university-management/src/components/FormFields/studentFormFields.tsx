@@ -69,8 +69,6 @@ export default function StudentFormFields() {
                 <Preferencefield title="Need Transportation" id1="tyes" id2="tno" labelHtmlFor="preference.transportation" />
                 <Preferencefield title="Need Accommodation" id1="ayes" id2="ano" labelHtmlFor="preference.accommodation" />
 
-
-
                 <div className="mb-3">
                     <label className="form-label fw-semibold">Your Fee Range</label>
                     <div className="row g-2">

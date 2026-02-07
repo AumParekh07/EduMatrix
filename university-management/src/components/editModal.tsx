@@ -61,12 +61,10 @@ export default function EditModal<T extends FormikValues>({
                         <Form>
                             {children({ values, setFieldValue })}
                             <div className="text-end">
-
                                 <button type="button" className="me-2 btn btn-secondary fw-semibold shadow-sm" onClick={onHide} >
                                     Cancel
                                 </button>
                                 <SubmitButton title="Update" />
-
                             </div>
                         </Form>
                     )}

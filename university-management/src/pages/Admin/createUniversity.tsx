@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import { Form, Formik } from "formik"
 import { UniversityInitialValues, UniversitySchema } from "../../helper/FormikValidation";
 import { SubmitButton } from "../../components/helperComponents";
-import { UniversityHandleSubmit } from "../../helper/SubmitHendle";
+import { UniversityHandleSubmit } from "../../helper/SubmitHandle";
 import UniversityFormFields from "../../components/FormFields/universityFormFields";
 
 export const CreateUniversity = () => {

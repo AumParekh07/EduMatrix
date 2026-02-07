@@ -1,10 +1,9 @@
 import { Form, Formik } from "formik"
-
+import { useNavigate } from "react-router-dom";
 
 import { SubmitButton, InputField } from "../../components/helperComponents"
 import { verifyOtpInitialValues, verifyOtpSchema } from "../../helper/FormikValidation";
-import { VerifyOtpHandleSubmit } from "../../helper/SubmitHendle";
-import { useNavigate } from "react-router-dom";
+import { VerifyOtpHandleSubmit } from "../../helper/SubmitHandle";
 
 export function VerifyOtp() {
     const navigate = useNavigate();

@@ -3,8 +3,6 @@ import { apiCall } from "../api/apiCaller";
 import { errorToast, successToast } from "../helper/helperToast";
 import { useNavigate } from "react-router-dom";
 
-
-
 type DeleteModalProps = {
     title: string;
     show: boolean;
@@ -38,7 +36,6 @@ export default function DeleteModal({
             errorToast(error || "Delete failed");
         }
     }
-
 
     return (
         <Modal show={show} onHide={onHide} centered>

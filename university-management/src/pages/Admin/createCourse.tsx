@@ -3,9 +3,8 @@ import { Form, Formik } from "formik";
 
 import { CourseInitialValues, CourseSchema } from "../../helper/FormikValidation";
 import { SubmitButton } from "../../components/helperComponents";
-import { CourseHandleSubmit } from "../../helper/SubmitHendle";
+import { CourseHandleSubmit } from "../../helper/SubmitHandle";
 import CourseFormFields from "../../components/FormFields/courseFormFields";
-
 
 export const CreateCourse = () => {
 

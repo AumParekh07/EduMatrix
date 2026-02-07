@@ -29,7 +29,6 @@ export function EnrollCourse() {
 
     const { course, universityID, feeCapacities, remainingCapacity } = state;
 
-
     const handleSubmit = async (values: EnrollCourseI) => {
         try {
             setLoading(true);
@@ -130,6 +129,5 @@ export function EnrollCourse() {
                 </Formik>
             </div>
         </div>
-
     );
 }

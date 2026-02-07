@@ -66,16 +66,6 @@ const UniversityFormFields = ({ values, setFieldValue, courseEnrollCounts }: Pro
         value: stm._id,
     }));
 
-    // const courseOptions: Option[] = course.map((cou) => ({
-    //     label: cou.name,
-    //     value: cou._id,
-    // }));
-
-    // const courseOptions: Option[] = course.map(course => ({
-    //     value: course._id,
-    //     label: course.name,
-    //     isFixed: courseEnrollCounts.some(c => c.courseId === course._id && c.enrollCount > 0),
-    // }));
     const courseOptions: Option[] = course.map(course => ({
         value: course._id,
         label: course.name,
@@ -242,7 +232,6 @@ const UniversityFormFields = ({ values, setFieldValue, courseEnrollCounts }: Pro
                                 })}
                             </tbody>
                         </table>
-
                     </div>
                 )}
             </div>

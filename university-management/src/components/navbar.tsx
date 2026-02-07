@@ -1,5 +1,5 @@
 import { UserRound, LogOut } from 'lucide-react';
-import { LogoutHandle } from '../helper/SubmitHendle';
+import { LogoutHandle } from '../helper/SubmitHandle';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Navbar, Nav, Container, OverlayTrigger, Tooltip, Image } from 'react-bootstrap';
 import { GetRole } from '../helper/getAuth';
@@ -10,7 +10,6 @@ const StdNavbar = () => {
     const isAdmin: boolean = (GetRole() === 'admin')
 
     return (
-
         <Navbar className='blur-navbar rounded-5 mt-3 mx-3' data-aos="fade-down" data-aos-once="true" expand="md" sticky="top" bg="light" variant="light" collapseOnSelect >
             <Container fluid>
                 <Navbar.Brand href="#" className="fw-semibold text-light bg-dark px-2 py-1 rounded-5">

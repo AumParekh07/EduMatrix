@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import FetchCardList from "../../components/commonCard";
 import EditModal from "../../components/editModal";
 import { CourseSchema } from "../../helper/FormikValidation";
@@ -12,7 +11,6 @@ type Subject = {
     name: string;
     fullName: string;
 };
-
 
 export type Course = {
     _id: string;
@@ -52,45 +50,43 @@ export function AdminCourses() {
                 }
             />
 
-            {
-                selectedCourse && (
-                    <>
-                        <EditModal
-                            title="Edit Course"
-                            apiPath={`v1/admin/update-course/${selectedCourse?._id}`}
-                            show={showEditModal}
-                            initialValues={{
-                                name: selectedCourse.name,
-                                fullname: selectedCourse.fullname,
-                                courseType: selectedCourse.courseType,
-                                subjects: {
-                                    compulsory: selectedCourse.subjects.compulsory.map((sub) => sub._id),
-                                    optional: selectedCourse.subjects.optional.map((sub) => sub._id),
-                                },
-                            }}
-                            validationSchema={CourseSchema}
-                            size="lg"
-                            onHide={() => setShowEditModal(false)}
-                            reload={() => setReload((prev) => !prev)}
-                        >
-                            {({ values, setFieldValue }) => (
-                                <CourseFormFields
-                                    values={values}
-                                    setFieldValue={setFieldValue} />
-                            )}
-                        </EditModal>
+            {selectedCourse && (
+                <>
+                    <EditModal
+                        title="Edit Course"
+                        apiPath={`v1/admin/update-course/${selectedCourse?._id}`}
+                        show={showEditModal}
+                        initialValues={{
+                            name: selectedCourse.name,
+                            fullname: selectedCourse.fullname,
+                            courseType: selectedCourse.courseType,
+                            subjects: {
+                                compulsory: selectedCourse.subjects.compulsory.map((sub) => sub._id),
+                                optional: selectedCourse.subjects.optional.map((sub) => sub._id),
+                            },
+                        }}
+                        validationSchema={CourseSchema}
+                        size="lg"
+                        onHide={() => setShowEditModal(false)}
+                        reload={() => setReload((prev) => !prev)}
+                    >
+                        {({ values, setFieldValue }) => (
+                            <CourseFormFields
+                                values={values}
+                                setFieldValue={setFieldValue} />
+                        )}
+                    </EditModal>
 
-                        <DeleteModal
-                            title="Delete Course"
-                            name={selectedCourse.name}
-                            apiPath={`delete-course/${selectedCourse._id}`}
-                            show={showDeleteModal}
-                            onHide={() => setShowDeleteModal(false)}
-                            reload={() => setReload((prev) => !prev)}
-                        />
-                    </>
-
-                )
+                    <DeleteModal
+                        title="Delete Course"
+                        name={selectedCourse.name}
+                        apiPath={`delete-course/${selectedCourse._id}`}
+                        show={showDeleteModal}
+                        onHide={() => setShowDeleteModal(false)}
+                        reload={() => setReload((prev) => !prev)}
+                    />
+                </>
+            )
             }
         </>
     );

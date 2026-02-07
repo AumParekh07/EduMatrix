@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 
 import { LoadingComponent, ErrorComponent, BackButton } from "../../components/helperComponents";
-import { LogoutHandle } from "../../helper/SubmitHendle";
+import { LogoutHandle } from "../../helper/SubmitHandle";
 import { apiCall } from "../../api/apiCaller";
 import { errorToast } from "../../helper/helperToast";
 import EditModal from "../../components/editModal";
@@ -11,6 +11,7 @@ import { StdSchema } from "../../helper/FormikValidation";
 import StudentFormFields from "../../components/FormFields/studentFormFields";
 import type { Address, Subject, Stream, Course, University, } from "./UniversityList";
 import type { FeeAndCapacity } from "./UniversityById"
+
 interface User {
     name: string;
     username: string;
@@ -85,7 +86,6 @@ export function StudentDashboard() {
     }, []);
 
 
-
     if (loading) return <LoadingComponent />;
     if (error) return <ErrorComponent error={error} />;
     if (!studentData) return <LoadingComponent />;
@@ -116,7 +116,6 @@ export function StudentDashboard() {
             maxFee: studentDetail?.preference.maxFee,
         }
     };
-
 
 
     return (
@@ -150,50 +149,46 @@ export function StudentDashboard() {
                         <div className="d-flex  justify-content-between" >
                             <h4>📚 Enrolled Courses</h4>
                             <Link to="/university" className="btn btn-outline-primary m-2 fw-semibold shadow-sm">Enroll New Course</Link>
-
                         </div>
 
                         {enrollCourseDetail.length > 0 ? (
                             <div className="row justify-content-center" >
                                 {enrollCourseDetail.map((course, idx) => (
-                                    <div className="col-md-5 d-flex align-items-center justify-content-center" data-aos="zoom-out-down" data-aos-anchor-placement="top-bottom"
-                                        key={course._id}
-                                    >
-                                        <div className="card cardbg rounded-5 border-2 border-primary shadow-sm hoverShadowlg p-3 m-md-3 my-3 w-100"
-                                        // style={{ backgroundColor: "#94bdfe" }}
-                                        >
-                                            {course.courseID ? course.universityID ? (
-                                                <>
-                                                    <h5 className="fw-bold text-center text-light bg-primary rounded-top-5 p-2"> {idx + 1}. {course.courseID?.fullname} ({course.courseID?.name})</h5>
-                                                    <div className="ps-3">
-                                                        <div className="d-flex gap-3 justify-content-center">
+                                    <div key={course._id} className="col-md-5 d-flex align-items-center justify-content-center" data-aos="zoom-out-down" data-aos-anchor-placement="top-bottom">
+                                        <div className="card cardbg rounded-5 border-2 border-primary shadow-sm hoverShadowlg p-3 m-md-3 my-3 w-100">
+                                            {course.courseID ? course.universityID ?
+                                                (
+                                                    <>
+                                                        <h5 className="fw-bold text-center text-light bg-primary rounded-top-5 p-2"> {idx + 1}. {course.courseID?.fullname} ({course.courseID?.name})</h5>
+                                                        <div className="ps-3">
+                                                            <div className="d-flex gap-3 justify-content-center">
 
-                                                            <p><strong>Type:</strong>
-                                                                <span className={`badge ${course.courseID?.courseType === "FullTime" ? "bg-primary" : course.courseID?.courseType === "PartTime" ? "bg-info" : "bg-secondary"}`}>{course.courseID?.courseType}</span>
-                                                            </p>
-                                                            <p><strong>Fee:</strong>
-                                                                <span className="badge bg-warning">₹{flatFeeAndCapacity.find(fc => fc.courseId === course.courseID?._id && fc.universityId === course.universityID?._id)?.fee}</span>
-                                                            </p>
+                                                                <p><strong>Type:</strong>
+                                                                    <span className={`badge ${course.courseID?.courseType === "FullTime" ? "bg-primary" : course.courseID?.courseType === "PartTime" ? "bg-info" : "bg-secondary"}`}>{course.courseID?.courseType}</span>
+                                                                </p>
+                                                                <p><strong>Fee:</strong>
+                                                                    <span className="badge bg-warning">₹{flatFeeAndCapacity.find(fc => fc.courseId === course.courseID?._id && fc.universityId === course.universityID?._id)?.fee}</span>
+                                                                </p>
+                                                            </div>
+                                                            <p><strong>University:</strong> {course.universityID?.name}</p>
+                                                            <p><strong>Location:</strong> {course.universityID?.address.address},{course.universityID?.address.city}, {course.universityID?.address.state}</p>
+
+                                                            <strong>Compulsory Subjects:</strong>
+                                                            <ul className="mb-2">
+                                                                {course.subjects.compulsory.map((sub: Subject) => (
+                                                                    <li key={sub._id}>{sub.fullName} ({sub.name})</li>
+                                                                ))}
+                                                            </ul>
+
+                                                            <strong>Optional Subjects:</strong>
+                                                            <ul>
+                                                                {course.subjects.optional.map((sub: Subject) => (
+                                                                    <li key={sub._id}>{sub.fullName} ({sub.name})</li>
+                                                                ))}
+                                                            </ul>
                                                         </div>
-                                                        <p><strong>University:</strong> {course.universityID?.name}</p>
-                                                        <p><strong>Location:</strong> {course.universityID?.address.address},{course.universityID?.address.city}, {course.universityID?.address.state}</p>
-
-                                                        <strong>Compulsory Subjects:</strong>
-                                                        <ul className="mb-2">
-                                                            {course.subjects.compulsory.map((sub: Subject) => (
-                                                                <li key={sub._id}>{sub.fullName} ({sub.name})</li>
-                                                            ))}
-                                                        </ul>
-
-                                                        <strong>Optional Subjects:</strong>
-                                                        <ul>
-                                                            {course.subjects.optional.map((sub: Subject) => (
-                                                                <li key={sub._id}>{sub.fullName} ({sub.name})</li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                </>
-                                            )
+                                                    </>
+                                                )
                                                 :
                                                 (
                                                     <span className="text-danger text-center">University information not available</span>

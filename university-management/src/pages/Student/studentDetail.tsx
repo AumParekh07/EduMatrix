@@ -2,11 +2,9 @@ import { Form, Formik } from "formik";
 
 import { SubmitButton } from "../../components/helperComponents";
 import { StdDetailInitialValues, StdSchema, type StdDetailI } from "../../helper/FormikValidation";
-import { StdHandleSubmit } from "../../helper/SubmitHendle";
+import { StdHandleSubmit } from "../../helper/SubmitHandle";
 import { useNavigate } from "react-router-dom";
 import StudentFormFields from "../../components/FormFields/studentFormFields";
-
-
 
 export function StdDetail({ initialValues = StdDetailInitialValues }: { initialValues?: StdDetailI }) {
     const navigate = useNavigate();
@@ -22,10 +20,8 @@ export function StdDetail({ initialValues = StdDetailInitialValues }: { initialV
                     <Form id="stdDetailForm">
                         <StudentFormFields />
                         <SubmitButton title="Update" />
-
                     </Form>
                 </Formik>
-
             </div>
         </div>
     )

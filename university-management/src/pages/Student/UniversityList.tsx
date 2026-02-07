@@ -36,6 +36,7 @@ export type Course = {
         optional: Subject[];
     };
 }
+
 export type University = {
     _id: string;
     name: string;

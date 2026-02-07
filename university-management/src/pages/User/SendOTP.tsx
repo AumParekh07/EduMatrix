@@ -1,10 +1,9 @@
 import { Link, useNavigate } from "react-router-dom"
 import { Form, Formik } from "formik"
 
-
 import { InputField, SubmitButton } from "../../components/helperComponents"
 import { sendOptSchema, SendOtpInitialValues } from "../../helper/FormikValidation";
-import { SendOtpHandleSubmit } from "../../helper/SubmitHendle";
+import { SendOtpHandleSubmit } from "../../helper/SubmitHandle";
 
 export function SendOtp() {
     const navigate = useNavigate();

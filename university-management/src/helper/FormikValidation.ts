@@ -197,6 +197,8 @@ const pincode = Yup.string()
     .matches(/^\d{6}$/, 'Pincode must be 6 digits')
     .required('Pincode is required')
 
+
+
 export const RegisterSchema = Yup.object().shape({
     name: name,
     username: Yup.string()
