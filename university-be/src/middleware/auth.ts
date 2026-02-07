@@ -1,8 +1,5 @@
 import jwt, { type JwtPayload } from "jsonwebtoken";
-
 import { Request, Response, NextFunction } from "express";
-import { ObjectId } from "mongoose";
-
 
 // export interface AuthenticatedRequest extends Request {
 //     user?: JwtPayload & { userId: ObjectId; };
@@ -28,5 +25,3 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
         return
     }
 };
-
-

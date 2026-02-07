@@ -1,5 +1,4 @@
 import { ObjectId } from "mongoose";
-import StreamModel from "../models/stream";
 import UserModel from "../models/user";
 
 export const UserProfileCompleted = async (userID: ObjectId) => {

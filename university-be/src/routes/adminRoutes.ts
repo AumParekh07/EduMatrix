@@ -12,10 +12,10 @@ import {
   createCourseSchema, createFeeCapacitySchema,
   createStreamSchema, createSubjectSchema, createUniversitySchema,
 } from "../validators/admin.validator";
-import { authenticateJWT } from "../middlerware/auth";
-import { permission } from "../middlerware/permission";
+import { authenticateJWT } from "../middleware/auth";
+import { permission } from "../middleware/permission";
 import { idParamSchema } from "../validators/commenValidator";
-import { validateInput } from "../middlerware/validator";
+import { validateInput } from "../middleware/validator";
 
 const router = express.Router();
 
@@ -26,9 +26,11 @@ router.post("/create-course", authenticateJWT, permission("course", "create"), v
 router.post("/create-feecapacity", authenticateJWT, permission("feecapacity", "create"), validateInput(createFeeCapacitySchema, 'body'), createFeeCapacity);
 router.post("/create-usergroup", authenticateJWT, permission("usergroup", "create"), createUserGroup);
 
+
 router.get("/get-streams", authenticateJWT, permission("stream", "view"), getStreams);
 router.get("/get-courses", authenticateJWT, permission("course", "view"), getCourses);
 router.get("/get-subjects", authenticateJWT, permission("subject", "view"), getSubjects);
+
 
 router.put("/update-stream/:id", authenticateJWT, permission("stream", "update"), validateInput(idParamSchema, 'params'), validateInput(createStreamSchema, 'body'), updateStream);
 router.put("/update-subject/:id", authenticateJWT, permission("subject", "update"), validateInput(idParamSchema, 'params'), validateInput(createSubjectSchema, 'body'), updateSubject);

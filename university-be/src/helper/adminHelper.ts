@@ -71,6 +71,7 @@ export const IsUniversity = async (id: string) => {
     if (!university) throw new Error("University Not Found");
     return university;
 }
+
 export const IsUniversityName = async (name: string, id?: string) => {
 
     const university = await UniversityModel.findOne({ name });

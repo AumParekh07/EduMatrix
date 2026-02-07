@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { enrollCourseService, getstudentDetailService, studentDetailService, updateStdDetailService, verifyPaymentService } from "../services/student.services";
-// import { type AuthenticatedRequest } from "../middlerware/auth";
+// import { type AuthenticatedRequest } from "../middleware/auth";
 
 export const studentDetail = async (req: Request, res: Response) => {
     try {
@@ -32,7 +32,6 @@ export const getStudentDetail = async (req: Request, res: Response) => {
     try {
         const userId = res.locals.userId;
 
-        // const { userId } = (req as AuthenticatedRequest).user!;
         const result = await getstudentDetailService(userId)
 
         res.status(200).json({
@@ -76,8 +75,6 @@ export const enrollCourse = async (req: Request, res: Response) => {
 
         const userId = res.locals.userId;
         const { origin } = req.headers
-
-        // const { userId } = (req as AuthenticatedRequest).user!;
 
         const result = await enrollCourseService(userId, universityID, courseID, optionalSubjectID, origin as string)
 

@@ -8,7 +8,6 @@ import FeeCapacityModel from "../models/feecapacity";
 import { IsUser } from "../helper/userHelper";
 import { UserProfileCompleted } from "../helper/stdHelper";
 import { IsCourse, IsStream, IsUniversity } from "../helper/adminHelper";
-import UserModel from "../models/user";
 
 
 export const studentDetailService = async (
@@ -147,7 +146,7 @@ export const enrollCourseService = async (userID: ObjectId, universityID: Object
             throw new Error("This course's Seats are Full");
         }
 
-        //saveing in databaes
+        //saving in database
         const subjects = {
             compulsory: compulsorySubject,
             optional: optionalSubjectID
@@ -181,7 +180,7 @@ export const enrollCourseService = async (userID: ObjectId, universityID: Object
                 currency: 'inr',
                 product_data: {
                     name: "Additional Charges",
-                    description: "This includes Additional and other fees for enrollmenet process",
+                    description: "This includes Additional and other fees for enrollment process",
                 },
                 unit_amount: 50 * 100,
             },

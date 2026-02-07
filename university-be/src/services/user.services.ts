@@ -255,7 +255,7 @@ export const getAllUniversityService = async (
 };
 
 
-export const getUniversityByIDService = async (id: string, userId: ObjectId) => {
+export const getUniversityByIDService = async (id: string, userId: ObjectId | null) => {
   try {
     // const User = await IsUser(userId)
     // const User = true; //public access
@@ -288,22 +288,18 @@ export const getUniversityByIDService = async (id: string, userId: ObjectId) => 
       return { courseId: course._id, enrollCount: enrollCourse_Uni.length, enrollCourse_Uni };
     })
     );
+    // total std in university
+    // const TotalEnrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id,paymentStatus: true });
 
-    const User = await UserModel.findById(userId)
-
-    // const User = await IsUser(userId)
-    if (User) {
-      const enrollCourses = await EnrollCourseModel.find({ userID: User._id, universityID: id, paymentStatus: true })
-      // total std in university
-      // const TotalEnrolledCount = await EnrollCourseModel.countDocuments({ universityID: university._id,paymentStatus: true });
-
-      return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses }
-    }
-    else if (!User) {
-      return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses: [] }
+    if (userId) {
+      const User = await IsUser(userId)
+      if (User) {
+        const enrollCourses = await EnrollCourseModel.find({ userID: User._id, universityID: id, paymentStatus: true })
+        return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses }
+      }
     }
     else {
-      throw new Error("Error Fetching University Details");
+      return { university, FeeAndCapacity, courseEnrollCounts, enrollCourses: [] }
     }
   } catch (error) {
     throw error

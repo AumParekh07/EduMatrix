@@ -35,7 +35,7 @@ export const permission = (module: string, reqpermission: string) => {
         } catch (error: any) {
             res.status(400).json({
                 success: false,
-                message: "Invalid Acsess failed",
+                message: "Invalid! Access failed",
                 errors: error?.message || error
             });
         }

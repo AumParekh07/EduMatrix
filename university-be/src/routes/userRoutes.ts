@@ -6,7 +6,7 @@ import {
 } from "../controller/userController";
 import { createUserSchema, getUniversitiesSchema, loginUserSchema, sendOtpSchema, verifyOtpSchema } from "../validators/user.validator";
 import { idParamSchema } from "../validators/commenValidator";
-import { validateInput } from "../middlerware/validator";
+import { validateInput } from "../middleware/validator";
 import { getCounts } from "../controller/adminController";
 
 const router = express.Router();

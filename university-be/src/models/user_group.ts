@@ -21,4 +21,3 @@ const userGroupSchema: Schema = new mongoose.Schema({
 
 const UserGroupModel = mongoose.model<RolePermission>("newusergroup", userGroupSchema)
 export default UserGroupModel;
-

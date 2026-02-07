@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import dotenv from "dotenv";
-import Joi from "joi";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 import {
   createUserService,
@@ -11,7 +11,7 @@ import {
   verifyOtpService,
 } from "../services/user.services";
 
-// import { AuthenticatedRequest } from "../middlerware/auth";
+// import { AuthenticatedRequest } from "../middleware/auth";
 
 
 dotenv.config();
@@ -151,10 +151,18 @@ export const getAllUniversities = async (req: Request, res: Response) => {
 export const getUniversityByID = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const userId = res.locals.userId;
+    let userId = null;
 
-    // const { userId } = (req as AuthenticatedRequest).user!;
-
+    const token = req.headers.authorization?.split(' ')[1];
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY!) as JwtPayload;
+        userId = decoded.userId;
+      } catch (err) {
+        // Invalid token - continue as unauthenticated
+        // console.error('Invalid token:', err);
+      }
+    }
     const result = await getUniversityByIDService(id, userId);
 
     res.status(200).json({
