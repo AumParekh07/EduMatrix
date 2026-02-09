@@ -19,10 +19,10 @@ export function SubmitButton({ title }: { title: string }) {
     );
 }
 
-export function InputField({ title, type, id, placeholder, min }: { title: string; type: string; id: string; placeholder: string, min?: string }) {
+export function InputField({ title, type, id, placeholder, min, styles }: { title: string; type: string; id: string; placeholder: string, min?: string, styles?: object }) {
     return (
         <div className="mb-3">
-            <label htmlFor={id} className="form-label fw-semibold">
+            <label htmlFor={id} className="form-label fw-semibold" style={{ ...styles }}>
                 {title}
             </label>
             <Field type={type} id={id} name={id} min={min} className="form-control shadow-sm" placeholder={placeholder} />

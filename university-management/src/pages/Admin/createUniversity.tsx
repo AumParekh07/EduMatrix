@@ -8,7 +8,7 @@ import UniversityFormFields from "../../components/FormFields/universityFormFiel
 export const CreateUniversity = () => {
     return (
         <div className="container-fluid pt-5 d-flex justify-content-center align-items-center">
-            <div className=" card shadow-lg p-4 w-100 rounded-4 fadeIn-animation" style={{ maxWidth: "750px", minWidth: "300px" }} >
+            <div className=" card shadow-lg p-4 w-100 rounded-4 fadeIn-animation" style={{ maxWidth: "750px", minWidth: "", }} >
 
                 <h2 className="text-center mb-4 fw-bold text-primary">Create University</h2>
                 <Formik

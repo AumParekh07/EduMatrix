@@ -7,13 +7,16 @@ import AdminSidebar from "./adminSidebar";
 import { GetToken } from "../helper/getAuth";
 import { SidebartoggelContext } from "../context/context";
 import { isTokenExpired } from "../helper/getAuth";
+import { useIsMobile } from "../context/mobileContext";
 
 const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowedRole: "admin" | "student"; }) => {
     const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
     const [role, setRole] = useState<string | null>('');
     const [collapsed, setCollapsed] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 590);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 590);
     const navigate = useNavigate();
+    const { isMobile } = useIsMobile();
+
     useEffect(() => {
         const role = localStorage.getItem("role");
         setRole(role)
@@ -49,7 +52,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
     }, [isAuthorized, navigate]);
 
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 590);
+        const handleResize = () => setIsSmallScreen(window.innerWidth < 590);
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
@@ -62,15 +65,14 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
 
     if (role === "admin") {
         return (
-
             <div className="d-flex">
                 <SidebartoggelContext.Provider value={{ collapsed, setCollapsed }}>
                     <AdminSidebar />
-                    <div className="px-md-5 px-3"
+                    <div className={`px-md-5 ${isMobile ? "px-1" : "px-4"}`}
                         style={{
-                            flex: 1, 
-                            marginLeft: isMobile ? "55px" : (collapsed ? "55px" : "250px"),
-                            transition: "margin 0.3s ease-in-out",
+                            flex: 1,
+                            marginLeft: isSmallScreen ? "55px" : (collapsed ? "55px" : "250px"),
+                            transition: "all 0.3s ease-in-out",
                         }}>
                         {children}
                     </div>

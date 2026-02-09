@@ -118,7 +118,7 @@ export function UniversityList() {
 
     return (
         <div className={`container pt-4 d-flex justify-content-center align-items-center ${isAdmin ? 'p-0' : ''}`}>
-            <div className="card rounded-4 shadow p-4 w-100" data-aos="fade-in" style={{ maxWidth: "1050px", minWidth: "300px" }}>
+            <div className="card rounded-4 shadow p-4 w-100" data-aos="fade-in" style={{ maxWidth: "1050px", minWidth: "" }}>
                 <h1 className="pb-2 rounded-top-4 border-2 border-bottom fw-bold text-primary text-center">University</h1>
                 <div className="card-body pb-0">
 

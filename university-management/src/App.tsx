@@ -28,6 +28,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
 import Verify from "./pages/Student/Verify";
+import { MobileProvider } from "./context/mobileContext";
 
 
 function App() {
@@ -60,7 +61,7 @@ function App() {
       <Route path="/admin/subject" element={<PrivateRoute allowedRole="admin"><AdminSubjects /></PrivateRoute>} />
       <Route path="/admin/course" element={<PrivateRoute allowedRole="admin"><AdminCourses /></PrivateRoute>} />
       <Route path="/admin/university" element={<PrivateRoute allowedRole="admin"><UniversityList /></PrivateRoute>} />
-      <Route path="/admin/university/:id" element={<PrivateRoute allowedRole="admin"><UniversityById /></PrivateRoute>} />
+      <Route path="/admin/university/:id" element={<PrivateRoute allowedRole="admin"><MobileProvider breakpoint={480}><UniversityById /></MobileProvider></PrivateRoute>} />
 
 
       <Route path="/admin/create-stream" element={<PrivateRoute allowedRole="admin"><CreateStream /></PrivateRoute>} />

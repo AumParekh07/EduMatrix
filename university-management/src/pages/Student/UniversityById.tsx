@@ -11,6 +11,7 @@ import { UniversitySchema } from "../../helper/FormikValidation";
 import DeleteModal from "../../components/deletModal";
 import { apiCall } from "../../api/apiCaller";
 import { GetRole } from "../../helper/getAuth";
+import { useIsMobile } from "../../context/mobileContext";
 
 export type FeeAndCapacity = {
     fee: number;
@@ -44,6 +45,7 @@ export function UniversityById() {
 
     const isAdmin: boolean = (GetRole() === 'admin')
     const isStudent: boolean = (GetRole() === 'student')
+    const { isMobile } = useIsMobile();
 
     const navigate = useNavigate();
 
@@ -129,8 +131,8 @@ export function UniversityById() {
 
     return (
         <>
-            <div className="container py-5 px-lg-5">
-                <div className="card p-4 rounded-5 " style={{ minWidth: "300px" }}>
+            <div className={`py-5 px-lg-5 ${isAdmin ? "" : "px-3"}`}>
+                <div className={`card p-4 rounded-5 ${isAdmin ? (isMobile ? "px-2" : "") : ""}`}>
                     <div className='d-flex border-2 border-bottom p-2 pt-0 align-items-center justify-content-between'>
                         <h2 className='m-0  text-primary fw-bold text-center flex-grow-1'>{university.name}</h2>
                         {isAdmin && (
@@ -180,7 +182,7 @@ export function UniversityById() {
                             {university.course.map((course) => {
                                 const isEnrolled = !!enrollCourses.find(ec => ec.courseID === course._id);
                                 return (
-                                    <div className="col-md-5" data-aos="zoom-in-up" key={course._id}>
+                                    <div className="col-md-5" data-aos="zoom-in-up" key={course._id} style={{ minWidth: "250px" }}>
                                         <div className="card position-relative cardbg p-2 m-md-3 my-3 shadow-sm hoverShadowlg rounded-5 border-2 border-primary"
                                             style={{ cursor: (isAdmin || remainingCapacity(course._id).remain <= 0) || isEnrolled ? "default" : "pointer", backgroundColor: "" }}//94bdfe //#e4eaf2 //rgb(33 37 41 / 4%)
                                             onClick={() => {

@@ -106,7 +106,7 @@ const UniversityFormFields = ({ values, setFieldValue, courseEnrollCounts }: Pro
     return (
         <div className="row">
             <div className="col-sm">
-                <InputField title="Name" type="text" id="name" placeholder="Enter University Name " />
+                <InputField title="Name" styles={{ minWidth: "130px" }} type="text" id="name" placeholder="Enter University Name " />
                 <InputField title="Address" type="text" id="address.address" placeholder="Enter address" />
                 <InputField title="City" type="text" id="address.city" placeholder="Enter city" />
                 <InputField title="State" type="text" id="address.state" placeholder="Enter state" />
