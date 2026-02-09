@@ -1,4 +1,4 @@
-import { useEffect, useState, type JSX } from "react";
+import { useEffect, useState, useRef, type JSX } from "react";
 import { useNavigate } from "react-router-dom";
 import { errorToast } from "../helper/helperToast";
 import { ErrorComponent } from "./helperComponents";
@@ -16,6 +16,7 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 590);
     const navigate = useNavigate();
     const { isMobile } = useIsMobile();
+    const sidebarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const role = localStorage.getItem("role");
@@ -57,6 +58,24 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    // Handle click outside sidebar on small screens
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (isSmallScreen && !collapsed && sidebarRef.current) {
+                // Check if click is outside the sidebar
+                if (!sidebarRef.current.contains(event.target as Node)) {
+                    setCollapsed(true);
+                }
+            }
+        };
+        // Add event listener
+        document.addEventListener("mousedown", handleClickOutside);
+        // Cleanup
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isSmallScreen, collapsed]);
+
     if (isAuthorized === false || null) {
         return <ErrorComponent error="Forbidden: You Do Not Have The Required Permission" />;
     }
@@ -67,7 +86,9 @@ const PrivateRoute = ({ children, allowedRole }: { children: JSX.Element; allowe
         return (
             <div className="d-flex">
                 <SidebartoggelContext.Provider value={{ collapsed, setCollapsed }}>
-                    <AdminSidebar />
+                    <div ref={sidebarRef} >
+                        <AdminSidebar />
+                    </div>
                     <div className={`px-md-5 ${isMobile ? "px-1" : "px-4"}`}
                         style={{
                             flex: 1,
